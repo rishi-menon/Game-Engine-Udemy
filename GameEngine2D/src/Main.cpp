@@ -9,6 +9,7 @@
 
 int main(int argc, char* argv[])
 {
+   LOG_INIT_PRINT(argc, argv);
 
    Game* pGame = new Game;
    ASSERT(pGame);
@@ -29,5 +30,6 @@ int main(int argc, char* argv[])
 
    //Pause the program to see console output and to prevent console from closing. Only in debug builds obviously
    LOG_PAUSE();
+   LOG_TERMINATE();
    return 0;
 }

@@ -2,6 +2,8 @@
 #include "Entity.h"
 #include "Log/Log.h"
 
+//To do: have a enum class to store the order in which the components are updated??
+
 Entity::Entity(EntityManager& manager, const std::string& strName /*= ""*/) :
    m_entityManager (manager),
    m_bIsActive (true),
@@ -24,6 +26,14 @@ Entity::~Entity()
 void Entity::OnUpdate(double deltaTime)
 {
    std::vector<Component*>::iterator itEntities = m_vComponents.begin();
+
+   for (; itEntities != m_vComponents.end(); itEntities++)
+   {
+      ASSERT(*itEntities);
+      (*itEntities)->PreUpdate(deltaTime);
+   }
+
+   itEntities = m_vComponents.begin();
 
    for (; itEntities != m_vComponents.end(); itEntities++)
    {

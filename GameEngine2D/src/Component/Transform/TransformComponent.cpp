@@ -4,11 +4,9 @@
 #include "Game/Game.h"
 
 TransformComponent::TransformComponent(const glm::vec2& pos, const glm::vec2& vel, const glm::vec2& scale) :
-   m_vPosition (pos), 
-   m_vVeloctiy (vel),
-   m_vScale (scale)
+   TransformPartialComponent (pos, scale),
+   m_vVeloctiy (vel)
 {
-   LOG("Created Transform Component", Log::Trace);
 }
 
 TransformComponent::~TransformComponent()

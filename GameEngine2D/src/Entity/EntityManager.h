@@ -5,7 +5,7 @@
 #ifdef DEBUG
 #define LOG_ALL_ENTITIES(obj) (obj).LogAllEntities()
 #else
-#define LOG_ALL_ENTITIES (obj) 
+#define LOG_ALL_ENTITIES(obj) 
 #endif // DeBUG
 
 
@@ -27,7 +27,7 @@ public:
 
    inline std::vector<Entity*>& GetEntitiesVector() { return m_vEntities; }
    
-
+   EntityManager& operator = (EntityManager&& other);
 
 #ifdef DEBUG
    void LogAllEntities();
@@ -35,5 +35,4 @@ public:
 
 private:
    std::vector<Entity*> m_vEntities;
-
 };

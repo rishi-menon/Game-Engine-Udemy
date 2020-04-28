@@ -1,6 +1,8 @@
 #pragma once
 
-#include "AssetManager.h"
+#include "Assets/AssetManager.h"
+#include "Camera/Camera.h"
+#include "TileMap/Map.h"
 
 class Game
 {
@@ -21,13 +23,17 @@ public:
    static SDL_Renderer* s_pRenderer;
    static AssetManager* s_pAssetManager;
    static SDL_Event s_event;
+   static Camera s_camera;
 
 private:
    void DoUpdate(double deltaTime);
+   void MoveCamera(double deltaTime);
 private:
    bool m_bIsRunning;
    Uint32 m_nLastUpdateTick;
 
-   SDL_Window* m_pWindow;
+   Map m_map;
+   Entity* m_pentityCameraFollow;
 
+   SDL_Window* m_pWindow;
 };

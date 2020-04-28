@@ -5,7 +5,7 @@
 
 //components
 #include "PlayerControllerComponent.h"
-#include "TransformComponent.h"
+#include "Transform/TransformComponent.h"
 #include "AnimationComponent.h"
 
 PlayerControllerComponent::PlayerControllerComponent() :
@@ -41,7 +41,7 @@ int PlayerControllerComponent::GetKeyCodeFromString(const std::string& string)
 {
    std::string st = string;
    //convert to lower case
-   for (int i = 0; i < st.size(); i++)
+   for (std::size_t i = 0; i < st.size(); i++)
    {
       st[i] = tolower(string[i]);
    }
@@ -71,7 +71,7 @@ void PlayerControllerComponent::OnUpdate(double deltaTime)
       int key = Game::s_event.key.keysym.sym;
       if (key == m_nKeyUp)
       {
-         m_pTransformComponent->m_vVeloctiy = glm::vec2(0, -m_vecVelocity.y);
+         m_pTransformComponent->m_vVeloctiy = glm::vec2(0, m_vecVelocity.y);
          //m_pTransformComponent->m_vVeloctiy.y = -m_vecVelocity.y;
          if (m_pAnimationComponent)
          {
@@ -89,7 +89,7 @@ void PlayerControllerComponent::OnUpdate(double deltaTime)
       }
       else if (key == m_nKeyDown)
       {
-         m_pTransformComponent->m_vVeloctiy = glm::vec2(0, m_vecVelocity.y);
+         m_pTransformComponent->m_vVeloctiy = glm::vec2(0, -m_vecVelocity.y);
          //m_pTransformComponent->m_vVeloctiy.y = m_vecVelocity.y;
          if (m_pAnimationComponent)
          {

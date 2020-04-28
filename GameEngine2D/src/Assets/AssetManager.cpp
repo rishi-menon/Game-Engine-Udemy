@@ -1,10 +1,9 @@
 #include "pch.h"
 #include "AssetManager.h"
-#include "TextureManager.h"
 #include "Log/Log.h"
 
-AssetManager::AssetManager(EntityManager* pManager) :
-   m_pEntityManager(pManager)
+AssetManager::AssetManager(/*EntityManager* pManager*/)
+   //m_pEntityManager(pManager)
 {
    //reserve size to store the assets
    m_umapTextures.reserve(20);
@@ -18,24 +17,30 @@ AssetManager::~AssetManager()
 void AssetManager::ClearData()
 {
    //Free textures
-   for (std::unordered_map<AssetID, SDL_Texture*>::iterator it = m_umapTextures.begin();
+   for (std::unordered_map<AssetID, Engine::Texture*>::iterator it = m_umapTextures.begin();
       it != m_umapTextures.end(); it++)
    {
       ASSERT(it->second);
-      TextureManager::DeleteTexture(it->second);
+      delete (it->second);
+      
    }
    m_umapTextures.clear();
 }
 
 void AssetManager::AddTexture(AssetID assetID, const char* const path)
 {
-   SDL_Texture* pTexture = TextureManager::LoadTexture(path);
-   ASSERT(pTexture);
+   Engine::Texture* pTexture = new Engine::Texture(path);
+   ASSERT(pTexture && pTexture->GetTexture());
+   if (!pTexture || !pTexture->GetTexture())
+   {
+      LOGW("Could not find texture (ID: %d, Asset Folder: \"%s\")", assetID, path);
+      LOGW("\n");
+   }
    m_umapTextures.insert({ assetID, pTexture });
 }
-SDL_Texture* AssetManager::GetTexture(AssetID id) const
+Engine::Texture* AssetManager::GetTexture(AssetID id) const
 {
-   std::unordered_map<AssetID, SDL_Texture*>::const_iterator it = m_umapTextures.find(id);
+   std::unordered_map<AssetID, Engine::Texture*>::const_iterator it = m_umapTextures.find(id);
 
    if (it != m_umapTextures.end())
    {

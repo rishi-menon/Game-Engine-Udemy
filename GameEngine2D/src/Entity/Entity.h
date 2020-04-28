@@ -21,7 +21,15 @@ public:
    template <typename T, typename ... TArgs>
    T& AddComponent(TArgs&& ... args)
    {
+      std::unordered_map<ComponentType, Component*>::const_iterator it = m_umapComponentType.find(T::GetStaticType());
+      ASSERT(it == m_umapComponentType.end());  //The component already exists... This is currently BAD.
+      if (it != m_umapComponentType.end())
+      {
+         return *static_cast<T*>(it->second);
+      }
+
       T* pComponent = new T(std::forward<TArgs>(args) ...);
+      ASSERT(pComponent);
       m_umapComponentType.insert({ T::GetStaticType(), pComponent });
       m_vComponents.emplace_back(pComponent);
 

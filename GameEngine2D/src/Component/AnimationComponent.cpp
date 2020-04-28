@@ -17,12 +17,11 @@ AnimationLayout::AnimationLayout(AnimationLayout&& layout) :
    m_indices = std::move(layout.m_indices);
 }
 
-AnimationComponent::AnimationComponent(/*unsigned int unAnimationType*/) :
+AnimationComponent::AnimationComponent() :
    m_pSpriteComponent (nullptr),
    m_pCurrentAnimationLayout(nullptr),
    m_nGridSizeX (0),
    m_nGridSizeY (0),
-   //m_unAnimationType (unAnimationType),
    m_dRotationSpeed(0.0),
    m_dAnimationIndex(0.0),
    m_bIsActive(false)
@@ -38,8 +37,8 @@ void AnimationComponent::OnInitialise()
    ASSERT(m_pSpriteComponent);
    
    //default is the entire image... User would usually call SetGridCoords right after initialise
-   m_nGridSizeX = m_pSpriteComponent->m_nTextureWidth;
-   m_nGridSizeY = m_pSpriteComponent->m_nTextureHeight;
+   m_nGridSizeX = m_pSpriteComponent->GetWidth();
+   m_nGridSizeY = m_pSpriteComponent->GetHeight();
 
    //add a default animation (does not perform any animation)
    AddAnimation(AnimationID::None, AnimationLayout({ 0 }, 0));
@@ -53,13 +52,14 @@ void AnimationComponent::OnUpdate(double deltaTime)
    m_dAnimationIndex += deltaTime;
    if (m_dAnimationIndex > 1000) { m_dAnimationIndex = 0.0; }
    //Play animation
-   //if (CheckAnimationStyle(AnimationType::SpriteSheet))
+   OnAnimationRotation(deltaTime);
+   if (m_AnimationID != AnimationID::None)
    {
       OnAnimationSpriteSheet(deltaTime);
    }
 }
 
-void AnimationComponent::OnAnimationSpriteSheet(double deltaTime)
+void AnimationComponent::OnAnimationRotation(double deltaTime)
 {
    //update Rotation
    double& dAngle = m_pSpriteComponent->m_dRotationDeg;
@@ -72,6 +72,9 @@ void AnimationComponent::OnAnimationSpriteSheet(double deltaTime)
    {
       dAngle += 360;
    }
+}
+void AnimationComponent::OnAnimationSpriteSheet(double deltaTime)
+{
    if (m_pCurrentAnimationLayout->m_indices.size() > 1)
    {
       //lets animate
@@ -92,9 +95,9 @@ void AnimationComponent::GetSourceRectFromIndex(int nGridIndex, SDL_Rect& rectSo
 {
    ASSERT(nGridIndex < m_nGridSizeX * m_nGridSizeY);
    //Grid delta x of image in pixels
-   float dx = static_cast<float>(m_pSpriteComponent->m_nTextureWidth) / m_nGridSizeX;
+   float dx = static_cast<float>(m_pSpriteComponent->GetWidth()) / m_nGridSizeX;
    //Grid delta y of image in pixels
-   float dy = static_cast<float>(m_pSpriteComponent->m_nTextureHeight) / m_nGridSizeY;
+   float dy = static_cast<float>(m_pSpriteComponent->GetHeight()) / m_nGridSizeY;
 
    int nx = nGridIndex % m_nGridSizeX; // x coordinate of the grid
    rectSource.x = static_cast<int>(nx * dx);
@@ -116,20 +119,17 @@ void AnimationComponent::AddAnimation(AnimationID id, AnimationLayout&& layout)
 void AnimationComponent::SetCurrentAnimation(AnimationID id)
 {
    std::unordered_map<AnimationID, AnimationLayout>::iterator it = m_umapAnimationLayout.find(id);
-
    ASSERT(it != m_umapAnimationLayout.end());
    if (it != m_umapAnimationLayout.end())
    {
+      m_AnimationID = id;
+
       ASSERT(it->first == id);
       m_pCurrentAnimationLayout = &it->second;
       if (id == AnimationID::None)
       {
          //Reset the animation...
-         SDL_Rect& rectSource = m_pSpriteComponent->m_rectSource;
-         rectSource.x = 0;
-         rectSource.y = 0;
-         rectSource.w = m_pSpriteComponent->m_nTextureWidth;
-         rectSource.h = m_pSpriteComponent->m_nTextureHeight;
+         m_pSpriteComponent->ResetSourceRect();
       }
    }
 }

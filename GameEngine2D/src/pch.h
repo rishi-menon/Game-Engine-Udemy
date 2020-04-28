@@ -12,9 +12,12 @@
 #include <unordered_map>
 #include <sstream>
 #include <string>
+#include <cmath>
 
-//Custom Logging
+//Custom stuff
 #include "Log/Log.h"
+#include "Common/MathHelper.h"
+#include "Common/StringHelper.h"
 
 //glm stuff
 #include <glm/glm.hpp>

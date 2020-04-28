@@ -32,24 +32,13 @@ enum class AnimationID : unsigned int
    Default
 };
 
-namespace AnimationType
-{
-   enum AnimationTypes : unsigned int
-   {
-      None           =  0x00000000,
-      SpriteSheet    =  0x00000001,
-      Rotation       =  0x00000010,
-
-      //common combinations
-      SpriteSheet_Rotation = SpriteSheet | Rotation
-   };
-}
 
 class AnimationComponent : public Component
 {
 public:
    COMPONENT_TYPE(Animation)
-   AnimationComponent(/*unsigned int AnimationType*/);
+   COMPONENT_NAME("Animation")
+   AnimationComponent();
    ~AnimationComponent();
 
    //overrides
@@ -63,16 +52,20 @@ public:
    void SetCurrentAnimation(AnimationID id);
 
    void SetRotationSpeed(double dSpeed) { m_dRotationSpeed = dSpeed; }  //in degrees per second
+
+
 private:
    //index is the '1D' index of the spritesheet. top left image is 0 and it increases as you keep going left
    void GetSourceRectFromIndex(int nGridIndex, SDL_Rect& rectSource) const;
    //inline bool CheckAnimationStyle(unsigned int type) const { return (m_unAnimationType & (unsigned int)(type)); }
    
+   void OnAnimationRotation(double deltaTime);
    void OnAnimationSpriteSheet(double deltaTime);
 
 private:
    SpriteComponent* m_pSpriteComponent;
    AnimationLayout* m_pCurrentAnimationLayout;
+   AnimationID m_AnimationID;
 
    std::unordered_map<AnimationID, AnimationLayout> m_umapAnimationLayout;
 

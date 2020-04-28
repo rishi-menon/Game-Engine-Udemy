@@ -7,6 +7,8 @@ class PlayerControllerComponent : public Component
 {
 public:
    COMPONENT_TYPE(PlayerController)
+   COMPONENT_NAME("PlayerController")
+      
    PlayerControllerComponent();
    ~PlayerControllerComponent();
 

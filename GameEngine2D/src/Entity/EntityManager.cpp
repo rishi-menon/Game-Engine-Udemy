@@ -18,6 +18,12 @@ EntityManager::~EntityManager()
    m_vEntities.clear();
 }
 
+EntityManager& EntityManager::operator = (EntityManager&& other)
+{
+   m_vEntities = std::move(other.m_vEntities);
+   return (*this);
+}
+
 void EntityManager::OnUpdate(double deltaTime)
 {
    std::vector<Entity*>::iterator it = m_vEntities.begin();
@@ -72,7 +78,7 @@ void EntityManager::LogAllEntities ()
       std::stringstream ss;
       ss <<"Entity " << i << ": "<< (*itEntity)->GetName();
       i++;
-      LOG(ss.str().c_str(), Log::Trace);
+      LOGW(ss.str().c_str());
       int j = 1;
       for (; it != list.end(); it++)
       {
@@ -80,7 +86,7 @@ void EntityManager::LogAllEntities ()
          std::stringstream ssComponent;
          ssComponent << "\tComponent " << j <<": " << (*it)->GetName();
          j++;
-         LOG(ssComponent.str().c_str(), Log::Trace);
+         LOGW(ssComponent.str().c_str());
       }
       LOG_LINE_BREAK();
    }
