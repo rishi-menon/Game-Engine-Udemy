@@ -7,7 +7,9 @@ class EntityManager;
 
 enum class AssetID : unsigned int
 {
-   Sprite_Tank = 0,
+   None = 0,
+   Sprite_Tank,
+   Sprite_Collision_Box,
 
    SpriteSheet_Chopper,
    SpriteSheet_Radar,

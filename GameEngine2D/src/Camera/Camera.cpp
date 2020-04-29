@@ -8,7 +8,7 @@
 //static const int nScreenTop = 0;
 
 Camera::Camera() :
-   m_rectView {0,0,0,0},
+   m_rectView (),
    m_fPixelsPerUnit(0.0f),
    m_nScreenWidth(0),
    m_nScreenHeight(0)
@@ -52,8 +52,11 @@ void Camera::SetViewRectBlocksY(const float y)
    SetViewRect(pixelsPerUnit);
 }
 
+
+
+
 //////////////////////////////////////////////////////////////////////////
-//                         Transformations                              //
+//                         Conversion Functions                         //
 //////////////////////////////////////////////////////////////////////////
 glm::vec2 Camera::WorldPointToScreenPoint(float worldX, float worldY) const
 {
@@ -76,6 +79,54 @@ glm::vec2 Camera::WorldPointToScreenPoint(const glm::vec2& worldPoint) const
    return WorldPointToScreenPoint(worldPoint.x, worldPoint.y);
 }
 
+glm::vec2 Camera::ScreenPointToWorldPoint(int screenX, int screenY) const
+{
+   ASSERT(m_nScreenWidth && m_nScreenHeight && m_fPixelsPerUnit);
+   glm::vec2 worldPoint;
+
+   //left edge of the screen will be 0.0, and right edge will be 1.0
+   double screenPercentX = MathR::GetPercent((double)screenX, 0.0, (double)m_nScreenWidth);  
+   //top edge of the screen will be 0.0 and the bottom edge will be 1.0
+   double screenPercentY = MathR::GetPercent((double)screenY, 0.0, (double)m_nScreenHeight);
+
+   worldPoint.x = MathR::Lerp(m_rectView.GetLeft(), m_rectView.GetRight(), screenPercentX);
+   worldPoint.y = MathR::Lerp(m_rectView.GetTop(), m_rectView.GetBottom(), screenPercentY);
+   return worldPoint;
+}
+glm::vec2 Camera::ScreenPointToWorldPoint(const glm::vec2& screenPoint) const
+{
+   return ScreenPointToWorldPoint(static_cast<int>(screenPoint.x), static_cast<int>(screenPoint.y));
+}
+
+void Camera::WorldRectToScreenRect(const Engine::Rect& worldRect, SDL_Rect& outRect) const
+{
+   //converts a transform component to a rect viewport rect
+   glm::vec2 screenPoint = WorldPointToScreenPoint(worldRect.GetCenterX(), worldRect.GetCenterY());
+   float pixelWidth = worldRect.GetWidth() * m_fPixelsPerUnit;
+   float pixelHeight = worldRect.GetHeight() * m_fPixelsPerUnit;
+
+   float posX = screenPoint.x - pixelWidth / 2;
+   float posY = screenPoint.y - pixelHeight / 2;
+
+   //this offset is to help "join" the grid coordinates... Since the screen coordinates are integer values and are not continuous, sometimes the world coordinate 1 can end on pixel 10 and world coordinate 2 can start on pxiel 11. This causes black lines (gap) between the grid coordinates.
+   const float offset = 1.0f;
+   outRect.x = static_cast<int>(posX - offset);
+   outRect.y = static_cast<int>(posY + offset);
+   outRect.w = static_cast<int>(pixelWidth + 2 * offset);
+   outRect.h = static_cast<int>(pixelHeight + 2 * offset);
+}
+
+SDL_Rect Camera::WorldRectToScreenRect(const Engine::Rect& worldRect) const
+{
+   SDL_Rect rect;
+   WorldRectToScreenRect(worldRect, rect);
+   return rect;
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+//                     Transform related... For Rendering               //
+//////////////////////////////////////////////////////////////////////////
 //this function is only for drawing a transform on the screen
 void Camera::WorldTransformToScreenRect (const TransformComponent& transform, SDL_Rect& outRect) const
 {
@@ -115,6 +166,9 @@ SDL_Rect Camera::WorldTransformToScreenRect(const TransformUIComponent& transfor
    WorldTransformToScreenRect(transform, rect);
    return rect;
 }
+
+
+
 
 //////////////////////////////////////////////////////////////////////////
 //                        Camera Movements                              //

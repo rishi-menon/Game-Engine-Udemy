@@ -2,7 +2,7 @@
 
 #include "Entity/EntityManager.h"
 #include "Assets/AssetManager.h"
-#include "Camera/Rect.h"
+#include "Collision/Rect.h"
 
 class Map
 {

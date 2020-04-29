@@ -39,7 +39,7 @@ private:
 
    //The sprite component could be attached to a gameobject with a world transform or it could be a UI element
    TransformPartialComponent* m_pPartialTransformComponent; 
-   ComponentSubType m_TransformType;
+   ComponentType m_TransformComponentType;
 
    //delete later:
    //int m_nTextureWidth;    //In Pixels

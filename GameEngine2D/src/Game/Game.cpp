@@ -10,6 +10,7 @@
 #include "Component/SpriteComponent.h"
 #include "Component/AnimationComponent.h"
 #include "Component/PlayerControllerComponent.h"
+#include "Component/BoxColliderComponent.h"
 
 EntityManager g_EntityManager;   //To do: temporary global EntityManager... Move to static class member maybe ?
 
@@ -37,7 +38,7 @@ void Game::MoveCamera(double deltaTime)
    ASSERT(comp);
 
    //Value should be between 0 and 1... low values mean a greater lag
-   const float fCameraSpeed = 1.3f;
+   const float fCameraSpeed = 1.3*100.0f;
    float fCameraPercent = static_cast<float>(MathR::Clamp01(fCameraSpeed * deltaTime));
    float fCameraDeltaX = static_cast<float>(MathR::Lerp(0.0f, comp->m_vPosition.x - s_camera.GetPositionX(), fCameraPercent));
    float fCameraDeltaY = static_cast<float>(MathR::Lerp(0.0f, comp->m_vPosition.y - s_camera.GetPositionY(), fCameraPercent));
@@ -62,6 +63,7 @@ void Game::LoadLevel(int nLevelNumber)
    s_pAssetManager->AddTexture(AssetID::Sprite_Tank,         "assets\\images\\tank-big-right.png");
    s_pAssetManager->AddTexture(AssetID::SpriteSheet_Chopper, "assets\\images\\chopper-spritesheet.png");
    s_pAssetManager->AddTexture(AssetID::SpriteSheet_Radar,   "assets\\images\\radar.png");
+   s_pAssetManager->AddTexture(AssetID::Sprite_Collision_Box,   "assets\\images\\collision-texture.png");
    s_pAssetManager->AddTexture(AssetID::Tilemap_ocean,       "assets\\tilemaps\\jungle.png");
 
    //Load Tilemap
@@ -72,6 +74,7 @@ void Game::LoadLevel(int nLevelNumber)
       Entity& entity = g_EntityManager.AddEntity("Tank");
       entity.AddComponent<TransformComponent>(glm::vec2{ 0,0 }, glm::vec2{ 0, -1 }, glm::vec2{ 1, 1 });
       entity.AddComponent<SpriteComponent>(AssetID::Sprite_Tank);
+      entity.OnInitialise();
    }
    {
       Entity& entity = g_EntityManager.AddEntity("Chopper");
@@ -79,17 +82,19 @@ void Game::LoadLevel(int nLevelNumber)
 
       entity.AddComponent<TransformComponent>(glm::vec2{ -14,0 }, glm::vec2{ 0, 0 }, glm::vec2{ 1, 1 });
       entity.AddComponent<SpriteComponent>(AssetID::SpriteSheet_Chopper);
-      
-      AnimationComponent& component = entity.AddComponent<AnimationComponent>();
-      component.SetGridCoords(2, 4);
-      const float fSpeed = 17; //animation frames per second
-      component.AddAnimation(AnimationID::DirDown, AnimationLayout({ 0, 1 }, fSpeed));
-      component.AddAnimation(AnimationID::DirRight, AnimationLayout({ 2, 3 }, fSpeed));
-      component.AddAnimation(AnimationID::DirLeft, AnimationLayout({ 4, 5 }, fSpeed));
-      component.AddAnimation(AnimationID::DirUp, AnimationLayout({ 6, 7 }, fSpeed));
-      component.SetCurrentAnimation(AnimationID::DirDown);
+      AnimationComponent& compAnimation =         *entity.AddComponent<AnimationComponent>(2, 4);
+      PlayerControllerComponent& compController = *entity.AddComponent<PlayerControllerComponent>();
+      entity.AddComponent<BoxColliderComponent>(glm::vec2{ 0, 0 }, glm::vec2{ 1,1 }, AssetID::Sprite_Collision_Box);
+      entity.OnInitialise();
 
-      PlayerControllerComponent& compController = entity.AddComponent<PlayerControllerComponent>();
+      const float fSpeed = 17; //animation frames per second
+      compAnimation.AddAnimation(AnimationID::DirDown,  AnimationLayout({ 0, 1 }, fSpeed));
+      compAnimation.AddAnimation(AnimationID::DirRight, AnimationLayout({ 2, 3 }, fSpeed));
+      compAnimation.AddAnimation(AnimationID::DirLeft,  AnimationLayout({ 4, 5 }, fSpeed));
+      compAnimation.AddAnimation(AnimationID::DirUp,    AnimationLayout({ 6, 7 }, fSpeed));
+      compAnimation.SetCurrentAnimation(AnimationID::DirDown);
+      
+      
       compController.SetMovementControls("w", "a", "s", "d");
       const float speed = 4;
       compController.m_vecVelocity = glm::vec2(speed, speed );
@@ -99,15 +104,16 @@ void Game::LoadLevel(int nLevelNumber)
       Entity& entity = g_EntityManager.AddEntity("Radar");
       const float dimension = 64.0f;
       entity.AddComponent<TransformUIComponent>(glm::vec2{ 0.95f, 0.05f }, glm::vec2{ dimension, dimension });
-      SpriteComponent& sprite = entity.AddComponent<SpriteComponent>(AssetID::SpriteSheet_Radar);
-      sprite.m_rectDefault = SDL_Rect{ 0,0,64,64 };
-      sprite.ResetSourceRect();
+      SpriteComponent& compSprite = *entity.AddComponent<SpriteComponent>(AssetID::SpriteSheet_Radar);
+      AnimationComponent& compAnimation = *entity.AddComponent<AnimationComponent>(1, 1);
+      entity.OnInitialise();
 
-      AnimationComponent& component = entity.AddComponent<AnimationComponent>();
+      compSprite.m_rectDefault = SDL_Rect{ 0,0,64,64 };
+      compSprite.ResetSourceRect();
+
       const double dRotationSpeed = 150;   //in deg per sec
-      component.SetGridCoords(1, 1);
       //use the default animation.. aka AnimationType::None
-      component.SetRotationSpeed(dRotationSpeed);
+      compAnimation.SetRotationSpeed(dRotationSpeed);
    }
    LOG_ALL_ENTITIES(g_EntityManager);
 
@@ -149,7 +155,6 @@ void Game::Initialise(const unsigned int unWidth, const unsigned int unHeight)
       return;
    }
 
-
    //Everthing went well
    s_camera.SetDimensions(unWidth, unHeight);
    //const int a = 32
@@ -159,9 +164,13 @@ void Game::Initialise(const unsigned int unWidth, const unsigned int unHeight)
 
    m_bIsRunning = true;
 }
+
+#include "Collision/CollisionHelper.h"
 void Game::OnProcessInput()
 {
    SDL_PollEvent(&s_event);
+   Engine::Input::OnProcessInput();
+
    switch (s_event.type)
    {
       case SDL_QUIT:
@@ -206,11 +215,8 @@ void Game::OnUpdate()
    {
       //DeltaTime is too big...
       LOG_LINE_BREAK();
-#ifdef DEBUG
-      std::stringstream ss;
-      ss << "DeltaTime was too large: " << deltaTime << " ms";
-      LOGW(ss.str().c_str());
-#endif // DEBUG
+      LOGW("DeltaTime was too large: %.2f ms", deltaTime);
+
       deltaTime = fMaxDeltaTime;
       LOG_LINE_BREAK();
    }
@@ -239,6 +245,37 @@ void Game::OnRender()
    SDL_RenderClear(s_pRenderer);
 
    m_map.OnRender();
+
+   ////////////////////////////////// delete later
+   int x, y;
+   SDL_SetRenderDrawColor(s_pRenderer, 255, 20, 20, 255);
+   Engine::Input::GetMousePos(x, y);
+   glm::vec2 point = s_camera.ScreenPointToWorldPoint(x, y);
+   //LOGW("Mouse Position: x=%.2f, y=%.2f", point.x, point.y);
+
+   //TransformComponent component = *m_pentityCameraFollow->GetComponent<TransformComponent>();
+   //Engine::Rect rectA, rectB;
+   //rectA.SetCenter(component.m_vPosition.x, component.m_vPosition.y, component.m_vScale.x, component.m_vScale.y);
+   //rectB.SetCenter(point.x, point.y, 2, 2);
+
+   //SDL_Rect rect = s_camera.WorldRectToScreenRect(rectB);
+   //SDL_Rect rect2 = s_camera.WorldRectToScreenRect(rectA);
+   //SDL_RenderDrawRect(s_pRenderer, &rect);
+   //SDL_RenderDrawRect(s_pRenderer, &rect2);
+
+   ////LOGW("%.2f, %.2f, %.2f, %.2f", rect.x, rect.y, rect.w, rect.h);
+
+   //if (Engine::Collision::CheckCollisionRectRect(rectA, rectB))
+   //{
+   //   LOGW("Collision...");
+   //}
+   //else
+   //{
+   //   LOGW("\n");
+   //}
+
+   //const Engine::Rect& rect = s_camera.GetRectView();
+   //LOGW("%.2f, %.2f, %.2f, %.2f", rect.GetLeft(), rect.GetRight(), rect.GetTop(), rect.GetBottom());
    
    if (g_EntityManager.IsEmpty())
    {

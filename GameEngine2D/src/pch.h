@@ -8,6 +8,7 @@
 
 //STL stuff
 #include <vector>
+#include <array>
 #include <map>
 #include <unordered_map>
 #include <sstream>
@@ -18,6 +19,7 @@
 #include "Log/Log.h"
 #include "Common/MathHelper.h"
 #include "Common/StringHelper.h"
+#include "Input/InputManager.h"
 
 //glm stuff
 #include <glm/glm.hpp>

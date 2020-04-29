@@ -1,47 +1,64 @@
 #pragma once
 
 #include <string>
+#include <vector>
+#include <unordered_map>
+#include <array>
 
 class Entity;
 
 //Components... For other files that include this header mainly
+class Component;
 class TransformComponent;
+class TransformUIComponent;
 class SpriteComponent;
 class AnimationComponent;
 class PlayerControllerComponent;
+class BoxColliderComponent;
+
 
 enum class ComponentType : unsigned int
 {
+   
    None = 0,
    Transform,
+   TransformUI,
    Sprite,
    Animation,   //for a spritesheet
-   PlayerController
+   PlayerController,
+   BoxCollider
+
 };
 
-//To do: GetComponent<TransformPartial> should return a list of all the transform components and            GetComponent<TransformComponent> should return the specific component
-enum class ComponentSubType : unsigned int
+using Components = std::vector<Component*>;
+//map of POINTER to the vector, not the actual vector itself.. The actual vector will be stored in the Entity object... (So the entity object should have a map that stores the VECTOR and not the POINTER to it).
+using ComponentsMap = std::unordered_map<ComponentType, const Components*>;
+
+//These global arrays will be used by GetComponentsGeneric method
+namespace GenericComponent
 {
-   //transform
-   TransformWorld = 0,
-   TransformUI
-};
+   extern const std::vector<ComponentType> TransformPartial;
+}
 
-#define COMPONENT_TYPE(x)  static ComponentType GetStaticType()           { return ComponentType::##x; } \
+
+#define COMPONENT_TYPE(x)  const static ComponentType GetStaticType()     { return ComponentType::##x; } \
                            virtual ComponentType GetType() const override { return ComponentType::##x; }
 
-#define COMPONENT_NAME(x)  virtual std::string GetName() const override   { return x; } \
-                           static  std::string GetStaticName()            { return x; } /*Purely for debugging purposes*/
+#define COMPONENT_NAME(x)  virtual std::string GetName() const override { return x; }
+                           
+
+
+
 class Component
 {
 public:
-   Component() {}
+   Component() : m_pEntityOwner(nullptr) {}
    virtual ~Component() {}
 
    //Callbacks?
    virtual void OnInitialise() {}
 
-   virtual void PreUpdate(double deltaTime) {}  //All the components preupdate gets called before the postupdate
+   virtual void OnPreUpdate(double deltaTime) {}  //All the components preupdate gets called before the postupdate
    virtual void OnUpdate(double deltaTime) {}   //in seconds
    
    virtual void OnRender() {}
@@ -56,5 +73,6 @@ public:
 
 protected:
    Entity* m_pEntityOwner;
+   //To do: add a bool isEnabled
 };
 

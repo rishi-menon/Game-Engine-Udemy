@@ -14,6 +14,7 @@ SpriteComponent::SpriteComponent(AssetID id) :
    m_rectSource {0, 0, 0, 0},
    m_rectDestination {0, 0, 0, 0},
    m_pPartialTransformComponent(nullptr),
+   m_TransformComponentType (ComponentType::None),
    m_dRotationDeg (0.0)
 {
    SetTexture(id);
@@ -31,11 +32,22 @@ void SpriteComponent::SetTexture(AssetID id)
 void SpriteComponent::OnInitialise()
 {
    ASSERT(m_pEntityOwner); //VERY bad if this fails
-   m_pPartialTransformComponent = m_pEntityOwner->GetComponent<TransformPartialComponent>();
+   
+   ComponentsMap map;
+   if (m_pEntityOwner->GetComponentsGeneric(GenericComponent::TransformPartial, map))
+   {
+      ASSERT(map.size() == 1);
+      m_TransformComponentType = map.begin()->first;;
+      ASSERT(map.begin()->second->size());
+      m_pPartialTransformComponent = static_cast<TransformPartialComponent*>(map.begin()->second->at(0));
+   }
+   else
+   {
+      ASSERT(false);
+   }
+   
    ASSERT(m_pPartialTransformComponent);   //this should exist
-   m_TransformType = m_pPartialTransformComponent->GetSubType();
-
-   ASSERT(m_pTexture);
+   ASSERT(m_pTexture && m_pTexture->GetTexture());
    m_rectDefault.x = 0;
    m_rectDefault.y = 0;
    m_rectDefault.w = m_pTexture->GetWidth();
@@ -52,13 +64,17 @@ void SpriteComponent::OnUpdate(double deltaTime)
 }
 void SpriteComponent::OnRender()
 {
-   if (m_TransformType == ComponentSubType::TransformWorld)
+   if (m_TransformComponentType == ComponentType::Transform)
    {
       Game::s_camera.WorldTransformToScreenRect(*static_cast<TransformComponent*>(m_pPartialTransformComponent), m_rectDestination);
    }
-   else if (m_TransformType == ComponentSubType::TransformUI)
+   else if (m_TransformComponentType == ComponentType::TransformUI)
    {
       Game::s_camera.WorldTransformToScreenRect(*static_cast<TransformUIComponent*>(m_pPartialTransformComponent), m_rectDestination);
+   }
+   else
+   {
+      return;
    }
    TextureManager::DrawTexture(m_pTexture->GetTexture(), m_rectSource, m_rectDestination, m_dRotationDeg, m_SpriteFlip);
 }

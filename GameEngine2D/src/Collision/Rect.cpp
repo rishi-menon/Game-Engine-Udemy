@@ -21,4 +21,8 @@ namespace Engine {
       h = topLeftY - topRightY + 1;
       ASSERT(w > 0 && h > 0);
    }
+   void Rect::Scale(const float width, const float height)
+   {
+      SetCenter(GetCenterX(), GetCenterY(), w * width, h * height);
+   }
 }

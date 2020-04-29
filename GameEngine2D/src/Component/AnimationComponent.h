@@ -6,9 +6,9 @@
 struct AnimationLayout
 {
    std::vector<int> m_indices;
-   
    // this controls the number of frames per second... value of 2 means that 2 animation frames will be displayed in a second
    float m_animationSpeed;
+
    AnimationLayout(float speed = 0.0f);
    AnimationLayout(AnimationLayout&& layout);
 
@@ -38,7 +38,7 @@ class AnimationComponent : public Component
 public:
    COMPONENT_TYPE(Animation)
    COMPONENT_NAME("Animation")
-   AnimationComponent();
+   AnimationComponent(int x, int y);
    ~AnimationComponent();
 
    //overrides

@@ -17,15 +17,18 @@ AnimationLayout::AnimationLayout(AnimationLayout&& layout) :
    m_indices = std::move(layout.m_indices);
 }
 
-AnimationComponent::AnimationComponent() :
+AnimationComponent::AnimationComponent(int x, int y) :
    m_pSpriteComponent (nullptr),
    m_pCurrentAnimationLayout(nullptr),
-   m_nGridSizeX (0),
-   m_nGridSizeY (0),
+   m_nGridSizeX (x),
+   m_nGridSizeY (y),
    m_dRotationSpeed(0.0),
    m_dAnimationIndex(0.0),
    m_bIsActive(false)
 {
+   //add a default animation (does not perform any animation)
+   AddAnimation(AnimationID::None, AnimationLayout({ 0 }, 0));
+   SetCurrentAnimation(AnimationID::None);
 }
 AnimationComponent::~AnimationComponent()
 {
@@ -34,15 +37,10 @@ AnimationComponent::~AnimationComponent()
 void AnimationComponent::OnInitialise()
 {
    m_pSpriteComponent = m_pEntityOwner->GetComponent<SpriteComponent>();
-   ASSERT(m_pSpriteComponent);
-   
-   //default is the entire image... User would usually call SetGridCoords right after initialise
-   m_nGridSizeX = m_pSpriteComponent->GetWidth();
-   m_nGridSizeY = m_pSpriteComponent->GetHeight();
 
-   //add a default animation (does not perform any animation)
-   AddAnimation(AnimationID::None, AnimationLayout({ 0 }, 0));
-   SetCurrentAnimation(AnimationID::None);
+   //default is the entire image... User would usually call SetGridCoords right after initialise
+   //m_nGridSizeX = m_pSpriteComponent->GetWidth();
+   //m_nGridSizeY = m_pSpriteComponent->GetHeight();
 }
 
 //in seconds
@@ -126,7 +124,7 @@ void AnimationComponent::SetCurrentAnimation(AnimationID id)
 
       ASSERT(it->first == id);
       m_pCurrentAnimationLayout = &it->second;
-      if (id == AnimationID::None)
+      if (id == AnimationID::None && m_pSpriteComponent)
       {
          //Reset the animation...
          m_pSpriteComponent->ResetSourceRect();

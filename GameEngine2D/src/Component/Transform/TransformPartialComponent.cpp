@@ -11,3 +11,14 @@ TransformPartialComponent::~TransformPartialComponent()
 {
 
 }
+
+void TransformPartialComponent::GetRect(Engine::Rect& rect) const
+{
+   rect.SetCenter(m_vPosition.x, m_vPosition.y, m_vScale.x, m_vScale.y);
+}
+Engine::Rect TransformPartialComponent::GetRect() const
+{
+   Engine::Rect rect;
+   GetRect(rect);
+   return rect;
+}

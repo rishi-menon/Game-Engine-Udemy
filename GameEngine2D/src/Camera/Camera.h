@@ -2,7 +2,7 @@
 
 #include <SDL.h>
 #include <glm/glm.hpp>
-#include "Rect.h"
+#include "Collision/Rect.h"
 
 class TransformComponent;
 class TransformUIComponent;
@@ -18,7 +18,11 @@ public:
    ////////////                conversion functions                        ////////////
    glm::vec2 WorldPointToScreenPoint(const glm::vec2& worldPoint) const;
    glm::vec2 WorldPointToScreenPoint(float worldX, float worldY) const;
-
+   glm::vec2 ScreenPointToWorldPoint(const glm::vec2& screenPoint) const;
+   glm::vec2 ScreenPointToWorldPoint(int screenX, int screenY) const;
+   void WorldRectToScreenRect(const Engine::Rect& worldRect, SDL_Rect& outRect) const;
+   SDL_Rect WorldRectToScreenRect(const Engine::Rect& worldRect) const;
+   
    void WorldTransformToScreenRect(const TransformComponent& transform, SDL_Rect& outRect) const;
    SDL_Rect WorldTransformToScreenRect(const TransformComponent& transform) const;
    void WorldTransformToScreenRect(const TransformUIComponent& transform, SDL_Rect& outRect) const;

@@ -65,7 +65,7 @@ project "GameEngine2D"
       "files:GameEngine2D/src/Log/**.cpp" 
       .. " or GameEngine2D/src/Component/Component.cpp"
       .. " or GameEngine2D/src/Entity/**.cpp"
-      .. " or GameEngine2D/src/Camera/Rect.cpp"
+      .. " or GameEngine2D/src/Collision/Rect.cpp"
       .. " or GameEngine2D/src/Common/MathHelper.cpp"
       .. " or GameEngine2D/src/Common/StringHelper.cpp"
    }

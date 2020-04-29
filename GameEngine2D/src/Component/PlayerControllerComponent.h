@@ -24,6 +24,8 @@ public:
    glm::vec2 m_vecVelocity;
 private:
    static int GetKeyCodeFromString(const std::string& st);
+   static int GetScanCodeFromString(const std::string& string);
+
 
 private:
    TransformComponent* m_pTransformComponent;

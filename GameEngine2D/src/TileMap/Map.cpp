@@ -1,4 +1,3 @@
-
 #include "pch.h"
 #include "Map.h"
 
@@ -14,7 +13,7 @@ static const float fTileSizeWorldUnits = 2.0f;
 
 Map::Map() :
    m_nTileTextureSize(0),
-   m_rectTiles {0,0,0,0}
+   m_rectTiles ()
 {
 }
 Map::~Map()
@@ -142,7 +141,9 @@ void Map::AddTile(EntityManager& manager, AssetID id, float posx, float posy, in
 
    const int temp = 1;
    entity.AddComponent<TransformComponent>(glm::vec2{ posx, posy}, glm::vec2{ 0,0 }, glm::vec2{ fTileSizeWorldUnits, fTileSizeWorldUnits });
-   SpriteComponent& comp = entity.AddComponent<SpriteComponent>(id);
+   SpriteComponent& comp = *entity.AddComponent<SpriteComponent>(id);
+
+   entity.OnInitialise();
 
    SDL_Rect rect;
    rect.x = sourceX * m_nTileTextureSize;
