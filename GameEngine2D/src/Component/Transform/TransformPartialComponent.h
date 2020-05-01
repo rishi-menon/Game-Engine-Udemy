@@ -13,8 +13,13 @@ public:
    void GetRect(Engine::Rect& rect) const;
    Engine::Rect GetRect() const;
 
-//To do: change this to protected ? Currently all the other components just openly access and set its value 
-public:
+   void Translate(float dx, float dy);
+   void Translate(const glm::vec2& offset);
+   
+   const glm::vec2& GetPosition() const { return m_vPosition; }
+   const glm::vec2& GetScale() const { return m_vScale; }
+   
+private:
    glm::vec2 m_vPosition;
    //this is the total width and height of the component... so position (0,0) and scale of (2,2) would mean it ranges position ranges from (-1,1) (For world transform)
    glm::vec2 m_vScale;  

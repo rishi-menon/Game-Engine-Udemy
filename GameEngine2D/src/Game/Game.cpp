@@ -45,8 +45,8 @@ void Game::MoveCamera(double deltaTime)
    //Value should be between 0 and 1... low values mean a greater lag
    const float fCameraSpeed = 1.3*100.0f;
    float fCameraPercent = static_cast<float>(MathR::Clamp01(fCameraSpeed * deltaTime));
-   float fCameraDeltaX = static_cast<float>(MathR::Lerp(0.0f, comp->m_vPosition.x - s_camera.GetPositionX(), fCameraPercent));
-   float fCameraDeltaY = static_cast<float>(MathR::Lerp(0.0f, comp->m_vPosition.y - s_camera.GetPositionY(), fCameraPercent));
+   float fCameraDeltaX = static_cast<float>(MathR::Lerp(0.0f, comp->GetPosition().x - s_camera.GetPositionX(), fCameraPercent));
+   float fCameraDeltaY = static_cast<float>(MathR::Lerp(0.0f, comp->GetPosition().y - s_camera.GetPositionY(), fCameraPercent));
 
    {
       float fMinDeltaX = m_map.GetRectMap().GetLeft() - s_camera.GetRectView().GetLeft(); //this is the maximum you can translate toward the left
@@ -244,10 +244,7 @@ void Game::DoUpdate(double deltaTime)
    m_map.OnUpdate(deltaTime);
    g_EntityManager.OnUpdate(deltaTime);
 
-   BoxColliderComponent* pBoxCollider = m_pentityCameraFollow->GetComponent<BoxColliderComponent>();
-   ASSERT(pBoxCollider);
-   Engine::CollisionManager::AddToCollisionList(pBoxCollider);
-
+   //Check for collisions after all the objects have moved... (Currently tilemaps will not be checked as they are in a seperate EntityManager (inside map)... If you want to check them then include that entity manager in the vector of entity managers)
    Engine::CollisionManager::CheckCollisionsList(g_vEntityManagers);
    
    //move the camera after all the game objects have updated their positions
@@ -261,38 +258,7 @@ void Game::OnRender()
    SDL_SetRenderDrawColor(s_pRenderer, 20, 20, 20, 255);
    SDL_RenderClear(s_pRenderer);
 
-   m_map.OnRender();
-
-   ////////////////////////////////// delete later
-   int x, y;
-   SDL_SetRenderDrawColor(s_pRenderer, 255, 20, 20, 255);
-   Engine::Input::GetMousePos(x, y);
-   glm::vec2 point = s_camera.ScreenPointToWorldPoint(x, y);
-   //LOGW("Mouse Position: x=%.2f, y=%.2f", point.x, point.y);
-
-   //TransformComponent component = *m_pentityCameraFollow->GetComponent<TransformComponent>();
-   //Engine::Rect rectA, rectB;
-   //rectA.SetCenter(component.m_vPosition.x, component.m_vPosition.y, component.m_vScale.x, component.m_vScale.y);
-   //rectB.SetCenter(point.x, point.y, 2, 2);
-
-   //SDL_Rect rect = s_camera.WorldRectToScreenRect(rectB);
-   //SDL_Rect rect2 = s_camera.WorldRectToScreenRect(rectA);
-   //SDL_RenderDrawRect(s_pRenderer, &rect);
-   //SDL_RenderDrawRect(s_pRenderer, &rect2);
-
-   ////LOGW("%.2f, %.2f, %.2f, %.2f", rect.x, rect.y, rect.w, rect.h);
-
-   //if (Engine::Collision::CheckCollisionRectRect(rectA, rectB))
-   //{
-   //   LOGW("Collision...");
-   //}
-   //else
-   //{
-   //   LOGW("\n");
-   //}
-
-   //const Engine::Rect& rect = s_camera.GetRectView();
-   //LOGW("%.2f, %.2f, %.2f, %.2f", rect.GetLeft(), rect.GetRight(), rect.GetTop(), rect.GetBottom());
+   m_map.OnRender();   
    
    if (g_EntityManager.IsEmpty())
    {

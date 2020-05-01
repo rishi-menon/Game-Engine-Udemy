@@ -131,9 +131,9 @@ SDL_Rect Camera::WorldRectToScreenRect(const Engine::Rect& worldRect) const
 void Camera::WorldTransformToScreenRect (const TransformComponent& transform, SDL_Rect& outRect) const
 {
    //converts a transform component to a rect viewport rect
-   glm::vec2 screenPoint = WorldPointToScreenPoint(transform.m_vPosition);
-   float pixelWidth = transform.m_vScale.x * m_fPixelsPerUnit;
-   float pixelHeight = transform.m_vScale.y * m_fPixelsPerUnit;
+   glm::vec2 screenPoint = WorldPointToScreenPoint(transform.GetPosition());
+   float pixelWidth = transform.GetScale().x * m_fPixelsPerUnit;
+   float pixelHeight = transform.GetScale().y * m_fPixelsPerUnit;
    
    float posX = screenPoint.x - pixelWidth / 2;
    float posY = screenPoint.y - pixelHeight / 2;
@@ -154,9 +154,9 @@ SDL_Rect Camera::WorldTransformToScreenRect(const TransformComponent& transform)
 
 void Camera::WorldTransformToScreenRect(const TransformUIComponent& transform, SDL_Rect& outRect) const
 {
-   const glm::vec2& vecScale = transform.m_vScale;
-   outRect.x = static_cast<int>((transform.m_vPosition.x * m_nScreenWidth - vecScale.x / 2.0f));
-   outRect.y = static_cast<int>((transform.m_vPosition.y * m_nScreenWidth - vecScale.y / 2.0f));
+   const glm::vec2& vecScale = transform.GetScale();
+   outRect.x = static_cast<int>((transform.GetPosition().x * m_nScreenWidth - vecScale.x / 2.0f));
+   outRect.y = static_cast<int>((transform.GetPosition().y * m_nScreenWidth - vecScale.y / 2.0f));
    outRect.w = static_cast<int>(vecScale.x);
    outRect.h = static_cast<int>(vecScale.y);
 }

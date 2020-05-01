@@ -183,7 +183,7 @@ namespace
       }
    }
 
-   static std::list<BoxColliderComponent*> listCollidersToCheck;
+   static std::unordered_map<BoxColliderComponent*, bool> umapCollidersToCheck(1000);   //reserve place for 1000 colliders
    static CollisionInfoManager collisionsManager;
 
 }
@@ -198,7 +198,11 @@ namespace Engine::CollisionManager
    //Add to list
    extern void AddToCollisionList(BoxColliderComponent* pBoxCollider)
    {
-      listCollidersToCheck.push_back(pBoxCollider);
+      std::unordered_map<BoxColliderComponent*, bool>::iterator it = umapCollidersToCheck.find(pBoxCollider);
+      if (it == umapCollidersToCheck.end())
+      {
+         umapCollidersToCheck.emplace(pBoxCollider, true);
+      }
    }
 
    extern void CheckCollisionsList(const std::vector<EntityManager*>& vEntityManagers)
@@ -212,10 +216,14 @@ namespace Engine::CollisionManager
 
       collisionsManager.UpdateAllCollisionsInfo();
 
-      while (listCollidersToCheck.size())
+      for (auto& pair : umapCollidersToCheck)
       {
-         BoxColliderComponent* pColliderA = listCollidersToCheck.front();
-         listCollidersToCheck.pop_front();
+         if (!pair.second)
+         {
+            //pair.second is the bool
+            continue;
+         }
+         BoxColliderComponent* pColliderA = pair.first;
          ASSERT(pColliderA);
 
          std::list<BoxColliderComponent*> listColliders;
@@ -240,6 +248,7 @@ namespace Engine::CollisionManager
             pInfo->bCollisionCurrFrame = true;
          }
       }
+      umapCollidersToCheck.clear();
 
       collisionsManager.SendOnCollisionEvents();
 

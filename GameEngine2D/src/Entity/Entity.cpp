@@ -90,7 +90,8 @@ void Entity::OnUpdate(double deltaTime)
 void Entity::OnRender()
 {
    //To do: need to change this way of specifying order...
-   for (int i = 0; i < arrayRendererOrder.size(); i++)
+   for (std::size_t
+      i = 0; i < arrayRendererOrder.size(); i++)
    {
       std::unordered_map<ComponentType, Components>::iterator it = m_umapComponentType.find(arrayRendererOrder.at(i));
       if (it != m_umapComponentType.end())

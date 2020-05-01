@@ -19,8 +19,7 @@ void TransformComponent::OnInitialise()
 
 void TransformComponent::OnUpdate(double deltaTime)
 {
-   m_vPosition.x += static_cast<float>(m_vVeloctiy.x * deltaTime);
-   m_vPosition.y += static_cast<float>(m_vVeloctiy.y * deltaTime);
+   Translate((float)(m_vVeloctiy.x * deltaTime), (float)(m_vVeloctiy.y * deltaTime));
 }
 
 void TransformComponent::OnRender()
