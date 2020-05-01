@@ -3,6 +3,7 @@
 #include "Constants.h"
 
 #include "Entity/EntityManager.h"
+#include "Collision/CollisionManager.h"
 
 //Components
 #include "Component/Transform/TransformComponent.h"
@@ -12,12 +13,16 @@
 #include "Component/PlayerControllerComponent.h"
 #include "Component/BoxColliderComponent.h"
 
+#include <lua/include/sol.hpp>
+
 EntityManager g_EntityManager;   //To do: temporary global EntityManager... Move to static class member maybe ?
 
 SDL_Renderer* Game::s_pRenderer = 0;
 AssetManager* Game::s_pAssetManager = new AssetManager ();
 SDL_Event     Game::s_event;
 Camera        Game::s_camera;
+
+std::vector<EntityManager*> g_vEntityManagers;
 
 Game::Game() :
    m_bIsRunning (false),
@@ -72,8 +77,9 @@ void Game::LoadLevel(int nLevelNumber)
    //Create Entitys and add components
    {
       Entity& entity = g_EntityManager.AddEntity("Tank");
-      entity.AddComponent<TransformComponent>(glm::vec2{ 0,0 }, glm::vec2{ 0, -1 }, glm::vec2{ 1, 1 });
+      entity.AddComponent<TransformComponent>(glm::vec2{ 0,0 }, glm::vec2{ -0.5, 0 }, glm::vec2{ 1, 1 });
       entity.AddComponent<SpriteComponent>(AssetID::Sprite_Tank);
+      entity.AddComponent<BoxColliderComponent>(glm::vec2{ 0, 0 }, glm::vec2{ 1,1 }, AssetID::Sprite_Collision_Box);
       entity.OnInitialise();
    }
    {
@@ -160,6 +166,11 @@ void Game::Initialise(const unsigned int unWidth, const unsigned int unHeight)
    //const int a = 32
    s_camera.SetViewRect(0, 0, 40);
 
+   //Set up the list of entityManagers (Currently not adding map entity manager as it is not required for the sake of collisions.
+   g_vEntityManagers.reserve(5);
+   g_vEntityManagers.push_back(&g_EntityManager);
+
+
    LoadLevel(0);
 
    m_bIsRunning = true;
@@ -232,6 +243,12 @@ void Game::DoUpdate(double deltaTime)
 
    m_map.OnUpdate(deltaTime);
    g_EntityManager.OnUpdate(deltaTime);
+
+   BoxColliderComponent* pBoxCollider = m_pentityCameraFollow->GetComponent<BoxColliderComponent>();
+   ASSERT(pBoxCollider);
+   Engine::CollisionManager::AddToCollisionList(pBoxCollider);
+
+   Engine::CollisionManager::CheckCollisionsList(g_vEntityManagers);
    
    //move the camera after all the game objects have updated their positions
    if (m_pentityCameraFollow)

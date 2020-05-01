@@ -30,3 +30,16 @@ void TransformComponent::OnRender()
    //SDL_SetRenderDrawColor(Game::s_pRenderer, 255, 10, 10, 255);
    //SDL_RenderFillRect(Game::s_pRenderer, &rect);
 }
+
+void TransformComponent::OnCollisionEnter(BoxColliderComponent& otherCollider)
+{
+   LOGW("\n\nCollision START \n\n");
+}
+void TransformComponent::OnCollision(BoxColliderComponent& otherCollider)
+{
+   LOGW("Collision");
+}
+void TransformComponent::OnCollisionExit(BoxColliderComponent& otherCollider)
+{
+   LOGW("\n\nCollision END\n\n");
+}

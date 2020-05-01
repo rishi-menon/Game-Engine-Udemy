@@ -71,6 +71,11 @@ public:
    inline Entity* GetEntityOwner() const { return m_pEntityOwner; }
    void SetEntityOwner(Entity* pEntity) { m_pEntityOwner = pEntity; }
 
+   //Collisions
+   virtual void OnCollisionEnter(BoxColliderComponent& otherCollider) {}
+   virtual void OnCollision(BoxColliderComponent& otherCollider)      {}
+   virtual void OnCollisionExit(BoxColliderComponent& otherCollider)  {}
+
 protected:
    Entity* m_pEntityOwner;
    //To do: add a bool isEnabled

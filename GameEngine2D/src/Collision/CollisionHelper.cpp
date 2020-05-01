@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "CollisionHelper.h"
+#include "Component/BoxColliderComponent.h"
+#include "Entity/EntityManager.h"
 
-namespace Engine::Collision
+namespace Engine::CollisionHelper
 {
    //////////////////////////////////////////////////////////////////////////
    //                         Rect and Point                               //
@@ -24,6 +26,27 @@ namespace Engine::Collision
                rectA.GetTop() < rectB.GetBottom() ||
                rectB.GetTop() < rectA.GetBottom());
               
+   }
+
+   extern void CheckAllCollisionBoxCollider(const BoxColliderComponent& collider, const EntityManager& manager, std::list<BoxColliderComponent*>& outListColliders)
+   {
+      ASSERT(&collider);
+      Engine::Rect rectCollider;
+      collider.GetRect(rectCollider);
+
+      const std::vector<Entity*>& vEntities = manager.GetEntitiesVector();
+      for (Entity* entity : vEntities)
+      {
+         BoxColliderComponent* pColliderB = entity->GetComponent<BoxColliderComponent>();
+         if (pColliderB && pColliderB != &collider)
+         {
+            if (CheckCollisionRectRect(rectCollider, pColliderB->GetRect()))
+            {
+               //Collision took place
+               outListColliders.push_back(pColliderB);
+            }
+         }
+      }
    }
 
 }

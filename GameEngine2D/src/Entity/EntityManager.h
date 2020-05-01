@@ -26,6 +26,7 @@ public:
    inline bool IsEmpty() const { return GetCount() == 0; }
 
    inline std::vector<Entity*>& GetEntitiesVector() { return m_vEntities; }
+   inline const std::vector<Entity*>& GetEntitiesVector() const { return m_vEntities; }
    
    EntityManager& operator = (EntityManager&& other);
 

@@ -108,8 +108,12 @@ public:
    //Use this function if you want to get a components of different types
    bool GetComponentsGeneric(const std::vector<ComponentType>& vecComponents, ComponentsMap& map);
 
+   //To do: implement functionality using this
    inline bool GetIsActive() const { return m_bIsActive; }
 
+   void OnCollisionEnter(BoxColliderComponent& otherCollider);
+   void OnCollision(BoxColliderComponent& otherCollider);
+   void OnCollisionExit(BoxColliderComponent& otherCollider);
 
    inline std::unordered_map<ComponentType, Components>& GetComponentsMap() { return m_umapComponentType; }
 

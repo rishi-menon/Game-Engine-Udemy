@@ -1,3 +1,10 @@
+
+premake.override(premake.tools.msc, "getLibraryExtensions", function(oldfn)
+  local extensions = oldfn()
+  extensions["a"] = true
+  return extensions
+end)
+
 workspace "GameEngine2D"
    --architecture "x64"
    
@@ -14,14 +21,14 @@ workspace "GameEngine2D"
    }
 
  --Useful Paths (variables)
-outputDir = "%{cfg.buildcfg}-%{cfg.architecture}-%{cfg.system}"
+outputDir = "%{cfg.buildcfg} (%{cfg.system} - %{cfg.architecture})"
 
 project "GameEngine2D"
    location "GameEngine2D"
    kind "ConsoleApp"
    language "C++"
 
-   targetdir  ("bin/" .. outputDir .. "/%{prj.name}")
+   targetdir  ("bin/" .. outputDir)
    objdir ("bin-int/" .. outputDir .. "/%{prj.name}")
 
    files
@@ -33,14 +40,15 @@ project "GameEngine2D"
    includedirs
    {
       "%{prj.name}/src",
-      "%{prj.name}/lib",
-      "%{prj.name}/lib/SDL2/include"
+      "%{prj.name}/vendor",
+      "%{prj.name}/vendor/SDL2/include"
 
    }
 
    libdirs
    {
-      "%{prj.name}/lib/SDL2/lib/%{cfg.architecture}"
+      "%{prj.name}/vendor/SDL2/lib/%{cfg.architecture}",
+      "%{prj.name}/vendor/lua"
    }
 
    links
@@ -50,7 +58,10 @@ project "GameEngine2D"
       "SDL2_mixer",
       "SDL2_ttf",
       "SDL2main",
-      "SDL2test"
+      "SDL2test",
+
+      --lua
+      "liblua53.a"
    }
 
    --Pre compiled Header
