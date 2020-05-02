@@ -36,7 +36,7 @@ void TransformComponent::OnCollisionEnter(BoxColliderComponent& otherCollider)
 }
 void TransformComponent::OnCollision(BoxColliderComponent& otherCollider)
 {
-   LOGW("Collision");
+
 }
 void TransformComponent::OnCollisionExit(BoxColliderComponent& otherCollider)
 {

@@ -9,7 +9,7 @@ public:
    COMPONENT_TYPE(BoxCollider);
    COMPONENT_NAME("Box Collider");
 
-   BoxColliderComponent(const glm::vec2& offset = glm::vec2(0,0), const glm::vec2& scale = glm::vec2(1,1), AssetID id = AssetID::None);
+   BoxColliderComponent(const glm::vec2& offset = glm::vec2(0,0), const glm::vec2& scale = glm::vec2(1,1), const std::string& id = "");
    ~BoxColliderComponent();
 
    void OnInitialise() override;
@@ -27,7 +27,6 @@ private:
    glm::vec2 m_vOffset;
    glm::vec2 m_vScale;
 
-   AssetID m_AssetId;
    Engine::Texture* m_pTexture;
    SDL_Rect m_rectSource;
 

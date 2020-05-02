@@ -89,8 +89,8 @@ glm::vec2 Camera::ScreenPointToWorldPoint(int screenX, int screenY) const
    //top edge of the screen will be 0.0 and the bottom edge will be 1.0
    double screenPercentY = MathR::GetPercent((double)screenY, 0.0, (double)m_nScreenHeight);
 
-   worldPoint.x = MathR::Lerp(m_rectView.GetLeft(), m_rectView.GetRight(), screenPercentX);
-   worldPoint.y = MathR::Lerp(m_rectView.GetTop(), m_rectView.GetBottom(), screenPercentY);
+   worldPoint.x = static_cast<float>(MathR::Lerp(m_rectView.GetLeft(), m_rectView.GetRight(), screenPercentX));          
+   worldPoint.y = static_cast<float>(MathR::Lerp(m_rectView.GetTop(), m_rectView.GetBottom(), screenPercentY));
    return worldPoint;
 }
 glm::vec2 Camera::ScreenPointToWorldPoint(const glm::vec2& screenPoint) const

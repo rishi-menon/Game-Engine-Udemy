@@ -15,14 +15,14 @@ class SpriteComponent : public Component
 public:
    COMPONENT_TYPE(Sprite);
    COMPONENT_NAME("Sprite");
-   SpriteComponent(AssetID id);
+   SpriteComponent(const std::string& id);
    ~SpriteComponent();
    //overrides
    virtual void OnInitialise() override;
    virtual void OnUpdate(double deltaTime) override;
    virtual void OnRender() override;
 
-   void SetTexture(AssetID id);
+   void SetTexture(const std::string& id);
    void SetSourceRect(const SDL_Rect& rect) { m_rectSource = rect; }
    void ResetSourceRect() { m_rectSource = m_rectDefault; }
 

@@ -22,7 +22,7 @@ Map::~Map()
 }
 
 
-bool Map::LoadMap(const char* const mapPath, AssetID mapAssetID, int tileSize, float StartPosX, float StartPosY)
+bool Map::LoadMap(const char* const mapPath, const std::string& mapAssetID, int tileSize, float StartPosX, float StartPosY)
 {
    int nOldTileSize = m_nTileTextureSize;
    m_nTileTextureSize = tileSize;
@@ -71,7 +71,7 @@ bool Map::LoadMap(const char* const mapPath, AssetID mapAssetID, int tileSize, f
 }
 
 //PosX, PosY are the start coordinates of creating the map... If the map succeds then it stores the x and y position of the last tile
-bool Map::LoadTiles(EntityManager& manager, std::ifstream& file, AssetID id, float& PosX, float& PosY)
+bool Map::LoadTiles(EntityManager& manager, std::ifstream& file, const std::string& id, float& PosX, float& PosY)
 { 
    float currentPosX = PosX, currentPosY = PosY;
    //if two consecutive endline characters are encountered then break
@@ -127,7 +127,7 @@ bool Map::LoadTiles(EntityManager& manager, std::ifstream& file, AssetID id, flo
    return false;
 }
 
-void Map::AddTile(EntityManager& manager, AssetID id, float posx, float posy, int sourceX, int sourceY)
+void Map::AddTile(EntityManager& manager, const std::string& id, float posx, float posy, int sourceX, int sourceY)
 {
 #if defined (WINDOWS) && defined (DEBUG)
    char name[20];

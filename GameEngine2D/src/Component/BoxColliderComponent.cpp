@@ -5,13 +5,12 @@
 #include "Entity/Entity.h"
 #include "Game/Game.h"
 
-BoxColliderComponent::BoxColliderComponent(const glm::vec2& offset, const glm::vec2& scale, AssetID id) :
+BoxColliderComponent::BoxColliderComponent(const glm::vec2& offset, const glm::vec2& scale, const std::string& id) :
    m_vOffset (offset), m_vScale (scale),
-   m_AssetId (id),
    m_pTexture (nullptr),
    m_bDrawTexture (true)   //To do: change this to false eventually
 {
-   if (id != AssetID::None)
+   if (!id.empty())
    {
       m_pTexture = Game::s_pAssetManager->GetTexture(id);
       ASSERT(m_pTexture && m_pTexture->GetTexture());
@@ -37,7 +36,7 @@ void BoxColliderComponent::OnUpdate(double deltaTime)
 }
 void BoxColliderComponent::OnRender()
 {
-   if (m_AssetId != AssetID::None)
+   if (m_pTexture && m_pTexture->GetTexture())
    {
       DrawCollisionBox();
    }

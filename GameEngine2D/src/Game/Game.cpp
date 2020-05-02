@@ -65,21 +65,27 @@ void Game::MoveCamera(double deltaTime)
 void Game::LoadLevel(int nLevelNumber)
 {
    //Create assets
-   s_pAssetManager->AddTexture(AssetID::Sprite_Tank,         "assets\\images\\tank-big-right.png");
-   s_pAssetManager->AddTexture(AssetID::SpriteSheet_Chopper, "assets\\images\\chopper-spritesheet.png");
-   s_pAssetManager->AddTexture(AssetID::SpriteSheet_Radar,   "assets\\images\\radar.png");
-   s_pAssetManager->AddTexture(AssetID::Sprite_Collision_Box,   "assets\\images\\collision-texture.png");
-   s_pAssetManager->AddTexture(AssetID::Tilemap_ocean,       "assets\\tilemaps\\jungle.png");
+   //s_pAssetManager->AddTexture(AssetID::Sprite_Tank,         "assets\\images\\tank-big-right.png");
+   //s_pAssetManager->AddTexture(AssetID::SpriteSheet_Chopper, "assets\\images\\chopper-spritesheet.png");
+   //s_pAssetManager->AddTexture(AssetID::SpriteSheet_Radar,   "assets\\images\\radar.png");
+   //s_pAssetManager->AddTexture(AssetID::Sprite_Collision_Box,   "assets\\images\\collision-texture.png");
+   //s_pAssetManager->AddTexture(AssetID::Tilemap_ocean,       "assets\\tilemaps\\jungle.png");
+
+   s_pAssetManager->AddTexture("tank-big-right",       "assets\\images\\tank-big-right.png");
+   s_pAssetManager->AddTexture("chopper-spritesheet",  "assets\\images\\chopper-spritesheet.png");
+   s_pAssetManager->AddTexture("radar",                "assets\\images\\radar.png");
+   s_pAssetManager->AddTexture("collision-texture",    "assets\\images\\collision-texture.png");
+   s_pAssetManager->AddTexture("jungle",               "assets\\tilemaps\\jungle.png");
 
    //Load Tilemap
-   m_map.LoadMap("assets/tilemaps/jungle.map", AssetID::Tilemap_ocean, 32, -15, 15);
+   m_map.LoadMap("assets/tilemaps/jungle.map", "jungle", 32, -15, 15);
 
    //Create Entitys and add components
    {
       Entity& entity = g_EntityManager.AddEntity("Tank");
       entity.AddComponent<TransformComponent>(glm::vec2{ 0,0 }, glm::vec2{ -0.5, 0 }, glm::vec2{ 1, 1 });
-      entity.AddComponent<SpriteComponent>(AssetID::Sprite_Tank);
-      entity.AddComponent<BoxColliderComponent>(glm::vec2{ 0, 0 }, glm::vec2{ 1,1 }, AssetID::Sprite_Collision_Box);
+      entity.AddComponent<SpriteComponent>("tank-big-right");
+      entity.AddComponent<BoxColliderComponent>(glm::vec2{ 0, 0 }, glm::vec2{ 1,1 }, "collision-texture");
       entity.OnInitialise();
    }
    {
@@ -87,10 +93,10 @@ void Game::LoadLevel(int nLevelNumber)
       m_pentityCameraFollow = &entity;
 
       entity.AddComponent<TransformComponent>(glm::vec2{ -14,0 }, glm::vec2{ 0, 0 }, glm::vec2{ 1, 1 });
-      entity.AddComponent<SpriteComponent>(AssetID::SpriteSheet_Chopper);
+      entity.AddComponent<SpriteComponent>("chopper-spritesheet");
       AnimationComponent& compAnimation =         *entity.AddComponent<AnimationComponent>(2, 4);
       PlayerControllerComponent& compController = *entity.AddComponent<PlayerControllerComponent>();
-      entity.AddComponent<BoxColliderComponent>(glm::vec2{ 0, 0 }, glm::vec2{ 1,1 }, AssetID::Sprite_Collision_Box);
+      entity.AddComponent<BoxColliderComponent>(glm::vec2{ 0, 0 }, glm::vec2{ 1,1 }, "collision-texture");
       entity.OnInitialise();
 
       const float fSpeed = 17; //animation frames per second
@@ -110,7 +116,7 @@ void Game::LoadLevel(int nLevelNumber)
       Entity& entity = g_EntityManager.AddEntity("Radar");
       const float dimension = 64.0f;
       entity.AddComponent<TransformUIComponent>(glm::vec2{ 0.95f, 0.05f }, glm::vec2{ dimension, dimension });
-      SpriteComponent& compSprite = *entity.AddComponent<SpriteComponent>(AssetID::SpriteSheet_Radar);
+      SpriteComponent& compSprite = *entity.AddComponent<SpriteComponent>("radar");
       AnimationComponent& compAnimation = *entity.AddComponent<AnimationComponent>(1, 1);
       entity.OnInitialise();
 

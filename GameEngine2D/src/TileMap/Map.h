@@ -10,7 +10,7 @@ public:
    Map();
    ~Map();
 
-   bool LoadMap(const char* const mapPath, AssetID mapAssetID, int tileSize, float StartPosX, float StartPosY);
+   bool LoadMap(const char* const mapPath, const std::string& mapAssetID, int tileSize, float StartPosX, float StartPosY);
    
    void OnUpdate(double deltaTime);
    void OnRender();
@@ -18,8 +18,8 @@ public:
 
    const Engine::Rect& GetRectMap() const { return m_rectTiles; }
 private:
-   void AddTile (EntityManager& manager, AssetID id, float posx, float posy, int sourceX, int sourceY);
-   bool LoadTiles(EntityManager& manager, std::ifstream& file, AssetID id, float& StartPosX, float& StartPosY);
+   void AddTile (EntityManager& manager, const std::string& id, float posx, float posy, int sourceX, int sourceY);
+   bool LoadTiles(EntityManager& manager, std::ifstream& file, const std::string& id, float& StartPosX, float& StartPosY);
 
 private:
    EntityManager m_managerTiles;

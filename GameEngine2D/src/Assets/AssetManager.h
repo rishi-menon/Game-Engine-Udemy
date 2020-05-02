@@ -2,33 +2,22 @@
 
 #include <unordered_map>
 #include "Texture.h"
+#include <string>
 
 class EntityManager;
 
-enum class AssetID : unsigned int
-{
-   None = 0,
-   Sprite_Tank,
-   Sprite_Collision_Box,
-
-   SpriteSheet_Chopper,
-   SpriteSheet_Radar,
-
-   Tilemap_ocean
-};
 
 class AssetManager
 {
 public:
-   AssetManager(/*EntityManager* pEntity*/);
+   AssetManager();
    ~AssetManager();
 
    void ClearData();
-   void AddTexture(AssetID assetID, const char* const path);
-   Engine::Texture* GetTexture(AssetID id) const;
+   void AddTexture(const std::string& key , const char* const path);
+   Engine::Texture* GetTexture(const std::string& key) const;
 
 
 private:
-   //EntityManager* m_pEntityManager;
-   std::unordered_map<AssetID, Engine::Texture*> m_umapTextures;
+   std::unordered_map<std::string, Engine::Texture*> m_umapTextures;
 };

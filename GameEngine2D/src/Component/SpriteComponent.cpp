@@ -8,7 +8,7 @@
 
 #include "TextureManager.h"
 
-SpriteComponent::SpriteComponent(AssetID id) :
+SpriteComponent::SpriteComponent(const std::string& id) :
    m_SpriteFlip (SDL_FLIP_NONE),
    m_pTexture (nullptr),
    m_rectSource {0, 0, 0, 0},
@@ -23,10 +23,10 @@ SpriteComponent::~SpriteComponent()
 {
 
 }
-void SpriteComponent::SetTexture(AssetID id)
+void SpriteComponent::SetTexture(const std::string& id)
 {
    m_pTexture = Game::s_pAssetManager->GetTexture(id);
-   ASSERT(m_pTexture);
+   ASSERT(m_pTexture && m_pTexture->GetTexture());
 }
 
 void SpriteComponent::OnInitialise()
