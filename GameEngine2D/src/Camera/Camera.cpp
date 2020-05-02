@@ -155,8 +155,8 @@ SDL_Rect Camera::WorldTransformToScreenRect(const TransformComponent& transform)
 void Camera::WorldTransformToScreenRect(const TransformUIComponent& transform, SDL_Rect& outRect) const
 {
    const glm::vec2& vecScale = transform.GetScale();
-   outRect.x = static_cast<int>((transform.GetPosition().x * m_nScreenWidth - vecScale.x / 2.0f));
-   outRect.y = static_cast<int>((transform.GetPosition().y * m_nScreenWidth - vecScale.y / 2.0f));
+   outRect.x = static_cast<int>((transform.GetPosition().x - vecScale.x / 2.0f));
+   outRect.y = static_cast<int>((transform.GetPosition().y - vecScale.y / 2.0f));
    outRect.w = static_cast<int>(vecScale.x);
    outRect.h = static_cast<int>(vecScale.y);
 }

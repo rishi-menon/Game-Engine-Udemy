@@ -12,6 +12,7 @@
 #include "Component/AnimationComponent.h"
 #include "Component/PlayerControllerComponent.h"
 #include "Component/BoxColliderComponent.h"
+#include "Component/UITextComponent.h"
 
 #include <lua/include/sol.hpp>
 
@@ -76,6 +77,7 @@ void Game::LoadLevel(int nLevelNumber)
    s_pAssetManager->AddTexture("radar",                "assets\\images\\radar.png");
    s_pAssetManager->AddTexture("collision-texture",    "assets\\images\\collision-texture.png");
    s_pAssetManager->AddTexture("jungle",               "assets\\tilemaps\\jungle.png");
+   s_pAssetManager->AddFont("charriot", "assets\\fonts\\charriot.ttf", 100);
 
    //Load Tilemap
    m_map.LoadMap("assets/tilemaps/jungle.map", "jungle", 32, -15, 15);
@@ -115,9 +117,11 @@ void Game::LoadLevel(int nLevelNumber)
    {
       Entity& entity = g_EntityManager.AddEntity("Radar");
       const float dimension = 64.0f;
-      entity.AddComponent<TransformUIComponent>(glm::vec2{ 0.95f, 0.05f }, glm::vec2{ dimension, dimension });
+      entity.AddComponent<TransformUIComponent>(glm::vec2{ 700, 20 }, glm::vec2{ dimension, dimension });
       SpriteComponent& compSprite = *entity.AddComponent<SpriteComponent>("radar");
       AnimationComponent& compAnimation = *entity.AddComponent<AnimationComponent>(1, 1);
+      UITextComponent* pCompUIText = entity.AddComponent<UITextComponent>("charriot", glm::vec2{ 0.0f, -5.0f }, glm::vec2{ 1.4, 1.0f });
+
       entity.OnInitialise();
 
       compSprite.m_rectDefault = SDL_Rect{ 0,0,64,64 };
@@ -126,6 +130,9 @@ void Game::LoadLevel(int nLevelNumber)
       const double dRotationSpeed = 150;   //in deg per sec
       //use the default animation.. aka AnimationType::None
       compAnimation.SetRotationSpeed(dRotationSpeed);
+
+      pCompUIText->SetText("Radar");
+      pCompUIText->SetColor(SDL_Color{ 0, 230, 100, 255 });
    }
    LOG_ALL_ENTITIES(g_EntityManager);
 
@@ -137,6 +144,14 @@ void Game::Initialise(const unsigned int unWidth, const unsigned int unHeight)
    if (SDL_Init(SDL_INIT_EVERYTHING))
    {
       LOGW("Error: Could not initialise SDL\n");
+      ASSERT(false);
+      return;
+   }
+
+   //returns 0 on successful init
+   if (TTF_Init())
+   {
+      LOGW("Error: Could not initialise TTF\n");
       ASSERT(false);
       return;
    }
@@ -252,7 +267,7 @@ void Game::DoUpdate(double deltaTime)
 
    //Check for collisions after all the objects have moved... (Currently tilemaps will not be checked as they are in a seperate EntityManager (inside map)... If you want to check them then include that entity manager in the vector of entity managers)
    Engine::CollisionManager::CheckCollisionsList(g_vEntityManagers);
-   
+
    //move the camera after all the game objects have updated their positions
    if (m_pentityCameraFollow)
    {

@@ -26,8 +26,9 @@ enum class ComponentType : unsigned int
    Sprite,
    Animation,   //for a spritesheet
    PlayerController,
-   BoxCollider
+   BoxCollider,
 
+   UIText
 };
 
 using Components = std::vector<Component*>;

@@ -5,10 +5,11 @@
 
 //To do: have a enum class to store the order in which the components are updated??
 
-static const int nRendererUpdateOrderCount = 2;
+static const int nRendererUpdateOrderCount = 3;
 static const std::array<ComponentType, nRendererUpdateOrderCount> arrayRendererOrder{
    ComponentType::Sprite,
-   ComponentType::BoxCollider
+   ComponentType::BoxCollider,
+   ComponentType::UIText
 };
 
 Entity::Entity(EntityManager& manager, const std::string& strName /*= ""*/) :

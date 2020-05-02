@@ -6,7 +6,7 @@
 #include "Game/Game.h"
 #include "Entity/Entity.h"
 
-#include "TextureManager.h"
+#include "Assets/TextureManager.h"
 
 SpriteComponent::SpriteComponent(const std::string& id) :
    m_SpriteFlip (SDL_FLIP_NONE),
