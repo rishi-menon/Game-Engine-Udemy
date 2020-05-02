@@ -60,9 +60,9 @@ void Game::MoveCamera(double deltaTime)
       fCameraDeltaY = static_cast<float>(MathR::Clamp(fCameraDeltaY, fMinDeltaY, fMaxDeltaY));
    }
    s_camera.TranslateViewRect(fCameraDeltaX, fCameraDeltaY);
-   //To do: clamp the camera's position so that it doesnt go out of the map
 }
 
+//To do: move the "radar" gameobject to a UI entity manager which gets rendered at the end
 void Game::LoadLevel(int nLevelNumber)
 {
    //Create assets
@@ -115,6 +115,7 @@ void Game::LoadLevel(int nLevelNumber)
       
    }
    {
+      
       Entity& entity = g_EntityManager.AddEntity("Radar");
       const float dimension = 64.0f;
       entity.AddComponent<TransformUIComponent>(glm::vec2{ 700, 20 }, glm::vec2{ dimension, dimension });
