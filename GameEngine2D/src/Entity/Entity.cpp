@@ -3,8 +3,7 @@
 #include "Log/Log.h"
 #include "Component/Transform/TransformComponent.h"
 
-//To do: have a enum class to store the order in which the components are updated??
-
+//To do: have a better way of setting the order of OnRender
 static const int nRendererUpdateOrderCount = 3;
 static const std::array<ComponentType, nRendererUpdateOrderCount> arrayRendererOrder{
    ComponentType::Sprite,
@@ -21,6 +20,7 @@ Entity::Entity(EntityManager& manager, const std::string& strName /*= ""*/) :
 }
 Entity::~Entity()
 {
+   OnDestroy();
    std::unordered_map<ComponentType, Components>::iterator itComponents = m_umapComponentType.begin();
 
    for (; itComponents != m_umapComponentType.end(); itComponents++)
@@ -49,6 +49,29 @@ bool Entity::GetComponentsGeneric(const std::vector<ComponentType>& vecComponent
    }
    return map.size();
 }
+Component* Entity::CopyComponent(Component* pComponent)
+{
+   ASSERT(pComponent);
+   ComponentType type = pComponent->GetType();
+   
+   switch (type)
+   {
+   case ComponentType::Animation:        return (Component*)AddComponent<AnimationComponent>(*(AnimationComponent*)pComponent);
+
+   case ComponentType::BoxCollider:      return (Component*)AddComponent<BoxColliderComponent>(*(BoxColliderComponent*)pComponent);
+
+   case ComponentType::PlayerController: return (Component*)AddComponent<PlayerControllerComponent>(*(PlayerControllerComponent*)pComponent);
+   case ComponentType::Sprite:              return (Component*)AddComponent<SpriteComponent>(*(SpriteComponent*)pComponent);
+   case ComponentType::UIText:              return (Component*)AddComponent<UITextComponent>(*(UITextComponent*)pComponent);
+   case ComponentType::Transform:           return (Component*)AddComponent<TransformComponent>(*(TransformComponent*)pComponent);
+   case ComponentType::TransformUI:         return (Component*)AddComponent<TransformUIComponent>(*(TransformUIComponent*)pComponent);
+   case ComponentType::EnemyMovementScript: return (Component*)AddComponent<EnemyMovementScript>(*(EnemyMovementScript*)pComponent);
+
+   default:
+      ASSERT(false);
+      return nullptr;
+   }
+}
 
 void Entity::OnInitialise()
 {
@@ -73,18 +96,26 @@ void Entity::OnUpdate(double deltaTime)
       ASSERT(itEntities->second.size());
       for (Component* pComponent : itEntities->second)
       {
-         pComponent->OnPreUpdate(deltaTime);
+         if (pComponent->GetEnabled())
+         {
+            pComponent->OnPreUpdate(deltaTime);
+         }
       }
    }
 
    itEntities = m_umapComponentType.begin();
+
+   void* temp = this;
 
    for (; itEntities != m_umapComponentType.end(); itEntities++)
    {
       ASSERT(itEntities->second.size());
       for (Component* pComponent : itEntities->second)
       {
-         pComponent->OnUpdate(deltaTime);
+         if (pComponent->GetEnabled())
+         {
+            pComponent->OnUpdate(deltaTime);
+         }
       }
    }
 }
@@ -100,7 +131,10 @@ void Entity::OnRender()
          ASSERT(it->second.size());
          for (Component* pComponent : it->second)
          {
-            pComponent->OnRender();
+            if (pComponent->GetEnabled())
+            {
+               pComponent->OnRender();
+            }
          }
       }
    }
@@ -114,10 +148,12 @@ void Entity::OnDestroy()
       ASSERT(itEntities->second.size());
       for (Component* pComponent : itEntities->second)
       {
+         ASSERT(pComponent);
+         //Only call OnDestroy if the component is enabled or always ??
          pComponent->OnDestroy();
+         
       }
    }
-
    m_bIsActive = false;
 }
 
@@ -128,7 +164,10 @@ void Entity::OnCollisionEnter(BoxColliderComponent& otherCollider)
       ASSERT(pair.second.size());
       for (Component* pComponent : pair.second)
       {
-         pComponent->OnCollisionEnter(otherCollider);
+         if (pComponent->GetEnabled())
+         {
+            pComponent->OnCollisionEnter(otherCollider);
+         }
       }
    }
 }
@@ -139,7 +178,10 @@ void Entity::OnCollision(BoxColliderComponent& otherCollider)
       ASSERT(pair.second.size());
       for (Component* pComponent : pair.second)
       {
-         pComponent->OnCollision(otherCollider);
+         if (pComponent->GetEnabled())
+         {
+            pComponent->OnCollision(otherCollider);
+         }
       }
    }
 }
@@ -150,7 +192,10 @@ void Entity::OnCollisionExit(BoxColliderComponent& otherCollider)
       ASSERT(pair.second.size());
       for (Component* pComponent : pair.second)
       {
-         pComponent->OnCollisionExit(otherCollider);
+         if (pComponent->GetEnabled())
+         {
+            pComponent->OnCollisionExit(otherCollider);
+         }
       }
    }
 }

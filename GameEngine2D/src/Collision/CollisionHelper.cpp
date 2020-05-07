@@ -30,20 +30,22 @@ namespace Engine::CollisionHelper
 
    extern void CheckAllCollisionBoxCollider(const BoxColliderComponent& collider, const EntityManager& manager, std::list<BoxColliderComponent*>& outListColliders)
    {
-      ASSERT(&collider);
       Engine::Rect rectCollider;
       collider.GetRect(rectCollider);
 
-      const std::vector<Entity*>& vEntities = manager.GetEntitiesVector();
-      for (Entity* entity : vEntities)
+      const std::list<Entity*>& listEntities = manager.GetEntitiesList();
+      for (Entity* entity : listEntities)
       {
-         BoxColliderComponent* pColliderB = entity->GetComponent<BoxColliderComponent>();
-         if (pColliderB && pColliderB != &collider)
+         if (entity->GetIsActive())
          {
-            if (CheckCollisionRectRect(rectCollider, pColliderB->GetRect()))
+            BoxColliderComponent* pColliderB = entity->GetComponent<BoxColliderComponent>();
+            if (pColliderB && pColliderB != &collider)
             {
-               //Collision took place
-               outListColliders.push_back(pColliderB);
+               if (CheckCollisionRectRect(rectCollider, pColliderB->GetRect()))
+               {
+                  //Collision took place
+                  outListColliders.push_back(pColliderB);
+               }
             }
          }
       }

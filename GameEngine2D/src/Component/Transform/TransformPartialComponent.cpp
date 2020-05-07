@@ -28,19 +28,33 @@ Engine::Rect TransformPartialComponent::GetRect() const
    return rect;
 }
 
-void TransformPartialComponent::Translate(float dx, float dy) 
-{ 
-   m_vPosition.x += dx;
-   m_vPosition.y += dy;
-
+inline void TransformPartialComponent::AddToCollisionListHelper ()
+{
    ASSERT(m_pEntityOwner);
    BoxColliderComponent* pBoxCollider = m_pEntityOwner->GetComponent<BoxColliderComponent>();
    if (pBoxCollider)
    {
       Engine::CollisionManager::AddToCollisionList(pBoxCollider);
    }
+}
+void TransformPartialComponent::Translate(float dx, float dy) 
+{ 
+   m_vPosition.x += dx;
+   m_vPosition.y += dy;
+   AddToCollisionListHelper();
 }                        
+void TransformPartialComponent::SetPosition(float x, float y)
+{
+   m_vPosition.x = x;
+   m_vPosition.y = y;
+   AddToCollisionListHelper();
+}
 void TransformPartialComponent::Translate(const glm::vec2& offset) 
 { 
    Translate (offset.x, offset.y); 
+}
+
+void TransformPartialComponent::SetPosition(const glm::vec2& pos)
+{
+   SetPosition(pos.x, pos.y);
 }

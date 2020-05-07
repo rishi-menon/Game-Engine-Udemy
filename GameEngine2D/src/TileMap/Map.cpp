@@ -161,7 +161,7 @@ void Map::OnRender()
 {
    m_managerTiles.OnRender();
 }
-void Map::OnDestroy()
-{
-   m_managerTiles.OnDestroy();
-}
+//void Map::OnDestroy()
+//{
+//   m_managerTiles.OnDestroy();
+//}

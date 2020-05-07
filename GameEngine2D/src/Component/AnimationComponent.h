@@ -18,7 +18,7 @@ struct AnimationLayout
    {
       m_indices = std::move(vector);
    }
-
+   AnimationLayout(const AnimationLayout& other);
 };
 
 enum class AnimationID : unsigned int
@@ -39,6 +39,7 @@ public:
    COMPONENT_TYPE(Animation)
    COMPONENT_NAME("Animation")
    AnimationComponent(int x, int y);
+   AnimationComponent(AnimationComponent& comp);
    ~AnimationComponent();
 
    //overrides

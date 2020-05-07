@@ -24,6 +24,7 @@ int main(int argc, char* argv[])
       pGame->OnProcessInput();
       pGame->OnUpdate();
       pGame->OnRender();
+      pGame->OnEndFrame();
    }
 
    pGame->OnDestroy();

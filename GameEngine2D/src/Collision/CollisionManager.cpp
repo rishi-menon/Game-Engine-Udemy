@@ -228,6 +228,7 @@ namespace Engine::CollisionManager
 
          std::list<BoxColliderComponent*> listColliders;
          
+         //You might have different entity managers... (Almost like different layers...) check for all collisions across all the layers
          for (EntityManager* pManager : vEntityManagers)
          {
             ASSERT(pManager);
@@ -238,7 +239,7 @@ namespace Engine::CollisionManager
          }
 
          for (BoxColliderComponent* pColliderB : listColliders)
-         {
+         { 
             CollisionInfo* pInfo = collisionsManager.GetCollisionInfo(pColliderA, pColliderB);
             if (!pInfo)
             {
@@ -246,6 +247,7 @@ namespace Engine::CollisionManager
                pInfo = collisionsManager.AddCollision(pColliderA, pColliderB);
             }
             pInfo->bCollisionCurrFrame = true;
+            
          }
       }
       umapCollidersToCheck.clear();

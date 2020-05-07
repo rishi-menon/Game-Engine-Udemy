@@ -15,6 +15,11 @@ class SpriteComponent;
 class AnimationComponent;
 class PlayerControllerComponent;
 class BoxColliderComponent;
+class SelfDestructComponent;
+
+class UITextComponent;
+
+class EnemyMovementScript;
 
 
 enum class ComponentType : unsigned int
@@ -27,8 +32,12 @@ enum class ComponentType : unsigned int
    Animation,   //for a spritesheet
    PlayerController,
    BoxCollider,
+   SelfDestruct,
 
-   UIText
+   UIText,
+
+   //custom scripts
+   EnemyMovementScript
 };
 
 using Components = std::vector<Component*>;
@@ -42,10 +51,12 @@ namespace GenericComponent
 }
 
 
-#define COMPONENT_TYPE(x)  const static ComponentType GetStaticType()     { return ComponentType::##x; } \
+#define COMPONENT_TYPE(x)  public: \
+                           const static ComponentType GetStaticType()     { return ComponentType::##x; } \
                            virtual ComponentType GetType() const override { return ComponentType::##x; }
 
-#define COMPONENT_NAME(x)  virtual std::string GetName() const override { return x; }
+#define COMPONENT_NAME(x)  public: \
+                           virtual std::string GetName() const override { return x; }
                            
 
 
@@ -53,7 +64,7 @@ namespace GenericComponent
 class Component
 {
 public:
-   Component() : m_pEntityOwner(nullptr) {}
+   Component() : m_pEntityOwner(nullptr), m_bIsEnabled(true) {}
    virtual ~Component() {}
 
    //Callbacks?
@@ -72,13 +83,19 @@ public:
    inline Entity* GetEntityOwner() const { return m_pEntityOwner; }
    void SetEntityOwner(Entity* pEntity) { m_pEntityOwner = pEntity; }
 
+   bool GetEnabled() const { return m_bIsEnabled; }
+   void SetEnabled(bool bEnabled) { m_bIsEnabled = bEnabled; }
+
    //Collisions
    virtual void OnCollisionEnter(BoxColliderComponent& otherCollider) {}
    virtual void OnCollision(BoxColliderComponent& otherCollider)      {}
    virtual void OnCollisionExit(BoxColliderComponent& otherCollider)  {}
 
+   //While instantiating a gameobject, the components from the prefab are copied into a new one... If you dont want a component to be copied, then override this function in that specific component to return false
+   virtual bool CopyDuringInstantiate() const { return true; }
+
 protected:
    Entity* m_pEntityOwner;
-   //To do: add a bool isEnabled
+   bool m_bIsEnabled;
 };
 

@@ -8,7 +8,19 @@
 
 #include "Log/Log.h"
 
+//Components
+#include "Component/Transform/TransformComponent.h"
+#include "Component/Transform/TransformUIComponent.h"
+#include "Component/SpriteComponent.h"
+#include "Component/AnimationComponent.h"
+#include "Component/PlayerControllerComponent.h"
+#include "Component/BoxColliderComponent.h"
+#include "Component/UITextComponent.h"
+#include "Component/Scripts/EnemyMovementScript.h"
+#include "Component/SelfDestructComponent.h"
+
 class EntityManager;
+
 
 class Entity
 {
@@ -19,7 +31,6 @@ public:
    void OnInitialise();
    void OnUpdate(double deltaTime);
    void OnRender();
-   void OnDestroy();
 
    //To do: variable number of parameters, in normal and in template, AND std::forward 
    //template <typename T, typename ... TArgs>
@@ -68,6 +79,8 @@ public:
       return nullptr;
    }
 
+   Component* CopyComponent(Component* pComponent);
+
    //template <typename ... TArgs>
    //TransformComponent* AddComponent(TArgs ... args);
 
@@ -110,14 +123,21 @@ public:
 
    //To do: implement functionality using this
    inline bool GetIsActive() const { return m_bIsActive; }
+   void SetIsActive(bool bIsActive) { m_bIsActive = bIsActive; }
 
    void OnCollisionEnter(BoxColliderComponent& otherCollider);
    void OnCollision(BoxColliderComponent& otherCollider);
    void OnCollisionExit(BoxColliderComponent& otherCollider);
 
-   inline std::unordered_map<ComponentType, Components>& GetComponentsMap() { return m_umapComponentType; }
+   inline const std::unordered_map<ComponentType, Components>& GetComponentsMap() const { return m_umapComponentType; }
+   inline const EntityManager& GetEntityManager() const { return m_entityManager; }
+   inline       EntityManager& GetEntityManager()       { return m_entityManager; }
 
    inline const std::string& GetName() const { return m_strName; }
+
+private:
+   void OnDestroy();
+
 private:
    std::unordered_map<ComponentType, Components> m_umapComponentType;
    EntityManager& m_entityManager;

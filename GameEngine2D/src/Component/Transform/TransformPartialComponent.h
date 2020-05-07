@@ -15,10 +15,15 @@ public:
 
    void Translate(float dx, float dy);
    void Translate(const glm::vec2& offset);
+
+   void SetPosition(float x, float y);
+   void SetPosition(const glm::vec2& pos);
    
    const glm::vec2& GetPosition() const { return m_vPosition; }
    const glm::vec2& GetScale() const { return m_vScale; }
    
+private:
+   inline void AddToCollisionListHelper();   //Helper function to add the entity to the collision check list when it moves.
 private:
    glm::vec2 m_vPosition;
    //this is the total width and height of the component... so position (0,0) and scale of (2,2) would mean it ranges position ranges from (-1,1) (For world transform)

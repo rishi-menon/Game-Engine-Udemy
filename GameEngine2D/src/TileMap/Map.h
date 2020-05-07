@@ -14,9 +14,11 @@ public:
    
    void OnUpdate(double deltaTime);
    void OnRender();
-   void OnDestroy();
+   //void OnDestroy();
 
    const Engine::Rect& GetRectMap() const { return m_rectTiles; }
+
+   EntityManager& GetManager() { return m_managerTiles; }
 private:
    void AddTile (EntityManager& manager, const std::string& id, float posx, float posy, int sourceX, int sourceY);
    bool LoadTiles(EntityManager& manager, std::ifstream& file, const std::string& id, float& StartPosX, float& StartPosY);

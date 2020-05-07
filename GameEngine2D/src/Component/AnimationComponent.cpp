@@ -1,4 +1,3 @@
-
 #include "pch.h"
 
 #include "AnimationComponent.h"
@@ -16,7 +15,11 @@ AnimationLayout::AnimationLayout(AnimationLayout&& layout) :
 {
    m_indices = std::move(layout.m_indices);
 }
-
+AnimationLayout::AnimationLayout(const AnimationLayout& other) :
+   m_animationSpeed (other.m_animationSpeed)
+{
+   m_indices = other.m_indices;
+}
 AnimationComponent::AnimationComponent(int x, int y) :
    m_pSpriteComponent (nullptr),
    m_pCurrentAnimationLayout(nullptr),
@@ -29,6 +32,23 @@ AnimationComponent::AnimationComponent(int x, int y) :
    //add a default animation (does not perform any animation)
    AddAnimation(AnimationID::None, AnimationLayout({ 0 }, 0));
    SetCurrentAnimation(AnimationID::None);
+}
+AnimationComponent::AnimationComponent(AnimationComponent& comp) :
+   m_pSpriteComponent (comp.m_pSpriteComponent),
+   m_pCurrentAnimationLayout (comp.m_pCurrentAnimationLayout),
+   m_AnimationID (comp.m_AnimationID),
+   m_nGridSizeX (comp.m_nGridSizeX),
+   m_nGridSizeY (comp.m_nGridSizeY),
+   m_dRotationSpeed (comp.m_dRotationSpeed),
+   m_dAnimationIndex (comp.m_dAnimationIndex),
+   m_bIsActive (comp.m_bIsActive)
+{
+   m_umapAnimationLayout.reserve(comp.m_umapAnimationLayout.size());
+   for (auto& pair : comp.m_umapAnimationLayout)
+   {
+      m_umapAnimationLayout.emplace(pair);
+   }
+   
 }
 AnimationComponent::~AnimationComponent()
 {

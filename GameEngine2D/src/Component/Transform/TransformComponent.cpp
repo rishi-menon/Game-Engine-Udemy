@@ -32,7 +32,6 @@ void TransformComponent::OnRender()
 
 void TransformComponent::OnCollisionEnter(BoxColliderComponent& otherCollider)
 {
-   LOGW("\n\nCollision START \n\n");
 }
 void TransformComponent::OnCollision(BoxColliderComponent& otherCollider)
 {
@@ -40,5 +39,4 @@ void TransformComponent::OnCollision(BoxColliderComponent& otherCollider)
 }
 void TransformComponent::OnCollisionExit(BoxColliderComponent& otherCollider)
 {
-   LOGW("\n\nCollision END\n\n");
 }

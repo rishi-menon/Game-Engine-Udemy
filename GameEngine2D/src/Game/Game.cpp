@@ -5,15 +5,6 @@
 #include "Entity/EntityManager.h"
 #include "Collision/CollisionManager.h"
 
-//Components
-#include "Component/Transform/TransformComponent.h"
-#include "Component/Transform/TransformUIComponent.h"
-#include "Component/SpriteComponent.h"
-#include "Component/AnimationComponent.h"
-#include "Component/PlayerControllerComponent.h"
-#include "Component/BoxColliderComponent.h"
-#include "Component/UITextComponent.h"
-
 #include <lua/include/sol.hpp>
 
 EntityManager g_EntityManager;   //To do: temporary global EntityManager... Move to static class member maybe ?
@@ -76,6 +67,7 @@ void Game::LoadLevel(int nLevelNumber)
    s_pAssetManager->AddTexture("chopper-spritesheet",  "assets\\images\\chopper-spritesheet.png");
    s_pAssetManager->AddTexture("radar",                "assets\\images\\radar.png");
    s_pAssetManager->AddTexture("collision-texture",    "assets\\images\\collision-texture.png");
+   s_pAssetManager->AddTexture("bullet-enemy",         "assets\\images\\bullet-enemy.png");
    s_pAssetManager->AddTexture("jungle",               "assets\\tilemaps\\jungle.png");
    s_pAssetManager->AddFont("charriot", "assets\\fonts\\charriot.ttf", 100);
 
@@ -84,10 +76,20 @@ void Game::LoadLevel(int nLevelNumber)
 
    //Create Entitys and add components
    {
+      //Bullet Prefab
+      Entity& entity = g_EntityManager.AddEntity("Bullet");
+      entity.AddComponent<TransformComponent>(glm::vec2{ 0,0 }, glm::vec2{ 0, 1 }, glm::vec2{ 0.1, 0.1 });
+      entity.AddComponent<SpriteComponent>("bullet-enemy");
+      entity.AddComponent<BoxColliderComponent>(glm::vec2{ 0, 0 }, glm::vec2{ 1,1 }, "collision-texture");
+      entity.OnInitialise();
+      entity.SetIsActive(false);
+   }
+   {
       Entity& entity = g_EntityManager.AddEntity("Tank");
       entity.AddComponent<TransformComponent>(glm::vec2{ 0,0 }, glm::vec2{ -0.5, 0 }, glm::vec2{ 1, 1 });
       entity.AddComponent<SpriteComponent>("tank-big-right");
       entity.AddComponent<BoxColliderComponent>(glm::vec2{ 0, 0 }, glm::vec2{ 1,1 }, "collision-texture");
+      entity.AddComponent<EnemyMovementScript>();
       entity.OnInitialise();
    }
    {
@@ -290,6 +292,13 @@ void Game::OnRender()
 
    SDL_RenderPresent(s_pRenderer);
 }
+
+void Game::OnEndFrame()
+{
+   m_map.GetManager().DeleteEntities();
+   g_EntityManager.DeleteEntities();
+}
+
 void Game::OnDestroy()
 {
 

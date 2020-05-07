@@ -16,6 +16,7 @@ public:
    void OnProcessInput();
    void OnUpdate();
    void OnRender();
+   void OnEndFrame();   //Gets called at the end of the game loop... for cleanup mainly
    void OnDestroy();
 
    void LoadLevel(int nLevelNumber);
