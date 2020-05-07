@@ -8,7 +8,8 @@
 BoxColliderComponent::BoxColliderComponent(const glm::vec2& offset, const glm::vec2& scale, const std::string& id) :
    m_vOffset (offset), m_vScale (scale),
    m_pTexture (nullptr),
-   m_bDrawTexture (true)   //To do: change this to false eventually
+   m_bDrawTexture (true),   //To do: change this to false eventually
+   m_bDrawFadedBackground (false)
 {
    if (!id.empty())
    {
@@ -40,6 +41,20 @@ void BoxColliderComponent::OnRender()
    {
       DrawCollisionBox();
    }
+
+#ifdef EX_2020_DRAW_FADED_BOX
+   if (m_bDrawTexture && m_bDrawFadedBackground)
+   {
+      ASSERT(m_pTexture && m_pTexture->GetTexture());
+
+      SDL_Rect rectScreen;
+      Game::s_camera.WorldRectToScreenRect(GetRect(), rectScreen);
+
+      SDL_SetRenderDrawColor(Game::s_pRenderer, 90, 90, 90, 100);
+      SDL_RenderFillRect(Game::s_pRenderer, &rectScreen);
+   }
+#endif // EX_2020_DRAW_FADED_BOX
+
 }
 
 void BoxColliderComponent::GetRect(Engine::Rect& rect) const
@@ -66,3 +81,14 @@ void BoxColliderComponent::DrawCollisionBox()
       TextureManager::DrawTexture(m_pTexture->GetTexture(), m_rectSource, rectScreen, 0.0f, SDL_FLIP_NONE);
    }
 }
+
+#ifdef EX_2020_DRAW_FADED_BOX
+void BoxColliderComponent::OnCollision(BoxColliderComponent& other)
+{
+   m_bDrawFadedBackground = true;
+}
+void BoxColliderComponent::OnCollisionExit(BoxColliderComponent& other)
+{
+   m_bDrawFadedBackground = false;
+}
+#endif

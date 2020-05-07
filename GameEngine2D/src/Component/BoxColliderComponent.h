@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include "Assets/AssetManager.h"
 
+
 class BoxColliderComponent : public Component
 {
 public:
@@ -19,6 +20,11 @@ public:
    void GetRect(Engine::Rect& rect) const;
    Engine::Rect GetRect() const;
 
+#ifdef EX_2020_DRAW_FADED_BOX
+   void OnCollision(BoxColliderComponent& other) override;
+   void OnCollisionExit(BoxColliderComponent& other) override;
+#endif
+
 private:
    void DrawCollisionBox();
 private:
@@ -31,4 +37,8 @@ private:
    SDL_Rect m_rectSource;
 
    bool m_bDrawTexture;
+
+#ifdef EX_2020_DRAW_FADED_BOX
+   bool m_bDrawFadedBackground;
+#endif
 };

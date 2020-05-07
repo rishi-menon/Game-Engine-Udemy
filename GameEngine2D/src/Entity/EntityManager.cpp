@@ -1,6 +1,7 @@
 
 #include "pch.h"
 #include "EntityManager.h"
+#include "Collision/CollisionManager.h"
 
 EntityManager::EntityManager()
 {
@@ -130,8 +131,20 @@ void EntityManager::DeleteEntities()
       if (setDeleted.find(pEntity) == setDeleted.end())
       {
          m_listEntities.remove(pEntity);
+         /*const Components* pColliderComponents;
+         pEntity->GetComponents<BoxColliderComponent>(pColliderComponents);
+         ASSERT(pColliderComponents);
+         for (Component* pComp : (*pColliderComponents))
+         {
+           (static_cast<BoxColliderComponent*>(pComp));
+         }*/
+
+         setDeleted.emplace(pEntity);  //for safety... so that the same entity is not deleted twice
          delete pEntity;
-         setDeleted.emplace(pEntity);
+      }
+      else
+      {
+         ASSERT(false);
       }
    }
    m_listEntitiesToDelete.clear();
@@ -146,6 +159,14 @@ void EntityManager::DestroyEntity(Entity* const pEntity)
 
    m_listEntitiesToDelete.push_back(pEntity);
 
+   const Components* pColliderComponents;
+   pEntity->GetComponents<BoxColliderComponent>(pColliderComponents);
+   ASSERT(pColliderComponents);
+   for (Component* pComp : (*pColliderComponents))
+   {
+     Engine::CollisionManager::DeleteFromCollisionList(static_cast<BoxColliderComponent*>(pComp));
+   }
+   
 #ifdef DEBUG
    //check if pEntity actually belongs to this manager... Ideally it should always belong in the list and if it doesnt then it would be easy to catch it and trace it here instead of in DeleteEntities function (which gets called at the end of the game loop)
 

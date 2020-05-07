@@ -22,6 +22,7 @@
 #include "Common/MathHelper.h"
 #include "Common/StringHelper.h"
 #include "Input/InputManager.h"
+#include "BuildOptions.h"
 
 //glm stuff
 #include <glm/glm.hpp>

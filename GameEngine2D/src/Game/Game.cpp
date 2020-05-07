@@ -176,6 +176,7 @@ void Game::Initialise(const unsigned int unWidth, const unsigned int unHeight)
       s_pRenderer = SDL_CreateRenderer(m_pWindow, -1, 0);
       ASSERT(s_pRenderer);
       if (!s_pRenderer) { LOGW("Error: Could not create a renderer"); return; }
+      SDL_SetRenderDrawBlendMode(s_pRenderer, SDL_BLENDMODE_BLEND);
    }
    else
    {
@@ -295,6 +296,9 @@ void Game::OnRender()
 
 void Game::OnEndFrame()
 {
+   //mainly for cleanup
+   Engine::CollisionManager::FreeDeletedEntitiesInMap();
+
    m_map.GetManager().DeleteEntities();
    g_EntityManager.DeleteEntities();
 }

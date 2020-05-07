@@ -11,4 +11,8 @@ namespace Engine::CollisionManager
 
    extern void CheckCollisionsList(const std::vector<EntityManager*>& vEntityManagers);
 
+   extern void DeleteFromCollisionList(BoxColliderComponent* pComp);
+
+   extern void FreeDeletedEntitiesInMap();   //recalculates the map components and removes the dangling pointer BoxCollider components that were deleted
+
 }

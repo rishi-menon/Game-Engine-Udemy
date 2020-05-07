@@ -32,6 +32,8 @@ void TransformComponent::OnRender()
 
 void TransformComponent::OnCollisionEnter(BoxColliderComponent& otherCollider)
 {
+   if (GetEntityOwner()->GetName() != "Tank" && otherCollider.GetEntityOwner()->GetName() != "Tank")
+      LOGW("\nCollision START\n\n");
 }
 void TransformComponent::OnCollision(BoxColliderComponent& otherCollider)
 {
@@ -39,4 +41,6 @@ void TransformComponent::OnCollision(BoxColliderComponent& otherCollider)
 }
 void TransformComponent::OnCollisionExit(BoxColliderComponent& otherCollider)
 {
+   if (GetEntityOwner()->GetName() != "Tank" && otherCollider.GetEntityOwner()->GetName() != "Tank")
+      LOGW("\nCollision End\n\n");
 }

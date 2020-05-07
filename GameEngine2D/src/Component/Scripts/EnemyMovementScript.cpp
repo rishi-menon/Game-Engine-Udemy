@@ -30,10 +30,10 @@ void EnemyMovementScript::OnInitialise()
 void EnemyMovementScript::OnUpdate(double deltaTime)
 {
    m_dTime += deltaTime;
-   if (m_pEntityOwner && m_dTime > 3)
+   if (m_pEntityOwner && m_dTime > 1)
    {
       m_dTime = 0.0;
-      Entity& newEntity = m_pEntityOwner->GetEntityManager().Instantiate(m_pEntityPrefab, 1.5);
+      Entity& newEntity = m_pEntityOwner->GetEntityManager().Instantiate(m_pEntityPrefab, 5);
       newEntity.SetIsActive(true);
       TransformComponent* pComponent = newEntity.GetComponent<TransformComponent>();
       ASSERT(pComponent);
@@ -44,13 +44,15 @@ void EnemyMovementScript::OnUpdate(double deltaTime)
 
 void EnemyMovementScript::OnCollisionEnter(BoxColliderComponent& otherCollider)
 {
-   LOGW("\nCollision START\n\n");
+   /*if (GetEntityOwner()->GetName() != "Tank")
+      LOGW("\nCollision START\n\n");*/
 }
 void EnemyMovementScript::OnCollision(BoxColliderComponent& otherCollider)
 {
-   LOGW("Collision...\n");
+   //LOGW("Collision...\n");
 }
 void EnemyMovementScript::OnCollisionExit(BoxColliderComponent& otherCollider)
 {
-   LOGW("\nCollision END\n");
+   //if (GetEntityOwner()->GetName() != "Tank")
+   //   LOGW("\nCollision END\n");
 }
