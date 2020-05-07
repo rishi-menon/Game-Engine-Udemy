@@ -8,9 +8,12 @@
 BoxColliderComponent::BoxColliderComponent(const glm::vec2& offset, const glm::vec2& scale, const std::string& id) :
    m_vOffset (offset), m_vScale (scale),
    m_pTexture (nullptr),
-   m_bDrawTexture (true),   //To do: change this to false eventually
-   m_bDrawFadedBackground (false)
+   m_bDrawTexture (true)   //To do: change this to false eventually
 {
+#ifdef EX_2020_DRAW_FADED_BOX
+   m_bDrawFadedBackground = false;
+#endif
+
    if (!id.empty())
    {
       m_pTexture = Game::s_pAssetManager->GetTexture(id);
@@ -19,7 +22,6 @@ BoxColliderComponent::BoxColliderComponent(const glm::vec2& offset, const glm::v
       m_rectSource.y = 0;
       m_rectSource.w = m_pTexture->GetWidth();
       m_rectSource.h = m_pTexture->GetHeight();
-      
    }
 }
 BoxColliderComponent::~BoxColliderComponent()
