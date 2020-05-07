@@ -34,11 +34,7 @@ void UITextComponent::OnRender()
    
    Engine::Rect rectOriginal;
    GetRect(rectOriginal);
-   //rectDest.x = rectOriginal.GetLeft();
-   //rectDest.y = rectOriginal.GetTop();
-   //rectDest.w = rectOriginal.GetWidth();
-   //rectDest.h = rectOriginal.GetHeight();
-   SDL_Rect rectDest{ rectOriginal.GetLeft(), rectOriginal.GetTop(), rectOriginal.GetWidth(), rectOriginal.GetHeight() };
+   SDL_Rect rectDest{ (int)rectOriginal.GetLeft(), (int)rectOriginal.GetTop(), (int)rectOriginal.GetWidth(), (int)rectOriginal.GetHeight() };
    Engine::FontManager::DrawFont(m_FontData, rectDest);
 }
 

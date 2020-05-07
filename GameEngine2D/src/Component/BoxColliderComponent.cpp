@@ -5,8 +5,9 @@
 #include "Entity/Entity.h"
 #include "Game/Game.h"
 
-BoxColliderComponent::BoxColliderComponent(const glm::vec2& offset, const glm::vec2& scale, const std::string& id) :
+BoxColliderComponent::BoxColliderComponent(const std::string& colliderTag, const glm::vec2& offset, const glm::vec2& scale, const std::string& id) :
    m_vOffset (offset), m_vScale (scale),
+   m_strTag (colliderTag),
    m_pTexture (nullptr),
    m_bDrawTexture (true)   //To do: change this to false eventually
 {

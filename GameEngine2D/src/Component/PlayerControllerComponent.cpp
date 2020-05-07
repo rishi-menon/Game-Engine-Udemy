@@ -24,12 +24,12 @@ PlayerControllerComponent::~PlayerControllerComponent()
 
 }
 
-void PlayerControllerComponent::SetMovementControls(const std::string& up, const std::string& right, const std::string& down, const std::string& left)
+void PlayerControllerComponent::SetMovementControls(const std::string& up, const std::string& left, const std::string& down, const std::string& right)
 {
    m_nKeyUp      =    GetScanCodeFromString (up);
-   m_nKeyRight   =    GetScanCodeFromString (left);
+   m_nKeyRight   =    GetScanCodeFromString (right);
    m_nKeyDown    =    GetScanCodeFromString (down);
-   m_nKeyLeft    =    GetScanCodeFromString (right);
+   m_nKeyLeft    =    GetScanCodeFromString (left);
 }
 
 void PlayerControllerComponent::SetFireControl(const std::string& st)

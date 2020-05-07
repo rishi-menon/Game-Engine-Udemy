@@ -80,7 +80,7 @@ void Game::LoadLevel(int nLevelNumber)
       Entity& entity = g_EntityManager.AddEntity("Bullet");
       entity.AddComponent<TransformComponent>(glm::vec2{ 0,0 }, glm::vec2{ 0, 1 }, glm::vec2{ 0.1, 0.1 });
       entity.AddComponent<SpriteComponent>("bullet-enemy");
-      entity.AddComponent<BoxColliderComponent>(glm::vec2{ 0, 0 }, glm::vec2{ 1,1 }, "collision-texture");
+      entity.AddComponent<BoxColliderComponent>("Bullet", glm::vec2{ 0, 0 }, glm::vec2{ 1,1 }, "collision-texture");
       entity.OnInitialise();
       entity.SetIsActive(false);
    }
@@ -88,20 +88,17 @@ void Game::LoadLevel(int nLevelNumber)
       Entity& entity = g_EntityManager.AddEntity("Tank");
       entity.AddComponent<TransformComponent>(glm::vec2{ 0,0 }, glm::vec2{ -0.5, 0 }, glm::vec2{ 1, 1 });
       entity.AddComponent<SpriteComponent>("tank-big-right");
-      entity.AddComponent<BoxColliderComponent>(glm::vec2{ 0, 0 }, glm::vec2{ 1,1 }, "collision-texture");
+      entity.AddComponent<BoxColliderComponent>("Enemy", glm::vec2{ 0, 0 }, glm::vec2{ 1,1 }, "collision-texture");
       entity.AddComponent<EnemyMovementScript>();
       entity.OnInitialise();
    }
    {
-      Entity& entity = g_EntityManager.AddEntity("Chopper");
-      m_pentityCameraFollow = &entity;
-
+      Entity& entity = g_EntityManager.AddEntity("Player");
       entity.AddComponent<TransformComponent>(glm::vec2{ -14,0 }, glm::vec2{ 0, 0 }, glm::vec2{ 1, 1 });
       entity.AddComponent<SpriteComponent>("chopper-spritesheet");
       AnimationComponent& compAnimation =         *entity.AddComponent<AnimationComponent>(2, 4);
       PlayerControllerComponent& compController = *entity.AddComponent<PlayerControllerComponent>();
-      entity.AddComponent<BoxColliderComponent>(glm::vec2{ 0, 0 }, glm::vec2{ 1,1 }, "collision-texture");
-      entity.OnInitialise();
+      entity.AddComponent<BoxColliderComponent>("Player", glm::vec2{ 0, 0 }, glm::vec2{ 1,1 }, "collision-texture");
 
       const float fSpeed = 17; //animation frames per second
       compAnimation.AddAnimation(AnimationID::DirDown,  AnimationLayout({ 0, 1 }, fSpeed));
@@ -114,6 +111,8 @@ void Game::LoadLevel(int nLevelNumber)
       compController.SetMovementControls("w", "a", "s", "d");
       const float speed = 4;
       compController.m_vecVelocity = glm::vec2(speed, speed );
+      compController.SetFireControl("space");
+      entity.OnInitialise();
       
    }
    {
@@ -125,10 +124,8 @@ void Game::LoadLevel(int nLevelNumber)
       AnimationComponent& compAnimation = *entity.AddComponent<AnimationComponent>(1, 1);
       UITextComponent* pCompUIText = entity.AddComponent<UITextComponent>("charriot", glm::vec2{ 0.0f, -5.0f }, glm::vec2{ 1.4, 1.0f });
 
-      entity.OnInitialise();
-
+     
       compSprite.m_rectDefault = SDL_Rect{ 0,0,64,64 };
-      compSprite.ResetSourceRect();
 
       const double dRotationSpeed = 150;   //in deg per sec
       //use the default animation.. aka AnimationType::None
@@ -136,9 +133,13 @@ void Game::LoadLevel(int nLevelNumber)
 
       pCompUIText->SetText("Radar");
       pCompUIText->SetColor(SDL_Color{ 0, 230, 100, 255 });
-   }
-   LOG_ALL_ENTITIES(g_EntityManager);
 
+      entity.OnInitialise();
+   }
+
+   m_pentityCameraFollow = g_EntityManager.GetEntityFromName("Player");
+   ASSERT(m_pentityCameraFollow);
+   LOG_ALL_ENTITIES(g_EntityManager);
 }
 
 void Game::Initialise(const unsigned int unWidth, const unsigned int unHeight)

@@ -13,11 +13,21 @@ SpriteComponent::SpriteComponent(const std::string& id) :
    m_pTexture (nullptr),
    m_rectSource {0, 0, 0, 0},
    m_rectDestination {0, 0, 0, 0},
+   m_rectDefault {0, 0, 0, 0},
+
    m_pPartialTransformComponent(nullptr),
    m_TransformComponentType (ComponentType::None),
    m_dRotationDeg (0.0)
 {
    SetTexture(id);
+   
+   ASSERT(m_pTexture && m_pTexture->GetTexture());
+
+   m_rectSource.w = m_pTexture->GetWidth();
+   m_rectSource.h = m_pTexture->GetHeight();
+
+   m_rectDefault.w = m_pTexture->GetWidth();
+   m_rectDefault.h = m_pTexture->GetHeight();
 }
 SpriteComponent::~SpriteComponent()
 {
@@ -45,13 +55,7 @@ void SpriteComponent::OnInitialise()
    {
       ASSERT(false);
    }
-   
    ASSERT(m_pPartialTransformComponent);   //this should exist
-   ASSERT(m_pTexture && m_pTexture->GetTexture());
-   m_rectDefault.x = 0;
-   m_rectDefault.y = 0;
-   m_rectDefault.w = m_pTexture->GetWidth();
-   m_rectDefault.h = m_pTexture->GetHeight();
    ResetSourceRect();
 }
 

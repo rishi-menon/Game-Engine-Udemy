@@ -16,7 +16,7 @@ public:
    void OnInitialise() override;
    void OnUpdate(double deltaTime) override;
 
-   void SetMovementControls(const std::string& up, const std::string& right, const std::string& down, const std::string& left);
+   void SetMovementControls(const std::string& up, const std::string& left, const std::string& down, const std::string& right);
 
    void SetFireControl(const std::string& st);
 

@@ -10,7 +10,7 @@ public:
    COMPONENT_TYPE(BoxCollider);
    COMPONENT_NAME("Box Collider");
 
-   BoxColliderComponent(const glm::vec2& offset = glm::vec2(0,0), const glm::vec2& scale = glm::vec2(1,1), const std::string& id = "");
+   BoxColliderComponent(const std::string& colliderTag, const glm::vec2& offset = glm::vec2(0,0), const glm::vec2& scale = glm::vec2(1,1), const std::string& id = "");
    ~BoxColliderComponent();
 
    void OnInitialise() override;
@@ -19,6 +19,8 @@ public:
 
    void GetRect(Engine::Rect& rect) const;
    Engine::Rect GetRect() const;
+
+   const std::string& GetTag() const { return m_strTag; }
 
 #ifdef EX_2020_DRAW_FADED_BOX
    void OnCollision(BoxColliderComponent& other) override;
@@ -32,13 +34,15 @@ private:
 
    glm::vec2 m_vOffset;
    glm::vec2 m_vScale;
+   std::string m_strTag;
 
    Engine::Texture* m_pTexture;
    SDL_Rect m_rectSource;
-
    bool m_bDrawTexture;
 
 #ifdef EX_2020_DRAW_FADED_BOX
-   bool m_bDrawFadedBackground;
+   bool m_bDrawFadedBackground;  //To draw the faded background when a collision takes place 
 #endif
+
+
 };

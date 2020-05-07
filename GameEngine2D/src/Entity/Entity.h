@@ -33,27 +33,6 @@ public:
    void OnRender();
 
    //To do: variable number of parameters, in normal and in template, AND std::forward 
-   //template <typename T, typename ... TArgs>
-   //T& AddComponent(TArgs&& ... args)
-   //{
-   //   //T* pComponent = new T(std::forward<TArgs>(args) ...);
-   //   //ASSERT(pComponent);
-   //   //std::unordered_map<ComponentType, Components>::const_iterator it = m_umapComponentType.find(T::GetStaticType());
-   //   //if (it != m_umapComponentType.end())
-   //   //{
-   //   //   //the component already exists
-   //   //   m_umapComponentType.at(T::GetStaticType()).emplace_back(pComponent);
-   //   //}
-   //   //else
-   //   //{
-   //   //   m_umapComponentType.insert(T::GetStaticType(), Components(pComponent));
-   //   //}
-   //   //m_vComponents.emplace_back(pComponent);
-
-   //   //pComponent->SetEntityOwner(this);
-   //   //pComponent->OnInitialise();
-   //   //return *pComponent;
-   //}
 
    template <typename T, typename ... TArgs>
    T* AddComponent(TArgs&& ... args)
@@ -80,10 +59,6 @@ public:
    }
 
    Component* CopyComponent(Component* pComponent);
-
-   //template <typename ... TArgs>
-   //TransformComponent* AddComponent(TArgs ... args);
-
 
    //Ideally use this to directly get the component when only a single one exists... If multiple components of the same type exists then it returns the first component in the array (the one which was added first)... Preferably use GetComponents if multiple components exists.
    template <typename T>

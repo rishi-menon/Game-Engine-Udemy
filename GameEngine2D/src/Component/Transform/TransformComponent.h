@@ -15,10 +15,6 @@ public:
    virtual void OnUpdate(double deltaTime) override;
    virtual void OnRender() override;
 
-   virtual void OnCollisionEnter(BoxColliderComponent& otherCollider) override;
-   virtual void OnCollision(BoxColliderComponent& otherCollider) override;
-   virtual void OnCollisionExit(BoxColliderComponent& otherCollider) override;
-
 public:
    glm::vec2 m_vVeloctiy;
 };
