@@ -56,13 +56,8 @@ void Game::MoveCamera(double deltaTime)
 //To do: move the "radar" gameobject to a UI entity manager which gets rendered at the end
 void Game::LoadLevel(int nLevelNumber)
 {
+#if 0
    //Create assets
-   //s_pAssetManager->AddTexture(AssetID::Sprite_Tank,         "assets\\images\\tank-big-right.png");
-   //s_pAssetManager->AddTexture(AssetID::SpriteSheet_Chopper, "assets\\images\\chopper-spritesheet.png");
-   //s_pAssetManager->AddTexture(AssetID::SpriteSheet_Radar,   "assets\\images\\radar.png");
-   //s_pAssetManager->AddTexture(AssetID::Sprite_Collision_Box,   "assets\\images\\collision-texture.png");
-   //s_pAssetManager->AddTexture(AssetID::Tilemap_ocean,       "assets\\tilemaps\\jungle.png");
-
    s_pAssetManager->AddTexture("tank-big-right",       "assets\\images\\tank-big-right.png");
    s_pAssetManager->AddTexture("chopper-spritesheet",  "assets\\images\\chopper-spritesheet.png");
    s_pAssetManager->AddTexture("radar",                "assets\\images\\radar.png");
@@ -139,7 +134,12 @@ void Game::LoadLevel(int nLevelNumber)
 
    m_pentityCameraFollow = g_EntityManager.GetEntityFromName("Player");
    ASSERT(m_pentityCameraFollow);
-   LOG_ALL_ENTITIES(g_EntityManager);
+
+#else
+
+
+
+#endif
 }
 
 void Game::Initialise(const unsigned int unWidth, const unsigned int unHeight)

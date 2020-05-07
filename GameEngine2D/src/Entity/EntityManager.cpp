@@ -102,13 +102,6 @@ Entity& EntityManager::Instantiate(Entity* pEntity, double dLifetime)   //lifeti
    return newEntity;
 }
 
-#ifdef DEBUG
-void EntityManager::LogAllEntities ()
-{
-   //To do: add this function maybe ? or cleanup
-}
-#endif
-
 Entity* EntityManager::GetEntityFromName(const std::string& strName) const
 {
    for (Entity* pEntity : m_listEntities)

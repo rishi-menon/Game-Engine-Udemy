@@ -2,14 +2,6 @@
 
 #include "Entity.h"
 
-
-#ifdef DEBUG
-#define LOG_ALL_ENTITIES(obj) (obj).LogAllEntities()
-#else
-#define LOG_ALL_ENTITIES(obj) 
-#endif // DeBUG
-
-
 class EntityManager
 {
 public:
@@ -38,10 +30,6 @@ public:
 
    //Find gameobject with name... To do: add Get Entities from name
    Entity* GetEntityFromName(const std::string& strName) const;
-
-#ifdef DEBUG
-   void LogAllEntities();
-#endif // DEBUG
 
    //Deletes all the entities that were added in the list to delete... Call this function at the END of every game loop... (Call even after collision detection because collision detection stores the pointer to the ColliderComponent and it would become a dangling pointer if the entity is deleted earlier
    void DeleteEntities();  
