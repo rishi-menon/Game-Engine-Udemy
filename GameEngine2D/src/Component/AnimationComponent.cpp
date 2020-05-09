@@ -163,3 +163,66 @@ void AnimationComponent::SetCurrentAnimation(const std::string& strAnimationId)
       }
    }
 }
+
+bool AnimationComponent::SetValueTable(const sol::table& table)
+{
+   auto loadLayoutHelper = [](const sol::table& layoutTable, std::vector<int>& outvIndices) {
+      //index of arrays in lua starts with 1 by default
+      outvIndices.reserve(20);
+      for (int index = 1; true; index++)
+      {
+         sol::optional<int> nData = layoutTable[index];
+         if (!nData) break;
+         outvIndices.emplace_back(nData.value());
+      }
+      outvIndices.shrink_to_fit();
+   };
+   //Add animation layouts
+   {
+      sol::optional<sol::table> animationList = table["AnimationList"];
+      ASSERT(animationList);
+      //Could be null... Eg: radar only has rotation... So it does not have any layouts... So don't return false
+      if (animationList)
+      {
+         //arrays in lua start from 1 by default... So custom arrays also start from 1 for consistency
+         for (std::size_t animationListIndex = 1; true; animationListIndex++)
+         {
+            sol::optional<sol::table> animationLayoutTable = animationList.value()[animationListIndex];
+            if (!animationLayoutTable) break;
+            //Load the layout
+            sol::optional<std::string> layoutId = animationLayoutTable.value()["Id"];
+            sol::optional<float> layoutSpeed = animationLayoutTable.value()["Speed"];
+            sol::optional<sol::table> layoutLayout = animationLayoutTable.value()["Layout"];
+            if (!layoutId || !layoutSpeed || !layoutLayout)   return false;  //invalid table
+
+            std::vector<int> vlayoutIndices;
+            loadLayoutHelper(layoutLayout.value(), vlayoutIndices);
+            AddAnimation(layoutId.value(), AnimationLayout(std::move(vlayoutIndices), layoutSpeed.value()));
+         }
+      }
+   }
+
+   //Add other stuff
+   {
+      sol::optional<sol::table> gridSize = table["GridSize"];
+      ASSERT(gridSize);
+      if (!gridSize) return false;
+
+      sol::optional<int> gridX = gridSize.value()["X"];
+      sol::optional<int> gridY = gridSize.value()["Y"];
+      ASSERT(gridX && gridY);
+      if (!gridX || !gridY)   return false;
+      m_nGridSizeX = gridX.value();
+      m_nGridSizeY = gridY.value();
+
+      sol::optional<float> rotationSpeed = table["RotationSpeed"];
+      ASSERT(rotationSpeed);
+      if (rotationSpeed)   m_dRotationSpeed = rotationSpeed.value();
+
+      sol::optional<std::string> startingAnimation = table["StartingAnimation"];
+      ASSERT(startingAnimation);
+      if (!startingAnimation) return false;
+      SetCurrentAnimation(startingAnimation.value());
+   }
+   return true;
+}

@@ -58,7 +58,7 @@ void Game::MoveCamera(double deltaTime)
 //To do: move the "radar" gameobject to a UI entity manager which gets rendered at the end
 bool Game::LoadLevel(int nLevelNumber)
 {
-#if 1
+#if 0
    s_camera.SetViewRect(0, 0, 40); //default camera view
    //Create assets
    s_pAssetManager->AddTexture("tank-big-right",       "assets\\images\\tank-big-right.png");

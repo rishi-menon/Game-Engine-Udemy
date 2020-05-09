@@ -86,8 +86,8 @@ bool TransformPartialComponent::SetValueTable(const sol::table& table)
       sol::optional<sol::table> positionTable = table["Position"];
       if (!positionTable)  return false;
 
-      sol::optional<float> posX = positionTable.value()["x"];
-      sol::optional<float> posY = positionTable.value()["y"];
+      sol::optional<float> posX = positionTable.value()["X"];
+      sol::optional<float> posY = positionTable.value()["Y"];
       if (!posX || !posY) { return false; }
 
       m_vPosition.x = posX.value();
@@ -98,8 +98,8 @@ bool TransformPartialComponent::SetValueTable(const sol::table& table)
       sol::optional<sol::table> scaleTable = table["Scale"];
       if (!scaleTable)  return false;
 
-      sol::optional<float> scaleX = scaleTable.value()["x"];
-      sol::optional<float> scaleY = scaleTable.value()["y"];
+      sol::optional<float> scaleX = scaleTable.value()["X"];
+      sol::optional<float> scaleY = scaleTable.value()["Y"];
       if (!scaleX || !scaleY) { return false; }
 
       m_vScale.x = scaleX.value();

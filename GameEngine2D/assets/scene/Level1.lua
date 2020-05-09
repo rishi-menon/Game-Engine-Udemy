@@ -1,24 +1,24 @@
 assets = {
    textures = {
 
-      [1] =   {   id = "tank-big-right",       src = "assets\\images\\tank-big-right.png"        },
-      [2] =   {   id = "chopper-spritesheet",  src = "assets\\images\\chopper-spritesheet.png"   },
-      [3] =   {   id = "radar",                src = "assets\\images\\radar.png"                 },
-      [4] =   {   id = "collision-texture",    src = "assets\\images\\collision-texture.png"     },
-      [5] =   {   id = "bullet-enemy",         src = "assets\\images\\bullet-enemy.png"          },
-      [6] =   {   id = "jungle",               src = "assets\\tilemaps\\jungle.png"              }
+      [1] =   {   Id = "tank-big-right",       Src = "assets\\images\\tank-big-right.png"        },
+      [2] =   {   Id = "chopper-spritesheet",  Src = "assets\\images\\chopper-spritesheet.png"   },
+      [3] =   {   Id = "radar",                Src = "assets\\images\\radar.png"                 },
+      [4] =   {   Id = "collision-texture",    Src = "assets\\images\\collision-texture.png"     },
+      [5] =   {   Id = "bullet-enemy",         Src = "assets\\images\\bullet-enemy.png"          },
+      [6] =   {   Id = "jungle",               Src = "assets\\tilemaps\\jungle.png"              }
    },
    fonts = {
-      [1] = { id = "charriot",      src = "assets\\fonts\\charriot.ttf",      size = 100 }
+      [1] = { Id = "charriot",      Src = "assets\\fonts\\charriot.ttf",      Size = 100 }
    }
 }
 
 map = {
    --"assets/tilemaps/jungle.map", "jungle", 32, -15, 15
 
-   id = "jungle",                            --Texture id
-   src = "assets/tilemaps/jungle.map",       --Location of the .map file which contains which tiles to use in which position (text file)
-   tileSize = 32,                            --the sprite size in the spritesheet texture (in pixels)
+   Id = "jungle",                            --Texture id
+   Src = "assets/tilemaps/jungle.map",       --Location of the .map file which contains which tiles to use in which position (text file)
+   TileSize = 32,                            --the sprite size in the spritesheet texture (in pixels)
    PosX = -15.0,                             --X coordinate (world) of the top left tile in the map
    PosY =  15.0                              --Y coordinate (world) of the top left tile in the map
 }

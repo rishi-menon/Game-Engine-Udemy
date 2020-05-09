@@ -47,8 +47,8 @@ bool TransformComponent::SetValueTable(const sol::table& table)
       sol::optional<sol::table> velocityTable = table["Velocity"];
       if (velocityTable == sol::nullopt)  return false;
 
-      sol::optional<float> velX = velocityTable.value()["x"];
-      sol::optional<float> velY = velocityTable.value()["y"];
+      sol::optional<float> velX = velocityTable.value()["X"];
+      sol::optional<float> velY = velocityTable.value()["Y"];
       if ( velX == sol::nullopt || velY == sol::nullopt) { return false; }
 
       m_vVeloctiy.x = velX.value();

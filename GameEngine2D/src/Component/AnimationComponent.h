@@ -21,18 +21,6 @@ struct AnimationLayout
    AnimationLayout(const AnimationLayout& other);
 };
 
-//enum class AnimationID : unsigned int
-//{
-//   None = 0,
-//   DirLeft,
-//   DirRight,
-//   DirUp,
-//   DirDown,
-//
-//   Default
-//};
-
-
 class AnimationComponent : public Component
 {
 public:
@@ -64,6 +52,8 @@ private:
    
    void OnAnimationRotation(double deltaTime);
    void OnAnimationSpriteSheet(double deltaTime);
+
+   virtual bool SetValueTable(const sol::table& table) override;
 
 private:
    SpriteComponent* m_pSpriteComponent;

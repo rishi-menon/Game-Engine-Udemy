@@ -82,8 +82,8 @@ namespace Engine::Lua
                sol::optional<sol::table> tableExists = tableTextures.value()[nAssetCount];
                if (tableExists == sol::nullopt) break;
 
-               sol::optional<std::string> strAssetId = tableExists.value()["id"];
-               sol::optional<std::string> strSource = tableExists.value()["src"];
+               sol::optional<std::string> strAssetId = tableExists.value()["Id"];
+               sol::optional<std::string> strSource = tableExists.value()["Src"];
                if (strAssetId == sol::nullopt || strSource == sol::nullopt)
                {
                   ASSERT(false);
@@ -105,9 +105,9 @@ namespace Engine::Lua
                sol::optional<sol::table> tableExists = tableFonts.value()[nAssetCount];
                if (tableExists == sol::nullopt) break;
 
-               sol::optional<std::string> strAssetId = tableExists.value()["id"];
-               sol::optional<std::string> strSource = tableExists.value()["src"];
-               sol::optional<int> nSize = tableExists.value()["size"];
+               sol::optional<std::string> strAssetId = tableExists.value()["Id"];
+               sol::optional<std::string> strSource = tableExists.value()["Src"];
+               sol::optional<int> nSize = tableExists.value()["Size"];
 
                if (strAssetId == sol::nullopt || strSource == sol::nullopt || nSize == sol::nullopt)
                {
@@ -128,9 +128,9 @@ namespace Engine::Lua
    ///////////////////////////////////////////////////////////////////////////////////////////////
    bool LoadMap(const sol::table& mapTable, Map& outMap)
    {
-      sol::optional<std::string> strAssetId = mapTable["id"];
-      sol::optional<std::string> strSrc = mapTable["src"];
-      sol::optional<int> nTileSize = mapTable["tileSize"];
+      sol::optional<std::string> strAssetId = mapTable["Id"];
+      sol::optional<std::string> strSrc = mapTable["Src"];
+      sol::optional<int> nTileSize = mapTable["TileSize"];
       sol::optional<float> fPosX = mapTable["PosX"];
       sol::optional<float> fPosY = mapTable["PosY"];
 
@@ -227,6 +227,7 @@ namespace Engine::Lua
          bSuccess = bSuccess && LoadComponent<TransformComponent>(pEntity, compTable, "Transform");
          bSuccess = bSuccess && LoadComponent<TransformUIComponent>(pEntity, compTable, "TransformUI");
          bSuccess = bSuccess && LoadComponent<SpriteComponent>(pEntity, compTable, "Sprite");
+         bSuccess = bSuccess && LoadComponent<AnimationComponent>(pEntity, compTable, "Animation");
       }
 
       //Safety check... Check if all the components in the lua file were added or not
