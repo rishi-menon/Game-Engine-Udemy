@@ -228,6 +228,7 @@ namespace Engine::Lua
          bSuccess = bSuccess && LoadComponent<TransformUIComponent>(pEntity, compTable, "TransformUI");
          bSuccess = bSuccess && LoadComponent<SpriteComponent>(pEntity, compTable, "Sprite");
          bSuccess = bSuccess && LoadComponent<AnimationComponent>(pEntity, compTable, "Animation");
+         bSuccess = bSuccess && LoadComponent<BoxColliderComponent>(pEntity, compTable, "BoxCollider");
       }
 
       //Safety check... Check if all the components in the lua file were added or not

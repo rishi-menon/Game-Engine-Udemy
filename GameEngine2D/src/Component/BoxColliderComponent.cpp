@@ -5,6 +5,18 @@
 #include "Entity/Entity.h"
 #include "Game/Game.h"
 
+BoxColliderComponent::BoxColliderComponent() :
+   m_vOffset(0.0f,0.0f), m_vScale(0.0f, 0.0f),
+   m_strTag(""),
+   m_pTexture(nullptr),
+   m_rectSource(SDL_Rect{ 0,0,0,0 }),
+   m_bDrawTexture(true)   //To do: change this to false eventually
+{
+#ifdef EX_2020_DRAW_FADED_BOX
+   m_bDrawFadedBackground = false;
+#endif
+
+}
 BoxColliderComponent::BoxColliderComponent(const std::string& colliderTag, const glm::vec2& offset, const glm::vec2& scale, const std::string& id) :
    m_vOffset (offset), m_vScale (scale),
    m_strTag (colliderTag),
@@ -83,6 +95,45 @@ void BoxColliderComponent::DrawCollisionBox()
       Game::s_camera.WorldRectToScreenRect(GetRect(), rectScreen);
       TextureManager::DrawTexture(m_pTexture->GetTexture(), m_rectSource, rectScreen, 0.0f, SDL_FLIP_NONE);
    }
+}
+
+bool BoxColliderComponent::SetValueTable(const sol::table& table)
+{
+   sol::optional<sol::table> offset = table["Offset"];
+   sol::optional<sol::table> scale = table["Scale"];
+   sol::optional<std::string> tag = table["Tag"];
+   sol::optional<std::string> textureId = table["TextureId"];
+
+   ASSERT(textureId);
+   if (!offset || !scale || !tag) { ASSERT(false); return false; }
+
+   sol::optional<float> offsetX = offset.value()["X"];
+   sol::optional<float> offsetY = offset.value()["Y"];
+   sol::optional<float> scaleX = scale.value()["Y"];
+   sol::optional<float> scaleY = scale.value()["Y"];
+
+   if (!offsetX || !offsetY || !scaleX || !scaleY) { ASSERT(false); return false; }
+
+   m_vOffset.x = offsetX.value();
+   m_vOffset.y = offsetY.value();
+   m_vScale.x = scaleX.value();
+   m_vScale.y = scaleY.value();
+   m_strTag = tag.value();
+
+   if (textureId)
+   {
+      std::string id = textureId.value();
+      if (!id.empty())
+      {
+         m_pTexture = Game::s_pAssetManager->GetTexture(id);
+         ASSERT(m_pTexture && m_pTexture->GetTexture());
+         m_rectSource.x = 0;
+         m_rectSource.y = 0;
+         m_rectSource.w = m_pTexture->GetWidth();
+         m_rectSource.h = m_pTexture->GetHeight();
+      }
+   }
+   return true;
 }
 
 #ifdef EX_2020_DRAW_FADED_BOX

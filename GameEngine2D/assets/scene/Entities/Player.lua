@@ -44,4 +44,11 @@ mod.Components.Animation = {
    }
 }
 
+mod.Components.BoxCollider = {
+   Offset = {X = 0, Y = 0},
+   Scale =  {X = 1, Y = 1},
+   Tag = "Player",
+   TextureId = "collision-texture"
+}
+
 return mod
