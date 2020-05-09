@@ -99,11 +99,11 @@ bool Game::LoadLevel(int nLevelNumber)
       entity.AddComponent<BoxColliderComponent>("Player", glm::vec2{ 0, 0 }, glm::vec2{ 1,1 }, "collision-texture");
 
       const float fSpeed = 17; //animation frames per second
-      compAnimation.AddAnimation(AnimationID::DirDown,  AnimationLayout({ 0, 1 }, fSpeed));
-      compAnimation.AddAnimation(AnimationID::DirRight, AnimationLayout({ 2, 3 }, fSpeed));
-      compAnimation.AddAnimation(AnimationID::DirLeft,  AnimationLayout({ 4, 5 }, fSpeed));
-      compAnimation.AddAnimation(AnimationID::DirUp,    AnimationLayout({ 6, 7 }, fSpeed));
-      compAnimation.SetCurrentAnimation(AnimationID::DirDown);
+      compAnimation.AddAnimation("down",  AnimationLayout({ 0, 1 }, fSpeed));
+      compAnimation.AddAnimation("right", AnimationLayout({ 2, 3 }, fSpeed));
+      compAnimation.AddAnimation("left",  AnimationLayout({ 4, 5 }, fSpeed));
+      compAnimation.AddAnimation("up",    AnimationLayout({ 6, 7 }, fSpeed));
+      compAnimation.SetCurrentAnimation("down");
       
       
       compController.SetMovementControls("w", "a", "s", "d");

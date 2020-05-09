@@ -42,4 +42,8 @@ mod.Components.Sprite = {
    --TextureDefaultRect = {x = 0, y = 0, w = 64, h = 64}   
 }
 
+mod.Components.Animation = {
+
+}
+
 return mod

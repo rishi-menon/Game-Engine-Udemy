@@ -189,7 +189,7 @@ void PlayerControllerComponent::OnUpdate(double deltaTime)
       m_pTransformComponent->m_vVeloctiy = glm::vec2(0, m_vecVelocity.y);
       if (m_pAnimationComponent)
       {
-         m_pAnimationComponent->SetCurrentAnimation(AnimationID::DirUp);
+         m_pAnimationComponent->SetCurrentAnimation("up");
       }
    }
    else if (Engine::Input::GetKeyPressed(m_nKeyRight))
@@ -197,7 +197,7 @@ void PlayerControllerComponent::OnUpdate(double deltaTime)
       m_pTransformComponent->m_vVeloctiy = glm::vec2(m_vecVelocity.x, 0);
       if (m_pAnimationComponent)
       {
-         m_pAnimationComponent->SetCurrentAnimation(AnimationID::DirRight);
+         m_pAnimationComponent->SetCurrentAnimation("right");
       }
    }
    else if (Engine::Input::GetKeyPressed(m_nKeyDown))
@@ -205,7 +205,7 @@ void PlayerControllerComponent::OnUpdate(double deltaTime)
       m_pTransformComponent->m_vVeloctiy = glm::vec2(0, -m_vecVelocity.y);
       if (m_pAnimationComponent)
       {
-         m_pAnimationComponent->SetCurrentAnimation(AnimationID::DirDown);
+         m_pAnimationComponent->SetCurrentAnimation("down");
       }
    }
    else if (Engine::Input::GetKeyPressed(m_nKeyLeft))
@@ -213,7 +213,7 @@ void PlayerControllerComponent::OnUpdate(double deltaTime)
       m_pTransformComponent->m_vVeloctiy = glm::vec2(-m_vecVelocity.x, 0);
       if (m_pAnimationComponent)
       {
-         m_pAnimationComponent->SetCurrentAnimation(AnimationID::DirLeft);
+         m_pAnimationComponent->SetCurrentAnimation("left");
       }
    }
    else if (Engine::Input::GetKeyPressed(m_nKeyFire))

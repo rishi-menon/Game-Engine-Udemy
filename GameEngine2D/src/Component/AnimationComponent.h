@@ -21,16 +21,16 @@ struct AnimationLayout
    AnimationLayout(const AnimationLayout& other);
 };
 
-enum class AnimationID : unsigned int
-{
-   None = 0,
-   DirLeft,
-   DirRight,
-   DirUp,
-   DirDown,
-
-   Default
-};
+//enum class AnimationID : unsigned int
+//{
+//   None = 0,
+//   DirLeft,
+//   DirRight,
+//   DirUp,
+//   DirDown,
+//
+//   Default
+//};
 
 
 class AnimationComponent : public Component
@@ -38,6 +38,8 @@ class AnimationComponent : public Component
 public:
    COMPONENT_TYPE(Animation)
    COMPONENT_NAME("Animation")
+public:   
+   AnimationComponent();
    AnimationComponent(int x, int y);
    AnimationComponent(AnimationComponent& comp);
    ~AnimationComponent();
@@ -49,8 +51,8 @@ public:
    inline void SetGridCoords(int x, int y) { m_nGridSizeX = x; m_nGridSizeY = y; }
    inline void GetGridCoords(int& x, int& y) const { x = m_nGridSizeX; y = m_nGridSizeY; } //is this even necessary ??
 
-   void AddAnimation(AnimationID id, AnimationLayout&& layout);
-   void SetCurrentAnimation(AnimationID id);
+   void AddAnimation(const std::string& strAnimationId, AnimationLayout&& layout);
+   void SetCurrentAnimation(const std::string& strAnimationId);
 
    void SetRotationSpeed(double dSpeed) { m_dRotationSpeed = dSpeed; }  //in degrees per second
 
@@ -66,9 +68,9 @@ private:
 private:
    SpriteComponent* m_pSpriteComponent;
    AnimationLayout* m_pCurrentAnimationLayout;
-   AnimationID m_AnimationID;
+   std::string m_strAnimationID;
 
-   std::unordered_map<AnimationID, AnimationLayout> m_umapAnimationLayout;
+   std::unordered_map<std::string, AnimationLayout> m_umapAnimationLayout;
 
    int m_nGridSizeX; //number of images along the x axis ? Number of columns
    int m_nGridSizeY; //number of images along the y axis ? Number of rows

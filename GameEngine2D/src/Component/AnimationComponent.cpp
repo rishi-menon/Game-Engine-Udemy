@@ -20,9 +20,25 @@ AnimationLayout::AnimationLayout(const AnimationLayout& other) :
 {
    m_indices = other.m_indices;
 }
+
+AnimationComponent::AnimationComponent() :
+   m_pSpriteComponent(nullptr),
+   m_pCurrentAnimationLayout(nullptr),
+   m_strAnimationID(""),
+   m_nGridSizeX(0),
+   m_nGridSizeY(0),
+   m_dRotationSpeed(0.0),
+   m_dAnimationIndex(0.0),
+   m_bIsActive(false)
+{
+   //add a default animation (does not perform any animation)
+   AddAnimation("", AnimationLayout({ 0 }, 0));
+   SetCurrentAnimation("");
+}
 AnimationComponent::AnimationComponent(int x, int y) :
    m_pSpriteComponent (nullptr),
    m_pCurrentAnimationLayout(nullptr),
+   m_strAnimationID(""),
    m_nGridSizeX (x),
    m_nGridSizeY (y),
    m_dRotationSpeed(0.0),
@@ -30,13 +46,13 @@ AnimationComponent::AnimationComponent(int x, int y) :
    m_bIsActive(false)
 {
    //add a default animation (does not perform any animation)
-   AddAnimation(AnimationID::None, AnimationLayout({ 0 }, 0));
-   SetCurrentAnimation(AnimationID::None);
+   AddAnimation("", AnimationLayout({ 0 }, 0));
+   SetCurrentAnimation("");
 }
 AnimationComponent::AnimationComponent(AnimationComponent& comp) :
    m_pSpriteComponent (comp.m_pSpriteComponent),
    m_pCurrentAnimationLayout (comp.m_pCurrentAnimationLayout),
-   m_AnimationID (comp.m_AnimationID),
+   m_strAnimationID(comp.m_strAnimationID),
    m_nGridSizeX (comp.m_nGridSizeX),
    m_nGridSizeY (comp.m_nGridSizeY),
    m_dRotationSpeed (comp.m_dRotationSpeed),
@@ -71,7 +87,7 @@ void AnimationComponent::OnUpdate(double deltaTime)
    if (m_dAnimationIndex > 1000) { m_dAnimationIndex = 0.0; }
    //Play animation
    OnAnimationRotation(deltaTime);
-   if (m_AnimationID != AnimationID::None)
+   if (!m_strAnimationID.empty())
    {
       OnAnimationSpriteSheet(deltaTime);
    }
@@ -126,25 +142,21 @@ void AnimationComponent::GetSourceRectFromIndex(int nGridIndex, SDL_Rect& rectSo
    rectSource.w = static_cast<int>(dx);   //Do I need to set this every single time ? Or should I set it inside SetGridCoord ?
    rectSource.h = static_cast<int>(dy);   //Do I need to set this every single time ? Or should I set it inside SetGridCoord ?
 }
-void AnimationComponent::AddAnimation(AnimationID id, AnimationLayout&& layout)
+void AnimationComponent::AddAnimation(const std::string& strAnimationId, AnimationLayout&& layout)
 {
-   m_umapAnimationLayout.emplace(id, std::move(layout));
-   //if (!m_pCurrentAnimationLayout)
-   //{
-   //   SetCurrentAnimation(id);
-   //}
+   m_umapAnimationLayout.emplace(strAnimationId, std::move(layout));
 }
-void AnimationComponent::SetCurrentAnimation(AnimationID id)
+void AnimationComponent::SetCurrentAnimation(const std::string& strAnimationId)
 {
-   std::unordered_map<AnimationID, AnimationLayout>::iterator it = m_umapAnimationLayout.find(id);
+   std::unordered_map<std::string, AnimationLayout>::iterator it = m_umapAnimationLayout.find(strAnimationId);
    ASSERT(it != m_umapAnimationLayout.end());
    if (it != m_umapAnimationLayout.end())
    {
-      m_AnimationID = id;
+      m_strAnimationID = strAnimationId;
 
-      ASSERT(it->first == id);
+      ASSERT(it->first == strAnimationId);
       m_pCurrentAnimationLayout = &it->second;
-      if (id == AnimationID::None && m_pSpriteComponent)
+      if (strAnimationId.empty() && m_pSpriteComponent)
       {
          //Reset the animation...
          m_pSpriteComponent->ResetSourceRect();
