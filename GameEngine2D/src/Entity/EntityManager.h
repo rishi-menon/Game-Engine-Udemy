@@ -29,7 +29,7 @@ public:
    
    EntityManager& operator = (EntityManager&& other);
 
-   //Find gameobject with name... To do: add Get Entities from name
+   //Find gameobject with name. If there are multiple then it just returns the first match... To do: add Get multiple entities from name
    Entity* GetEntityFromName(const std::string& strName) const;
 
    //Deletes all the entities that were added in the list to delete... Call this function at the END of every game loop... (Call after collision detection because collision detection stores the pointer to the ColliderComponent and it would become a dangling pointer if the entity is deleted earlier

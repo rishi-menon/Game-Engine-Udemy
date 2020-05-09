@@ -51,4 +51,11 @@ mod.Components.BoxCollider = {
    TextureId = "collision-texture"
 }
 
+mod.Components.PlayerController = {
+
+   MovementKeys = {Up = "w", Left = "a", Down = "s", Right = "d"},
+   FireKey = "space",
+   Velocity = {X = 4, Y = 4}
+}
+
 return mod

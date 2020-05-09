@@ -27,9 +27,9 @@ PlayerControllerComponent::~PlayerControllerComponent()
 void PlayerControllerComponent::SetMovementControls(const std::string& up, const std::string& left, const std::string& down, const std::string& right)
 {
    m_nKeyUp      =    GetScanCodeFromString (up);
-   m_nKeyRight   =    GetScanCodeFromString (right);
-   m_nKeyDown    =    GetScanCodeFromString (down);
    m_nKeyLeft    =    GetScanCodeFromString (left);
+   m_nKeyDown    =    GetScanCodeFromString (down);
+   m_nKeyRight   =    GetScanCodeFromString (right);
 }
 
 void PlayerControllerComponent::SetFireControl(const std::string& st)
@@ -46,7 +46,6 @@ int PlayerControllerComponent::GetScanCodeFromString(const std::string& string)
    {
       st[i] = tolower(string[i]);
    }
-   //To do: find a generic way of doing this
    if (st.size() != 1)
    {
       if (st == "up") { return SDLK_UP; }
@@ -189,6 +188,7 @@ void PlayerControllerComponent::OnUpdate(double deltaTime)
       m_pTransformComponent->m_vVeloctiy = glm::vec2(0, m_vecVelocity.y);
       if (m_pAnimationComponent)
       {
+         //To do: the animation that is played should be controlled by the lua script perhaps ?
          m_pAnimationComponent->SetCurrentAnimation("up");
       }
    }
@@ -222,4 +222,29 @@ void PlayerControllerComponent::OnUpdate(double deltaTime)
    }
 
 #endif
+}
+
+bool PlayerControllerComponent::SetValueTable(const sol::table& table)
+{
+   sol::optional<sol::table> movementKeys = table["MovementKeys"];
+   sol::optional<std::string> fireKey = table["FireKey"];
+   sol::optional<sol::table> velocity = table["Velocity"];
+   if (!movementKeys || !fireKey || !velocity) { ASSERT(false); return false; }
+
+   sol::optional<float> velocityX = velocity.value()["X"];
+   sol::optional<float> velocityY = velocity.value()["Y"];
+   if (!velocityX || !velocityY) { ASSERT(false); return false; }
+
+   sol::optional<std::string> up = movementKeys.value()["Up"];
+   sol::optional<std::string> down = movementKeys.value()["Down"];
+   sol::optional<std::string> left = movementKeys.value()["Left"];
+   sol::optional<std::string> right = movementKeys.value()["Right"];
+   if (!up || !down || !left || !right) { ASSERT(false); return false; }
+
+   SetMovementControls(up.value(), left.value(), down.value(), right.value());
+   m_vecVelocity.x = velocityX.value();
+   m_vecVelocity.y = velocityY.value();
+   SetFireControl(fireKey.value());
+
+   return true;
 }

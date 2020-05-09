@@ -7,7 +7,7 @@
 
 #include "LuaSupport/LuaSupport.h"
 
-//To do: add a camera game object and change the camera class to a component...
+//To do: add a camera game object and change the camera class to a component... This is a BIG change...
 
 EntityManager Game::s_EntityManager;
 SDL_Renderer* Game::s_pRenderer = 0;

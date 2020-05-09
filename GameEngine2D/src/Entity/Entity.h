@@ -71,7 +71,7 @@ public:
       {
          ASSERT(it->second.size() > 0);
          ASSERT(it->second.size() == 1);  //This function should mainly only be used when there is only one component... If there are multiple then the first component in the array is returned (which is probably bad as it can be random).... Use GetComponents in that case
-         if (it->second.size() > 0) //To do: safety check, could be removed perhaps 
+         if (it->second.size() > 0)
          {
             ASSERT(it->second.at(0)->GetType() == T::GetStaticType());
             return static_cast<T*>(it->second.at(0));
@@ -97,7 +97,6 @@ public:
    //Use this function if you want to get a components of different types
    bool GetComponentsGeneric(const std::vector<ComponentType>& vecComponents, ComponentsMap& map);
 
-   //To do: implement functionality using this
    inline bool GetIsActive() const { return m_bIsActive; }
    void SetIsActive(bool bIsActive) { m_bIsActive = bIsActive; }
 
