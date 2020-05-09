@@ -12,8 +12,9 @@ public:
    void OnRender();
 
    //void OnDestroy();
-   Entity& AddEntity(const std::string& strName = "");
-   Entity& Instantiate(Entity* pEntity, double dLifetime);
+   Entity* AddEntity(const std::string& strName = "");
+   void AddEntity(Entity* pEntity);
+   Entity* Instantiate(Entity* pEntity, double dLifetime);
 
    inline std::size_t GetCount() const { return m_listEntities.size(); }
 
@@ -31,7 +32,7 @@ public:
    //Find gameobject with name... To do: add Get Entities from name
    Entity* GetEntityFromName(const std::string& strName) const;
 
-   //Deletes all the entities that were added in the list to delete... Call this function at the END of every game loop... (Call even after collision detection because collision detection stores the pointer to the ColliderComponent and it would become a dangling pointer if the entity is deleted earlier
+   //Deletes all the entities that were added in the list to delete... Call this function at the END of every game loop... (Call after collision detection because collision detection stores the pointer to the ColliderComponent and it would become a dangling pointer if the entity is deleted earlier
    void DeleteEntities();  
 
    void DestroyEntity(Entity* const pEntity);  //To do: add a destroy by name

@@ -4,8 +4,15 @@
 #include "Camera/Camera.h"
 #include "TileMap/Map.h"
 
+#include <lua/include/sol.hpp>
+
+class Game;
+namespace Engine::Lua {
+   bool LoadScene(Game& game, const std::string& srcFile);
+}
 class Game
 {
+   friend bool Engine::Lua::LoadScene(Game& game, const std::string& srcFile);
 public:
    Game();
    ~Game();
@@ -19,8 +26,9 @@ public:
    void OnEndFrame();   //Gets called at the end of the game loop... for cleanup mainly
    void OnDestroy();
 
-   void LoadLevel(int nLevelNumber);
+   bool LoadLevel(int nLevelNumber);
 
+   static EntityManager s_EntityManager;
    static SDL_Renderer* s_pRenderer;
    static AssetManager* s_pAssetManager;
    static SDL_Event s_event;
@@ -29,6 +37,7 @@ public:
 private:
    void DoUpdate(double deltaTime);
    void MoveCamera(double deltaTime);
+
 private:
    bool m_bIsRunning;
    Uint32 m_nLastUpdateTick;

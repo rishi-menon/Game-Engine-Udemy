@@ -10,7 +10,7 @@ public:
    Map();
    ~Map();
 
-   bool LoadMap(const char* const mapPath, const std::string& mapAssetID, int tileSize, float StartPosX, float StartPosY);
+   bool LoadMap(const std::string& mapPath, const std::string& mapAssetID, int tileSize, float StartPosX, float StartPosY);
    
    void OnUpdate(double deltaTime);
    void OnRender();

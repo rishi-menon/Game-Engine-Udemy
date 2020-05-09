@@ -12,9 +12,12 @@ class AnimationComponent;
 class SpriteComponent : public Component
 {
    friend class AnimationComponent;
+   
 public:
    COMPONENT_TYPE(Sprite);
    COMPONENT_NAME("Sprite");
+
+   SpriteComponent();
    SpriteComponent(const std::string& id);
    ~SpriteComponent();
    //overrides
@@ -28,6 +31,8 @@ public:
 
    inline int GetWidth()  const { ASSERT(m_pTexture); return m_pTexture->GetWidth();  }
    inline int GetHeight() const { ASSERT(m_pTexture); return m_pTexture->GetHeight(); }
+
+   bool SetValueTable(const sol::table& table) override;
 
 public:
    SDL_RendererFlip m_SpriteFlip;

@@ -21,7 +21,16 @@ public:
    
    const glm::vec2& GetPosition() const { return m_vPosition; }
    const glm::vec2& GetScale() const { return m_vScale; }
+
+   void SetScale(float x, float y);
+   void SetScale(const glm::vec2& pos);
+
+   virtual bool SetValueTable(const sol::table& table) override;
    
+protected:
+   void SetPositionWithoutCollision(float x, float y);
+   void SetPositionWithoutCollision(const glm::vec2& pos);
+
 private:
    inline void AddToCollisionListHelper();   //Helper function to add the entity to the collision check list when it moves.
 private:

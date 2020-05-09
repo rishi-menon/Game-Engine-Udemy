@@ -25,7 +25,8 @@ class EntityManager;
 class Entity
 {
 public:
-   Entity(EntityManager& manager, const std::string& str = "");
+   Entity(const std::string& strName = "");
+   Entity(EntityManager* manager, const std::string& strName = "");
    ~Entity();
 
    void OnInitialise();
@@ -105,17 +106,19 @@ public:
    void OnCollisionExit(BoxColliderComponent& otherCollider);
 
    inline const std::unordered_map<ComponentType, Components>& GetComponentsMap() const { return m_umapComponentType; }
-   inline const EntityManager& GetEntityManager() const { return m_entityManager; }
-   inline       EntityManager& GetEntityManager()       { return m_entityManager; }
+   
+   inline EntityManager* GetEntityManager() const { ASSERT(m_pEntityManager); return m_pEntityManager; }
+   void SetEntityManager(EntityManager* pManager) { m_pEntityManager = pManager; }
 
    inline const std::string& GetName() const { return m_strName; }
+   void SetName(const std::string& strName) { m_strName = strName; }
 
 private:
    void OnDestroy();
 
 private:
    std::unordered_map<ComponentType, Components> m_umapComponentType;
-   EntityManager& m_entityManager;
+   EntityManager* m_pEntityManager;
 
    bool m_bIsActive;
    std::string m_strName;

@@ -22,7 +22,7 @@ Map::~Map()
 }
 
 
-bool Map::LoadMap(const char* const mapPath, const std::string& mapAssetID, int tileSize, float StartPosX, float StartPosY)
+bool Map::LoadMap(const std::string& mapPath, const std::string& mapAssetID, int tileSize, float StartPosX, float StartPosY)
 {
    int nOldTileSize = m_nTileTextureSize;
    m_nTileTextureSize = tileSize;
@@ -134,23 +134,24 @@ void Map::AddTile(EntityManager& manager, const std::string& id, float posx, flo
    static int count = 0;
    sprintf_s(name, 20, "TileMap %d", count);
    count++;
-   Entity& entity = manager.AddEntity(name);
 #else
-   Entity& entity = manager.AddEntity("TileMap");
+   char name[] = "TileMap"
 #endif // WINDOWS
 
-   const int temp = 1;
-   entity.AddComponent<TransformComponent>(glm::vec2{ posx, posy}, glm::vec2{ 0,0 }, glm::vec2{ fTileSizeWorldUnits, fTileSizeWorldUnits });
-   SpriteComponent& comp = *entity.AddComponent<SpriteComponent>(id);
+   Entity* pEntity = manager.AddEntity(name);
+   if (pEntity)
+   {
+      pEntity->AddComponent<TransformComponent>(glm::vec2{ posx, posy }, glm::vec2{ 0,0 }, glm::vec2{ fTileSizeWorldUnits, fTileSizeWorldUnits });
+      SpriteComponent& comp = *(pEntity->AddComponent<SpriteComponent>(id));
 
-   entity.OnInitialise();
-
-   SDL_Rect rect;
-   rect.x = sourceX * m_nTileTextureSize;
-   rect.y = sourceY * m_nTileTextureSize;
-   rect.w = m_nTileTextureSize;
-   rect.h = m_nTileTextureSize;
-   comp.SetSourceRect(rect);
+      //SDL_Rect rect;
+      //rect.x = sourceX * m_nTileTextureSize;
+      //rect.y = sourceY * m_nTileTextureSize;
+      //rect.w = m_nTileTextureSize;
+      //rect.h = m_nTileTextureSize;
+      comp.SetSourceRect(SDL_Rect{ sourceX * m_nTileTextureSize, sourceY * m_nTileTextureSize, m_nTileTextureSize, m_nTileTextureSize });
+      pEntity->OnInitialise();
+   }
 }
 
 void Map::OnUpdate(double deltaTime)

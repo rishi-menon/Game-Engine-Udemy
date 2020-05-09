@@ -11,8 +11,16 @@ static const std::array<ComponentType, nRendererUpdateOrderCount> arrayRendererO
    ComponentType::UIText
 };
 
-Entity::Entity(EntityManager& manager, const std::string& strName /*= ""*/) :
-   m_entityManager (manager),
+Entity::Entity(const std::string& strName/* = "" */) :
+   m_pEntityManager(nullptr),
+   m_bIsActive(true),
+   m_strName(strName)
+{
+   m_umapComponentType.reserve(10);   //reserve storage for 10 components to prevent constant allocation of memory
+}
+
+Entity::Entity(EntityManager* manager, const std::string& strName /*= ""*/) :
+   m_pEntityManager(manager),
    m_bIsActive (true),
    m_strName (strName)
 {

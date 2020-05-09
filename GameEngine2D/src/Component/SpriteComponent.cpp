@@ -8,6 +8,19 @@
 
 #include "Assets/TextureManager.h"
 
+//Do NOT use this constructor... It is only for creating components from a lua script.
+SpriteComponent::SpriteComponent() :
+   m_SpriteFlip(SDL_FLIP_NONE),
+   m_pTexture(nullptr),
+   m_rectSource{ 0, 0, 0, 0 },
+   m_rectDestination{ 0, 0, 0, 0 },
+   m_rectDefault{ 0, 0, 0, 0 },
+
+   m_pPartialTransformComponent(nullptr),
+   m_TransformComponentType(ComponentType::None),
+   m_dRotationDeg(0.0)
+{
+}
 SpriteComponent::SpriteComponent(const std::string& id) :
    m_SpriteFlip (SDL_FLIP_NONE),
    m_pTexture (nullptr),
@@ -23,11 +36,12 @@ SpriteComponent::SpriteComponent(const std::string& id) :
    
    ASSERT(m_pTexture && m_pTexture->GetTexture());
 
-   m_rectSource.w = m_pTexture->GetWidth();
-   m_rectSource.h = m_pTexture->GetHeight();
+   //m_rectSource.w = m_pTexture->GetWidth();
+   //m_rectSource.h = m_pTexture->GetHeight();
 
    m_rectDefault.w = m_pTexture->GetWidth();
    m_rectDefault.h = m_pTexture->GetHeight();
+   ResetSourceRect();
 }
 SpriteComponent::~SpriteComponent()
 {
@@ -56,7 +70,6 @@ void SpriteComponent::OnInitialise()
       ASSERT(false);
    }
    ASSERT(m_pPartialTransformComponent);   //this should exist
-   ResetSourceRect();
 }
 
 void SpriteComponent::OnUpdate(double deltaTime)
@@ -81,4 +94,36 @@ void SpriteComponent::OnRender()
       return;
    }
    TextureManager::DrawTexture(m_pTexture->GetTexture(), m_rectSource, m_rectDestination, m_dRotationDeg, m_SpriteFlip);
+}
+
+bool SpriteComponent::SetValueTable(const sol::table& table)
+{
+   
+   sol::optional<std::string> textureId = table["Id"];
+   ASSERT(textureId != sol::nullopt);
+   if (textureId == sol::nullopt)   return false;
+
+   SetTexture(textureId.value());
+
+   ASSERT(m_pTexture && m_pTexture->GetTexture());
+
+   m_rectDefault.w = m_pTexture->GetWidth();
+   m_rectDefault.h = m_pTexture->GetHeight();
+
+   sol::optional<sol::table> defaultRect = table["TextureDefaultRect"];
+   if (defaultRect != sol::nullopt)
+   {
+      sol::optional<int> x = defaultRect.value()["x"];
+      sol::optional<int> y = defaultRect.value()["y"];
+      sol::optional<int> w = defaultRect.value()["w"];
+      sol::optional<int> h = defaultRect.value()["h"];
+      ASSERT(x != sol::nullopt && y != sol::nullopt && w != sol::nullopt && h != sol::nullopt);
+      if (x && y && w && h)
+      {
+         m_rectDefault = SDL_Rect{ x.value(), y.value(), w.value(), h.value() };
+      }
+   }
+   ResetSourceRect();
+
+   return true;
 }

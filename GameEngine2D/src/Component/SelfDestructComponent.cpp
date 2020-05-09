@@ -10,6 +10,6 @@ void SelfDestructComponent::OnUpdate(double deltaTime)
    {
       //Destroy the gameobject
       ASSERT(m_pEntityOwner);
-      m_pEntityOwner->GetEntityManager().DestroyEntity(m_pEntityOwner);
+      m_pEntityOwner->GetEntityManager()->DestroyEntity(m_pEntityOwner);
    }
 }

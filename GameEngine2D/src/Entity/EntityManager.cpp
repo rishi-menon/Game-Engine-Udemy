@@ -59,20 +59,30 @@ void EntityManager::OnRender()
 //      (*it)->OnDestroy();
 //   }
 //}
-Entity& EntityManager::AddEntity(const std::string& strName /*= ""*/)
+Entity* EntityManager::AddEntity(const std::string& strName /*= ""*/)
 {
-   Entity* pEntity = new Entity(*this, strName);
-   ASSERT(pEntity);
-   m_listEntities.push_back(pEntity);
+   Entity* pEntity = new Entity(this, strName);
+   AddEntity(pEntity);
+   return pEntity;
+}
 
-   return *pEntity;
+void EntityManager::AddEntity(Entity* pEntity)
+{
+   ASSERT(pEntity);
+   if (pEntity)
+   {
+      m_listEntities.push_back(pEntity);
+   }
 }
 
 
 //liftime of 0.0 means that the object does not get automatically destroyed
-Entity& EntityManager::Instantiate(Entity* pEntity, double dLifetime)   //lifetime is in seconds
+Entity* EntityManager::Instantiate(Entity* pEntity, double dLifetime)   //lifetime is in seconds
 {
-   Entity& newEntity = AddEntity(pEntity->GetName());
+   ASSERT(pEntity);
+   if (!pEntity)  return nullptr;
+
+   Entity* pNewEntity = AddEntity(pEntity->GetName());
 
    for (const auto& pair : pEntity->GetComponentsMap())
    {
@@ -82,7 +92,7 @@ Entity& EntityManager::Instantiate(Entity* pEntity, double dLifetime)   //lifeti
          ASSERT(pComponent);
          if (pComponent->CopyDuringInstantiate())
          {
-            newEntity.CopyComponent(pComponent);
+            pNewEntity->CopyComponent(pComponent);
          }
       }
    }
@@ -90,7 +100,7 @@ Entity& EntityManager::Instantiate(Entity* pEntity, double dLifetime)   //lifeti
    //safer to check if the number is bigger than this value instead of checking if lifeTime != 0
    if (dLifetime > 1.0e-5)
    {
-      newEntity.AddComponent<SelfDestructComponent>(dLifetime);
+      pNewEntity->AddComponent<SelfDestructComponent>(dLifetime);
    }
    else
    {
@@ -98,8 +108,8 @@ Entity& EntityManager::Instantiate(Entity* pEntity, double dLifetime)   //lifeti
       //delete later
    }
    
-   newEntity.OnInitialise();
-   return newEntity;
+   pNewEntity->OnInitialise();
+   return pNewEntity;
 }
 
 Entity* EntityManager::GetEntityFromName(const std::string& strName) const
@@ -124,13 +134,6 @@ void EntityManager::DeleteEntities()
       if (setDeleted.find(pEntity) == setDeleted.end())
       {
          m_listEntities.remove(pEntity);
-         /*const Components* pColliderComponents;
-         pEntity->GetComponents<BoxColliderComponent>(pColliderComponents);
-         ASSERT(pColliderComponents);
-         for (Component* pComp : (*pColliderComponents))
-         {
-           (static_cast<BoxColliderComponent*>(pComp));
-         }*/
 
          setDeleted.emplace(pEntity);  //for safety... so that the same entity is not deleted twice
          delete pEntity;

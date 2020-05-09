@@ -5,10 +5,11 @@
 #include "Entity/EntityManager.h"
 #include "Collision/CollisionManager.h"
 
-#include <lua/include/sol.hpp>
+#include "LuaSupport/LuaSupport.h"
 
-EntityManager g_EntityManager;   //To do: temporary global EntityManager... Move to static class member maybe ?
+//To do: add a camera game object and change the camera class to a component...
 
+EntityManager Game::s_EntityManager;
 SDL_Renderer* Game::s_pRenderer = 0;
 AssetManager* Game::s_pAssetManager = new AssetManager ();
 SDL_Event     Game::s_event;
@@ -53,10 +54,12 @@ void Game::MoveCamera(double deltaTime)
    s_camera.TranslateViewRect(fCameraDeltaX, fCameraDeltaY);
 }
 
+
 //To do: move the "radar" gameobject to a UI entity manager which gets rendered at the end
-void Game::LoadLevel(int nLevelNumber)
+bool Game::LoadLevel(int nLevelNumber)
 {
-#if 0
+#if 1
+   s_camera.SetViewRect(0, 0, 40); //default camera view
    //Create assets
    s_pAssetManager->AddTexture("tank-big-right",       "assets\\images\\tank-big-right.png");
    s_pAssetManager->AddTexture("chopper-spritesheet",  "assets\\images\\chopper-spritesheet.png");
@@ -72,15 +75,15 @@ void Game::LoadLevel(int nLevelNumber)
    //Create Entitys and add components
    {
       //Bullet Prefab
-      Entity& entity = g_EntityManager.AddEntity("Bullet");
+      Entity& entity = *s_EntityManager.AddEntity("Bullet");
       entity.AddComponent<TransformComponent>(glm::vec2{ 0,0 }, glm::vec2{ 0, 1 }, glm::vec2{ 0.1, 0.1 });
       entity.AddComponent<SpriteComponent>("bullet-enemy");
       entity.AddComponent<BoxColliderComponent>("Bullet", glm::vec2{ 0, 0 }, glm::vec2{ 1,1 }, "collision-texture");
-      entity.OnInitialise();
       entity.SetIsActive(false);
+      entity.OnInitialise();
    }
    {
-      Entity& entity = g_EntityManager.AddEntity("Tank");
+      Entity& entity = *s_EntityManager.AddEntity("Tank");
       entity.AddComponent<TransformComponent>(glm::vec2{ 0,0 }, glm::vec2{ -0.5, 0 }, glm::vec2{ 1, 1 });
       entity.AddComponent<SpriteComponent>("tank-big-right");
       entity.AddComponent<BoxColliderComponent>("Enemy", glm::vec2{ 0, 0 }, glm::vec2{ 1,1 }, "collision-texture");
@@ -88,7 +91,7 @@ void Game::LoadLevel(int nLevelNumber)
       entity.OnInitialise();
    }
    {
-      Entity& entity = g_EntityManager.AddEntity("Player");
+      Entity& entity = *s_EntityManager.AddEntity("Player");
       entity.AddComponent<TransformComponent>(glm::vec2{ -14,0 }, glm::vec2{ 0, 0 }, glm::vec2{ 1, 1 });
       entity.AddComponent<SpriteComponent>("chopper-spritesheet");
       AnimationComponent& compAnimation =         *entity.AddComponent<AnimationComponent>(2, 4);
@@ -112,7 +115,7 @@ void Game::LoadLevel(int nLevelNumber)
    }
    {
       
-      Entity& entity = g_EntityManager.AddEntity("Radar");
+      Entity& entity = *s_EntityManager.AddEntity("Radar");
       const float dimension = 64.0f;
       entity.AddComponent<TransformUIComponent>(glm::vec2{ 700, 20 }, glm::vec2{ dimension, dimension });
       SpriteComponent& compSprite = *entity.AddComponent<SpriteComponent>("radar");
@@ -132,13 +135,93 @@ void Game::LoadLevel(int nLevelNumber)
       entity.OnInitialise();
    }
 
-   m_pentityCameraFollow = g_EntityManager.GetEntityFromName("Player");
+   m_pentityCameraFollow = s_EntityManager.GetEntityFromName("Player");
    ASSERT(m_pentityCameraFollow);
-
+   return true;
 #else
+   /*sol::state luaLevel;
+   luaLevel.open_libraries(sol::lib::base, sol::lib::os, sol::lib::math);*/
+
+   const std::string sceneRootFolder = "assets\\scene\\";   //To do: take this path from user in the future
+   std::stringstream ss;
+   ss << sceneRootFolder << "Level" << nLevelNumber << ".lua";
+
+   return Engine::Lua::LoadScene(*this, ss.str());
+
+   /*try {
+      luaLevel.script_file(ss.str());
+   }
+   catch (const std::exception& err)
+   {
+      LOGW(err.what());
+      LOGW("\n");
+      ASSERT(false);
+      return false;
+   }
+   catch (...)
+   {
+      ASSERT(false);
+      return false;
+   }*/
+
+   //////////////////////////////////////////////////////////////////////////
+   ////                   Start loading the scene                          //
+   //////////////////////////////////////////////////////////////////////////
+   ////Load Assets...
+   //{
+   //   sol::optional<sol::table> assetsTableExists = luaLevel["assets"];
+   //   ASSERT(assetsTableExists != sol::nullopt);
+   //   if (assetsTableExists != sol::nullopt)
+   //   {
+   //      if (!LoadAssets(assetsTableExists.value()))
+   //      {
+   //         return false;
+   //      }
+   //   }
+   //}
+
+   ////Load Map...
+   //{
+   //   sol::optional<sol::table> MapExists = luaLevel["map"];
+   //   ASSERT(MapExists != sol::nullopt);
+   //   if (MapExists != sol::nullopt)
+   //   {
+   //      if (!LoadMap(MapExists.value()))
+   //      {
+   //         return false;
+   //      }
+   //   }
+   //}
+
+   ////Load Entities
+   //{
+   //   sol::optional<sol::table> entitiesTable = luaLevel["entities"];
+   //   ASSERT(entitiesTable != sol::nullopt);
+   //   if (entitiesTable != sol::nullopt)
+   //   {
+   //      if (!LoadEntities(entitiesTable.value()))
+   //      {
+   //         return false;
+   //      }
+   //   }
+   //}
+   ////Load Camera (should be done after loading the entities).... The camera table in the lua file is completely optional and can be omitted
+   //s_camera.SetViewRect(0, 0, 40);  //default camera view
+   //{
+   //   sol::optional<sol::table> cameraTable = luaLevel["camera"];
+   //   ASSERT(cameraTable != sol::nullopt);
+   //   if (cameraTable != sol::nullopt)
+   //   {
+   //      //Load the values
+   //      if (!LoadCamera(cameraTable.value()))
+   //      {
+   //         return false;
+   //      }
+   //   }
 
 
-
+   //}
+   //return true;
 #endif
 }
 
@@ -189,15 +272,13 @@ void Game::Initialise(const unsigned int unWidth, const unsigned int unHeight)
 
    //Everthing went well
    s_camera.SetDimensions(unWidth, unHeight);
-   //const int a = 32
-   s_camera.SetViewRect(0, 0, 40);
 
    //Set up the list of entityManagers (Currently not adding map entity manager as it is not required for the sake of collisions.
    g_vEntityManagers.reserve(5);
-   g_vEntityManagers.push_back(&g_EntityManager);
+   g_vEntityManagers.push_back(&s_EntityManager);
 
 
-   LoadLevel(0);
+   LoadLevel(1);
 
    m_bIsRunning = true;
 }
@@ -268,7 +349,7 @@ void Game::DoUpdate(double deltaTime)
    //In this function, you don't have to worry about frame rate and all that. Do your update here
 
    m_map.OnUpdate(deltaTime);
-   g_EntityManager.OnUpdate(deltaTime);
+   s_EntityManager.OnUpdate(deltaTime);
 
    //Check for collisions after all the objects have moved... (Currently tilemaps will not be checked as they are in a seperate EntityManager (inside map)... If you want to check them then include that entity manager in the vector of entity managers)
    Engine::CollisionManager::CheckCollisionsList(g_vEntityManagers);
@@ -286,11 +367,10 @@ void Game::OnRender()
 
    m_map.OnRender();   
    
-   if (g_EntityManager.IsEmpty())
+   if (!s_EntityManager.IsEmpty())
    {
-      return;
+      s_EntityManager.OnRender();
    }
-   g_EntityManager.OnRender();
 
    SDL_RenderPresent(s_pRenderer);
 }
@@ -301,7 +381,7 @@ void Game::OnEndFrame()
    Engine::CollisionManager::FreeDeletedEntitiesInMap();
 
    m_map.GetManager().DeleteEntities();
-   g_EntityManager.DeleteEntities();
+   s_EntityManager.DeleteEntities();
 }
 
 void Game::OnDestroy()

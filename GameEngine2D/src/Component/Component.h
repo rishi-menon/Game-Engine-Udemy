@@ -4,6 +4,7 @@
 #include <vector>
 #include <unordered_map>
 #include <array>
+#include <lua/include/sol.hpp>
 
 class Entity;
 
@@ -93,6 +94,9 @@ public:
 
    //While instantiating a gameobject, the components from the prefab are copied into a new one... If you dont want a component to be copied, then override this function in that specific component to return false
    virtual bool CopyDuringInstantiate() const { return true; }
+
+
+   virtual bool SetValueTable(const sol::table& table) { return true; }
 
 protected:
    Entity* m_pEntityOwner;

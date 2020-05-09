@@ -18,9 +18,9 @@ EnemyMovementScript::~EnemyMovementScript()
 
 void EnemyMovementScript::OnInitialise()
 {
-   ASSERT(m_pEntityOwner);
    std::string strBulletName = "Bullet";  //Take this as a parameter instead ?
-   m_pEntityPrefab = m_pEntityOwner->GetEntityManager().GetEntityFromName(strBulletName);
+   ASSERT(m_pEntityOwner && m_pEntityOwner->GetEntityManager());
+   m_pEntityPrefab = m_pEntityOwner->GetEntityManager()->GetEntityFromName(strBulletName);
    ASSERT(m_pEntityPrefab);
 
    m_pTransform = m_pEntityOwner->GetComponent<TransformComponent>();
@@ -30,15 +30,18 @@ void EnemyMovementScript::OnInitialise()
 void EnemyMovementScript::OnUpdate(double deltaTime)
 {
    m_dTime += deltaTime;
-   if (m_pEntityOwner && m_dTime > 1)
+   if (m_pEntityOwner && m_pEntityOwner->GetEntityManager() && m_dTime > 1)
    {
       m_dTime = 0.0;
-      Entity& newEntity = m_pEntityOwner->GetEntityManager().Instantiate(m_pEntityPrefab, 5);
-      newEntity.SetIsActive(true);
-      TransformComponent* pComponent = newEntity.GetComponent<TransformComponent>();
-      ASSERT(pComponent);
-      pComponent->SetPosition(m_pTransform->GetPosition());
-      LOGW("Created Bullet");
+      Entity* pNewEntity = m_pEntityOwner->GetEntityManager()->Instantiate(m_pEntityPrefab, 5);
+      if (pNewEntity)
+      {
+         pNewEntity->SetIsActive(true);
+         TransformComponent* pComponent = pNewEntity->GetComponent<TransformComponent>();
+         ASSERT(pComponent);
+         pComponent->SetPosition(m_pTransform->GetPosition());
+         LOGW("Created Bullet");
+      }
    }
 }
 
