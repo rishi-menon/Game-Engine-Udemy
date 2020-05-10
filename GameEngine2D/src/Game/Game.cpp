@@ -204,7 +204,7 @@ void Game::Initialise(const unsigned int unWidth, const unsigned int unHeight)
 
 
    LoadLevel(1);
-
+   Engine::Lua::SaveScene(*this, "", "SceneTest");
    m_bIsRunning = true;
 }
 

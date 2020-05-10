@@ -9,10 +9,12 @@
 class Game;
 namespace Engine::Lua {
    bool LoadScene(Game& game, const std::string& srcFile);
+   bool SaveScene(Game& game, const std::string& strFolderName, const std::string& strFileName);
 }
 class Game
 {
    friend bool Engine::Lua::LoadScene(Game& game, const std::string& srcFile);
+   friend bool Engine::Lua::SaveScene(Game& game, const std::string& strFolderName, const std::string& strFileName);
 public:
    Game();
    ~Game();

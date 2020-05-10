@@ -140,8 +140,8 @@ namespace Engine::Lua
          //lua script is invalid
          return false;
       }
-
-      outMap.LoadMap(strSrc.value(), strAssetId.value(), nTileSize.value(), fPosX.value(), fPosY.value());
+      MapData data{ strSrc.value(), strAssetId.value(), nTileSize.value(), fPosX.value(), fPosY.value() };
+      outMap.LoadMap(data);
       return true;
    }
    

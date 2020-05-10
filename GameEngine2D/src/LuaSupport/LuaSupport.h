@@ -21,6 +21,7 @@ namespace Engine::Lua
    extern bool LoadComponentValues(Component* pComp, const sol::table& valuesTable);
 
    //save scene stuff
-   extern bool SaveScene(Game& game, const std::string& srcFile, std::string& outString);
+   extern bool SaveScene(Game& game, const std::string& strFolderName, const std::string& strFileName);
    extern std::string GetAssets(const AssetManager& assetManager);
+   extern std::string GetMap(const Map& map);
 }

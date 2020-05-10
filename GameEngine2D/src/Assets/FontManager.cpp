@@ -21,8 +21,8 @@ namespace Engine::FontManager
    void DrawFont(::Engine::FontData& fontData, const SDL_Rect& rectDest)
    {
       //Regenerate the texture if necessary
-      ASSERT(fontData.GetFont() && fontData.GetFont()->GetFont());
-      if (!fontData.GetFont() || !fontData.GetFont()->GetFont())   return;
+      ASSERT(fontData.GetFont() && fontData.GetFont()->GetTTFFont());
+      if (!fontData.GetFont() || !fontData.GetFont()->GetTTFFont())   return;
       if (fontData.m_bRegenerateTexture || !fontData.m_pTexture)
       {
          fontData.m_bRegenerateTexture = false;
@@ -30,8 +30,7 @@ namespace Engine::FontManager
          {
             SDL_DestroyTexture(fontData.m_pTexture);
          }
-         ASSERT(fontData.GetFont()->GetFont());
-         SDL_Surface* pSurface = TTF_RenderText_Blended(fontData.GetFont()->GetFont(), fontData.GetText().c_str(), fontData.GetColor());
+         SDL_Surface* pSurface = TTF_RenderText_Blended(fontData.GetFont()->GetTTFFont(), fontData.GetText().c_str(), fontData.GetColor());
          ASSERT(pSurface);
 
          fontData.m_pTexture = SDL_CreateTextureFromSurface(Game::s_pRenderer, pSurface);

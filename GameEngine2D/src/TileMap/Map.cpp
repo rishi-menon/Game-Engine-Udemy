@@ -12,7 +12,6 @@
 static const float fTileSizeWorldUnits = 2.0f;
 
 Map::Map() :
-   m_nTileTextureSize(0),
    m_rectTiles ()
 {
 }
@@ -22,19 +21,16 @@ Map::~Map()
 }
 
 
-bool Map::LoadMap(const std::string& mapPath, const std::string& mapAssetID, int tileSize, float StartPosX, float StartPosY)
-{
-   int nOldTileSize = m_nTileTextureSize;
-   m_nTileTextureSize = tileSize;
-
+bool Map::LoadMap(const MapData& mapData)
+{   
    bool bSuccess = true;
-   float currentPosX = StartPosX;
-   float currentPosY = StartPosY;
+   float currentPosX = mapData.m_startPosX;
+   float currentPosY = mapData.m_startPosY;
    //Keep Adding new objects to the manager and if the map fails for any reason then dont use it... If it succeeds then store this manager in the memeber variable
    EntityManager manager;
 
    std::ifstream file;
-   file.open(mapPath);
+   file.open(mapData.m_mapPath);
 
    if (!file.is_open() || file.eof()) { bSuccess = false; }
 
@@ -48,7 +44,7 @@ bool Map::LoadMap(const std::string& mapPath, const std::string& mapAssetID, int
       bSuccess = bSuccess && (!StringR::strcmpi(buffer, "Tiles"));   //strcmpi returns 0 when the strings are the same
 
       //This is taking advantage of short circuit evaluation. DO NOT write it as &= as that would not perform short circuit evaluation.
-      bSuccess = bSuccess && LoadTiles(manager, file, mapAssetID, currentPosX, currentPosY);
+      bSuccess = bSuccess && LoadTiles(manager, file, mapData, currentPosX, currentPosY);
 
       //read other stuff if required
 
@@ -59,19 +55,18 @@ bool Map::LoadMap(const std::string& mapPath, const std::string& mapAssetID, int
    {
       m_managerTiles = std::move(manager);
 
-      m_rectTiles.SetRectPoints(StartPosX - fTileSizeWorldUnits /2.0f, StartPosY + fTileSizeWorldUnits / 2.0f, currentPosX - fTileSizeWorldUnits / 2.0f, currentPosY + fTileSizeWorldUnits / 2.0f);
+      m_rectTiles.SetRectPoints(mapData.m_startPosX - fTileSizeWorldUnits /2.0f, mapData.m_startPosY + fTileSizeWorldUnits / 2.0f, currentPosX - fTileSizeWorldUnits / 2.0f, currentPosY + fTileSizeWorldUnits / 2.0f);
+
+      m_mapData = mapData;
       return true;
    }
-   else
-   {
-      m_nTileTextureSize = nOldTileSize;
-      return false;
-   }
+   return false;
+   
 
 }
 
 //PosX, PosY are the start coordinates of creating the map... If the map succeds then it stores the x and y position of the last tile
-bool Map::LoadTiles(EntityManager& manager, std::ifstream& file, const std::string& id, float& PosX, float& PosY)
+bool Map::LoadTiles(EntityManager& manager, std::ifstream& file, const MapData& mapData, float& PosX, float& PosY)
 { 
    float currentPosX = PosX, currentPosY = PosY;
    //if two consecutive endline characters are encountered then break
@@ -95,7 +90,7 @@ bool Map::LoadTiles(EntityManager& manager, std::ifstream& file, const std::stri
       if (!isdigit(cRead) || file.eof()) { bSuccess = false; break; }
       int nSourceX = static_cast<int>(cRead - '0');
 
-      AddTile(manager, id, currentPosX, currentPosY, nSourceX, nSourceY);
+      AddTile(manager, mapData, currentPosX, currentPosY, nSourceX, nSourceY);
 
       file.get(cRead);
       if (file.eof()) { /*For consistencey...*/ fLastTilePosX = currentPosX; currentPosY -= fTileSizeWorldUnits; break; }
@@ -127,7 +122,7 @@ bool Map::LoadTiles(EntityManager& manager, std::ifstream& file, const std::stri
    return false;
 }
 
-void Map::AddTile(EntityManager& manager, const std::string& id, float posx, float posy, int sourceX, int sourceY)
+void Map::AddTile(EntityManager& manager, const MapData& mapData, float posx, float posy, int sourceX, int sourceY)
 {
 #if defined (WINDOWS) && defined (DEBUG)
    char name[20];
@@ -142,14 +137,10 @@ void Map::AddTile(EntityManager& manager, const std::string& id, float posx, flo
    if (pEntity)
    {
       pEntity->AddComponent<TransformComponent>(glm::vec2{ posx, posy }, glm::vec2{ 0,0 }, glm::vec2{ fTileSizeWorldUnits, fTileSizeWorldUnits });
-      SpriteComponent& comp = *(pEntity->AddComponent<SpriteComponent>(id));
+      SpriteComponent& comp = *(pEntity->AddComponent<SpriteComponent>(mapData.m_mapAssetID));
 
       //SDL_Rect rect;
-      //rect.x = sourceX * m_nTileTextureSize;
-      //rect.y = sourceY * m_nTileTextureSize;
-      //rect.w = m_nTileTextureSize;
-      //rect.h = m_nTileTextureSize;
-      comp.SetSourceRect(SDL_Rect{ sourceX * m_nTileTextureSize, sourceY * m_nTileTextureSize, m_nTileTextureSize, m_nTileTextureSize });
+      comp.SetSourceRect(SDL_Rect{ sourceX * mapData.m_tileSize, sourceY * mapData.m_tileSize, mapData.m_tileSize, mapData.m_tileSize });
       pEntity->OnInitialise();
    }
 }
