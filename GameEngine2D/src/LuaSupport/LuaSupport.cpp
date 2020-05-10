@@ -230,6 +230,9 @@ namespace Engine::Lua
          bSuccess = bSuccess && LoadComponent<AnimationComponent>(pEntity, compTable, "Animation");
          bSuccess = bSuccess && LoadComponent<BoxColliderComponent>(pEntity, compTable, "BoxCollider");
          bSuccess = bSuccess && LoadComponent<PlayerControllerComponent>(pEntity, compTable, "PlayerController");
+         bSuccess = bSuccess && LoadComponent<SelfDestructComponent>(pEntity, compTable, "SelfDestruct");
+         bSuccess = bSuccess && LoadComponent<UITextComponent>(pEntity, compTable, "TextUI");
+         bSuccess = bSuccess && LoadComponent<EnemyMovementScript>(pEntity, compTable, "EnemyMovementScript");
       }
 
       //Safety check... Check if all the components in the lua file were added or not
@@ -250,8 +253,8 @@ namespace Engine::Lua
       if (bSuccess)
       {
          //All the components were added successfully
-         pEntity->OnInitialise();
          manager.AddEntity(pEntity);
+         pEntity->OnInitialise();
          return true;
       }
       else

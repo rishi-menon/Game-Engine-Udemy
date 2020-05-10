@@ -8,11 +8,13 @@ class SelfDestructComponent : public Component
    COMPONENT_NAME("Self Destruct");
 
 public:
+   SelfDestructComponent() : m_dTimeTotal(0.0), m_dTimeElapsed(0.0) {}
    SelfDestructComponent(double dTimeTotal) : m_dTimeTotal(dTimeTotal), m_dTimeElapsed(0.0) {}
    
    void OnUpdate(double deltaTime) override;
    virtual bool CopyDuringInstantiate() const override { return false; }
 
+   virtual bool SetValueTable(const sol::table& table) override;
 
 private:
    double m_dTimeTotal;    //in seconds

@@ -11,13 +11,15 @@ public:
    EnemyMovementScript();
    ~EnemyMovementScript();
 
+   //Overrides
    void OnInitialise() override;
    void OnUpdate(double deltaTime) override;
 
-   void EnemyMovementScript::OnCollisionEnter(BoxColliderComponent& otherCollider) override;
-   void EnemyMovementScript::OnCollision(BoxColliderComponent& otherCollider)  override;
-   void EnemyMovementScript::OnCollisionExit(BoxColliderComponent& otherCollider) override;
+   void OnCollisionEnter(BoxColliderComponent& otherCollider) override;
+   void OnCollision(BoxColliderComponent& otherCollider)  override;
+   void OnCollisionExit(BoxColliderComponent& otherCollider) override;
 
+   virtual bool SetValueTable(const sol::table& table) override;
 private:
    Entity* m_pEntityPrefab;
    TransformComponent* m_pTransform;

@@ -71,6 +71,7 @@ void EntityManager::AddEntity(Entity* pEntity)
    ASSERT(pEntity);
    if (pEntity)
    {
+      pEntity->SetEntityManager(this);
       m_listEntities.push_back(pEntity);
    }
 }

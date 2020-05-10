@@ -9,6 +9,7 @@ public:
    COMPONENT_TYPE(UIText);
    COMPONENT_NAME("UI Text");
 public:
+   UITextComponent();
    UITextComponent(const std::string& fontID, const glm::vec2& offset = { 0.0f, 0.0f }, const glm::vec2& scale = { 1.0f, 1.0f });
    ~UITextComponent();
 
@@ -21,6 +22,9 @@ public:
    void SetFont(const std::string& fontID);
    void SetText(const std::string& text)  { m_FontData.SetText(text); }
    void SetColor(const SDL_Color& col)    { m_FontData.SetColor(col); }
+
+   virtual bool SetValueTable(const sol::table& table) override;
+
 private:
    Engine::FontData m_FontData;
    TransformUIComponent* m_pTransformComponent;

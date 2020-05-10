@@ -96,7 +96,7 @@ public:
    virtual bool CopyDuringInstantiate() const { return true; }
 
 
-   virtual bool SetValueTable(const sol::table& table) { return true; }
+   virtual bool SetValueTable(const sol::table& table) = 0;
 
 protected:
    Entity* m_pEntityOwner;

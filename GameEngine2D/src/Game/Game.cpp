@@ -34,7 +34,7 @@ void Game::MoveCamera(double deltaTime)
    ASSERT(m_pentityCameraFollow);
    TransformComponent* comp = m_pentityCameraFollow->GetComponent<TransformComponent>();
    ASSERT(comp);
-
+   if (!comp) { return; }
    //Value should be between 0 and 1... low values mean a greater lag
    const float fCameraSpeed = 1.3*100.0f;
    float fCameraPercent = static_cast<float>(MathR::Clamp01(fCameraSpeed * deltaTime));

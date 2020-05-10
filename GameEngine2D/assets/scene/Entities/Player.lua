@@ -4,10 +4,11 @@ mod.Name = "Player"
 mod.Enabled = true    --This is completely optional... Sets the starting enabled to false 
 
 mod.Components = {}
+
 mod.Components.Transform = {
-   Position = {X = -14.0, Y = 0.0},
-   Velocity = {X = 0.0,   Y = 0.0},
-   Scale    = {X = 1.0,   Y = 1.0}   
+   Position = { X = -14.0, Y = 0.0 },
+   Velocity = { X = 0.0,   Y = 0.0 },
+   Scale    = { X = 1.0,   Y = 1.0 }   
 }
 mod.Components.Sprite = {
    Id = "chopper-spritesheet",
@@ -16,7 +17,7 @@ mod.Components.Sprite = {
 }
 
 mod.Components.Animation = {
-   GridSize = {X = 2, Y = 4},
+   GridSize = { X = 2, Y = 4 },
    StartingAnimation = "down",
    RotationSpeed = 0.0,
 
@@ -45,17 +46,43 @@ mod.Components.Animation = {
 }
 
 mod.Components.BoxCollider = {
-   Offset = {X = 0, Y = 0},
-   Scale =  {X = 1, Y = 1},
+   Offset = { X = 0, Y = 0 },
+   Scale =  { X = 1, Y = 1 },
    Tag = "Player",
    TextureId = "collision-texture"
 }
 
 mod.Components.PlayerController = {
 
-   MovementKeys = {Up = "w", Left = "a", Down = "s", Right = "d"},
+   MovementKeys = { Up = "w", Left = "a", Down = "s", Right = "d" },
    FireKey = "space",
    Velocity = {X = 4, Y = 4}
 }
+
+--[[
+mod.Components.SelfDestruct = {
+   AliveTime = 4.0
+}
+
+mod.Components.TransformUI = {
+   Position = { X = 180.0, Y = 80.0 },
+   Scale    = { X = 30.0,   Y = 30.0 }   
+}
+
+mod.Components.TextUI = {
+   Offset = { X = 0, Y = 60 },
+   Scale =  { X = 10, Y = 1 },
+   FontId = "charriot",
+
+   --These are optional
+   StartingText = "Player Rishi",
+   StartingColor = {r = 25, g = 100, b = 210, a = 255}
+}
+
+
+mod.Components.EnemyMovementScript = {
+
+}
+]]
 
 return mod

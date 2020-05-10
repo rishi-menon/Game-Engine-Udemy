@@ -30,7 +30,7 @@ void EnemyMovementScript::OnInitialise()
 void EnemyMovementScript::OnUpdate(double deltaTime)
 {
    m_dTime += deltaTime;
-   if (m_pEntityOwner && m_pEntityOwner->GetEntityManager() && m_dTime > 1)
+   if (m_dTime > 1 && m_pEntityPrefab && m_pEntityOwner && m_pEntityOwner->GetEntityManager())
    {
       m_dTime = 0.0;
       Entity* pNewEntity = m_pEntityOwner->GetEntityManager()->Instantiate(m_pEntityPrefab, 5);
@@ -58,4 +58,9 @@ void EnemyMovementScript::OnCollisionExit(BoxColliderComponent& otherCollider)
 {
    //if (GetEntityOwner()->GetName() != "Tank")
    //   LOGW("\nCollision END\n");
+}
+
+bool EnemyMovementScript::SetValueTable(const sol::table& table)
+{
+   return true;
 }
