@@ -1,15 +1,14 @@
 assets = {
    textures = {
-
-      [1] =   {   Id = "tank-big-right",       Src = "assets\\images\\tank-big-right.png"        },
-      [2] =   {   Id = "chopper-spritesheet",  Src = "assets\\images\\chopper-spritesheet.png"   },
-      [3] =   {   Id = "radar",                Src = "assets\\images\\radar.png"                 },
-      [4] =   {   Id = "collision-texture",    Src = "assets\\images\\collision-texture.png"     },
-      [5] =   {   Id = "bullet-enemy",         Src = "assets\\images\\bullet-enemy.png"          },
-      [6] =   {   Id = "jungle",               Src = "assets\\tilemaps\\jungle.png"              }
+      {   Id = "tank-big-right",       Src = "assets\\images\\tank-big-right.png"        }
+      ,{   Id = "chopper-spritesheet",  Src = "assets\\images\\chopper-spritesheet.png"   }
+      ,{   Id = "radar",                Src = "assets\\images\\radar.png"                 }
+      ,{   Id = "collision-texture",    Src = "assets\\images\\collision-texture.png"     }
+      ,{   Id = "bullet-enemy",         Src = "assets\\images\\bullet-enemy.png"          }
+      ,{   Id = "jungle",               Src = "assets\\tilemaps\\jungle.png"              }
    },
    fonts = {
-      [1] = { Id = "charriot",      Src = "assets\\fonts\\charriot.ttf",      Size = 100 }
+      { Id = "charriot",      Src = "assets\\fonts\\charriot.ttf",      Size = 100 }
    }
 }
 
@@ -35,7 +34,7 @@ camera = {
    -- The 'require' keyword uses . as the path seperator instead of \\.... So file "assets\\scene\\Entities\\player.lua" becomes assets.scene.Entities.
    --Also, dont specify the file extension while using the require keyword
 local EntitiesPath = "assets.scene.Entities."
-entities = {
-     
-   [1] = require (EntitiesPath .. "Player")
-}
+
+entities = {}
+entities[1] = require (EntitiesPath .. "Bullet")
+entities[2] = require (EntitiesPath .. "Player")

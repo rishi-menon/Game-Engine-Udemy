@@ -175,8 +175,23 @@ namespace Engine::Lua
    ///////////////////////////////////////////////////////////////////////////////////////////////
    bool LoadAllEntities(const sol::table& entitiesTable, EntityManager& manager)
    {
-      Engine::Lua::CreateEntity(entitiesTable[1], manager);
-      return true;
+      EntityManager temporaryManager;
+      bool bSuccess = true;
+      //In lua arrays start from 1 by default
+      for (std::size_t index = 1; bSuccess; index++)
+      {
+         sol::optional<sol::table> entityTable = entitiesTable[index];
+         if (!entityTable) break;
+         bSuccess = CreateEntity(entityTable.value(), temporaryManager);
+      }
+
+      if (bSuccess)
+      {
+         
+         manager += std::move(temporaryManager);
+         return true;
+      }
+      return false;
    }
 
    ///////////////////////////////////////////////////////////////////////////////////////////////

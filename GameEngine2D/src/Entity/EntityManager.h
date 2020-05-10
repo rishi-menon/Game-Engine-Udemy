@@ -28,6 +28,7 @@ public:
    inline const std::list<Entity*>& GetEntitiesList() const { return m_listEntities; }
    
    EntityManager& operator = (EntityManager&& other);
+   EntityManager& operator += (EntityManager&& other);
 
    //Find gameobject with name. If there are multiple then it just returns the first match... To do: add Get multiple entities from name
    Entity* GetEntityFromName(const std::string& strName) const;

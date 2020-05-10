@@ -79,6 +79,7 @@ project "GameEngine2D"
       .. " or GameEngine2D/src/Collision/Rect.cpp"
       .. " or GameEngine2D/src/Common/MathHelper.cpp"
       .. " or GameEngine2D/src/Common/StringHelper.cpp"
+      .. " or GameEngine2D/src/Common/FileHelper.cpp"
    }
       flags { "NoPCH" }
 

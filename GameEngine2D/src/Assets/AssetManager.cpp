@@ -27,11 +27,11 @@ void AssetManager::ClearData()
    m_umapTextures.clear();
 
    //Free fonts
-   for (std::unordered_map<std::string, TTF_Font*>::iterator it = m_umapFonts.begin();
+   for (std::unordered_map<std::string, Engine::Font*>::iterator it = m_umapFonts.begin();
       it != m_umapFonts.end(); it++)
    {
       ASSERT(it->second);
-      TTF_CloseFont(it->second);
+      delete it->second;
    }
    m_umapFonts.clear();
 }
@@ -49,7 +49,7 @@ void AssetManager::AddTexture(const std::string& key, const char* const path)
 
 void AssetManager::AddFont(const std::string& key, const char* const path, int nSize)
 {
-   TTF_Font* pFont = Engine::FontManager::LoadFont(path, nSize);
+   Engine::Font* pFont = Engine::FontManager::LoadFont(path, nSize);
    ASSERT(pFont);
    if (!pFont)
    {
@@ -69,9 +69,9 @@ Engine::Texture* AssetManager::GetTexture(const std::string& key) const
    LOGW("Warning: Could not find asset %s", key);
    return nullptr;
 }
-TTF_Font* AssetManager::GetFont(const std::string& fontID) const
+Engine::Font* AssetManager::GetFont(const std::string& fontID) const
 {
-   std::unordered_map<std::string, TTF_Font*>::const_iterator it = m_umapFonts.find(fontID);
+   std::unordered_map<std::string, Engine::Font*>::const_iterator it = m_umapFonts.find(fontID);
    if (it != m_umapFonts.end())
    {
       ASSERT(it->second);

@@ -11,10 +11,12 @@ namespace Engine {
       inline SDL_Texture* GetTexture() const { return m_pTexture; }
       inline int          GetWidth()   const { return m_nWidth;   }
       inline int          GetHeight()  const { return m_nHeight;  }
+      inline const std::string& GetPath() const { return m_strPath; }
 
    private:
       SDL_Texture* m_pTexture;
       int m_nWidth;
       int m_nHeight;
+      std::string m_strPath;
    };
 }

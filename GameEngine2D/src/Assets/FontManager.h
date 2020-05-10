@@ -2,6 +2,7 @@
 
 #include <SDL_ttf.h>
 #include <SDL.h>
+#include "Font.h"
 
 namespace Engine
 {
@@ -9,7 +10,7 @@ namespace Engine
 }
 namespace Engine::FontManager
 {
-   extern TTF_Font* LoadFont(const char* const path, const int nSize);
+   extern Engine::Font* LoadFont(const char* const path, const int nSize);
    extern void DrawFont(::Engine::FontData& fontData, const SDL_Rect& rectDest);
 }
 
@@ -20,18 +21,18 @@ namespace Engine
       friend void ::Engine::FontManager::DrawFont(FontData& fontData, const SDL_Rect& rectDest);
 
    public:
-      FontData(TTF_Font* pFont = nullptr, const std::string& strText = "", const SDL_Color& col = { 255,255,255,255 });
+      FontData(Engine::Font* pFont = nullptr, const std::string& strText = "", const SDL_Color& col = { 255,255,255,255 });
 
-      TTF_Font* GetFont()           const {  return m_pFont;   }
+      Engine::Font* GetFont()           const {  return m_pFont;   }
       const std::string& GetText()  const {  return m_strText; }
       const SDL_Color& GetColor()   const {  return m_Color;   }
 
-      void SetFont (TTF_Font* pFont)         {  m_bRegenerateTexture = true; m_pFont = pFont;  }
+      void SetFont (Engine::Font* pFont)         {  m_bRegenerateTexture = true; m_pFont = pFont;  }
       void SetText (const std::string& text) {  m_bRegenerateTexture = true; m_strText = text; }
       void SetColor (const SDL_Color& col )   { m_bRegenerateTexture = true; m_Color = col;    }
 
    private:
-      TTF_Font*   m_pFont;
+      Engine::Font*   m_pFont;
       std::string m_strText;
       SDL_Color   m_Color;
 

@@ -22,6 +22,7 @@
 #include "Log/Log.h"
 #include "Common/MathHelper.h"
 #include "Common/StringHelper.h"
+#include "Common/FileHelper.h"
 #include "Input/InputManager.h"
 #include "BuildOptions.h"
 

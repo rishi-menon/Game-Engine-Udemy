@@ -31,7 +31,7 @@ UITextComponent::~UITextComponent()
 }
 void UITextComponent::SetFont(const std::string& fontID)
 {
-   TTF_Font* pFont = Game::s_pAssetManager->GetFont(fontID);
+   Engine::Font* pFont = Game::s_pAssetManager->GetFont(fontID);
    ASSERT(pFont);
    m_FontData.SetFont(pFont);
 }

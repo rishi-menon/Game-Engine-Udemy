@@ -22,6 +22,30 @@ EntityManager& EntityManager::operator = (EntityManager&& other)
 {
    m_listEntities = std::move(other.m_listEntities);
    m_listEntitiesToDelete = std::move(other.m_listEntitiesToDelete);
+
+   for (Entity* entity : m_listEntities)
+   {
+      entity->SetEntityManager(this);
+   }
+   for (Entity* entity : m_listEntitiesToDelete)
+   {
+      entity->SetEntityManager(this);
+   }
+   return (*this);
+}
+EntityManager& EntityManager::operator += (EntityManager&& other)
+{
+   for (Entity* entity : other.m_listEntities)
+   {
+      entity->SetEntityManager(this);
+   }
+   for (Entity* entity : other.m_listEntitiesToDelete)
+   {
+      entity->SetEntityManager(this);
+   }
+
+   m_listEntities.splice(m_listEntities.end(), std::move(other.m_listEntities));
+   m_listEntitiesToDelete.splice(m_listEntitiesToDelete.end(), std::move(other.m_listEntitiesToDelete));
    return (*this);
 }
 

@@ -78,11 +78,11 @@ mod.Components.TextUI = {
    StartingText = "Player Rishi",
    StartingColor = {r = 25, g = 100, b = 210, a = 255}
 }
+]]
 
 
 mod.Components.EnemyMovementScript = {
 
 }
-]]
 
 return mod
