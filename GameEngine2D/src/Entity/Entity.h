@@ -112,8 +112,14 @@ public:
    inline const std::string& GetName() const { return m_strName; }
    void SetName(const std::string& strName) { m_strName = strName; }
 
+   std::string SaveEntityLuaScene(const std::string& subTableName) const;  //use this to save the entity to a lua scene... main differnce is that this creates a table (ie: entities[0] = {},) before proceeding... This table creation is different while saving a prefab
+   
+   //save the entity as a seperate lua file which can be used as a prefab in the future (for instantiating)
+   bool SaveEntityPrefabLua(const std::string& filePath) const;
+
 private:
    void OnDestroy();
+   void SaveEntityToLua(const std::string& subTableName, std::string& outStrLua) const;
 
 private:
    std::unordered_map<ComponentType, Components> m_umapComponentType;

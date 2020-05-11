@@ -14,5 +14,7 @@ public:
    
    virtual bool SetValueTable(const sol::table& table) override;
 
+   virtual std::string SaveComponentToLua(const std::string& strSubTableName) const override;
+
 private:
 };

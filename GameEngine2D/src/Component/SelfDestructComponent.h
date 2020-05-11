@@ -14,7 +14,9 @@ public:
    void OnUpdate(double deltaTime) override;
    virtual bool CopyDuringInstantiate() const override { return false; }
 
+   //lua stuff
    virtual bool SetValueTable(const sol::table& table) override;
+   virtual std::string SaveComponentToLua(const std::string& strSubTableName) const override;
 
 private:
    double m_dTimeTotal;    //in seconds

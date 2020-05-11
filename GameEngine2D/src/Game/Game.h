@@ -36,6 +36,8 @@ public:
    static SDL_Event s_event;
    static Camera s_camera;
 
+   Entity* GetCameraFollow() const { return m_pentityCameraFollow; }
+   void SetCameraFollow(const std::string& strEntityName);
 private:
    void DoUpdate(double deltaTime);
    void MoveCamera(double deltaTime);

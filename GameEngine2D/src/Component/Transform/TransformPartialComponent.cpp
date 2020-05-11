@@ -81,6 +81,7 @@ void TransformPartialComponent::SetScale(const glm::vec2& pos)
 
 bool TransformPartialComponent::SetValueTable(const sol::table& table)
 {
+   if (!Component::SetValueTable(table)) { ASSERT(false); return false; }
    //Translation
    {
       sol::optional<sol::table> positionTable = table["Position"];
@@ -106,4 +107,16 @@ bool TransformPartialComponent::SetValueTable(const sol::table& table)
       m_vScale.y = scaleY.value();
    }
    return true;
+}
+
+std::string TransformPartialComponent::SaveComponentToLua(bool bAddMoreLines) const
+{
+   std::string strLua;
+   strLua.reserve(100);
+   strLua += Component::SaveComponentToLua();
+   strLua += StringR::Format("\tPosition = { X = %.1f, Y = %.1f },\n", m_vPosition.x, m_vPosition.y);
+   strLua += StringR::Format("\tScale = { X = %.1f, Y = %.1f }", m_vScale.x, m_vScale.y);
+   if (bAddMoreLines) { strLua += ','; }
+   strLua += '\n';
+   return strLua;
 }

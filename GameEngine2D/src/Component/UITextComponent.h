@@ -24,6 +24,7 @@ public:
    void SetColor(const SDL_Color& col)    { m_FontData.SetColor(col); }
 
    virtual bool SetValueTable(const sol::table& table) override;
+   virtual std::string SaveComponentToLua(const std::string& strSubTableName) const override;
 
 private:
    Engine::FontData m_FontData;

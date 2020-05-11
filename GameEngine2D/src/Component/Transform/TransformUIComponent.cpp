@@ -17,5 +17,18 @@ TransformUIComponent::~TransformUIComponent()
 
 bool TransformUIComponent::SetValueTable(const sol::table& table)
 {
-   return TransformPartialComponent::SetValueTable(table);
+   if (!TransformPartialComponent::SetValueTable(table)) { ASSERT(false); return false; }
+
+   return true;
+}
+
+std::string TransformUIComponent::SaveComponentToLua(const std::string& strSubTableName) const
+{
+   std::string strLua;
+   strLua.reserve(100);
+   strLua += StringR::Format("%s.Components.TransformUI = {\n", strSubTableName.c_str());
+   strLua += TransformPartialComponent::SaveComponentToLua(false);
+   strLua += '}';
+   strLua += '\n';
+   return strLua;
 }

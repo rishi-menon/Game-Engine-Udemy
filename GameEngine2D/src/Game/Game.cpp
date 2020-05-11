@@ -29,6 +29,17 @@ Game::~Game()
 {
 }
 
+void Game::SetCameraFollow(const std::string& strEntityName)
+{
+   if (strEntityName.empty())
+   {
+      m_pentityCameraFollow = nullptr; //for now, dont follow anything if the name is ""
+   }
+   else
+   {
+      m_pentityCameraFollow = s_EntityManager.GetEntityFromName(strEntityName);
+   }
+}
 void Game::MoveCamera(double deltaTime)
 {
    ASSERT(m_pentityCameraFollow);
@@ -70,7 +81,7 @@ bool Game::LoadLevel(int nLevelNumber)
    s_pAssetManager->AddFont("charriot", "assets\\fonts\\charriot.ttf", 100);
 
    //Load Tilemap
-   m_map.LoadMap("assets/tilemaps/jungle.map", "jungle", 32, -15, 15);
+   m_map.LoadMap(MapData{ "assets/tilemaps/jungle.map", "jungle", 32, -15, 15 });
 
    //Create Entitys and add components
    {
@@ -81,6 +92,8 @@ bool Game::LoadLevel(int nLevelNumber)
       entity.AddComponent<BoxColliderComponent>("Bullet", glm::vec2{ 0, 0 }, glm::vec2{ 1,1 }, "collision-texture");
       entity.SetIsActive(false);
       entity.OnInitialise();
+
+      entity.SaveEntityPrefabLua("assets\\scene\\autosave\\" + entity.GetName() + ".lua");
    }
    {
       Entity& entity = *s_EntityManager.AddEntity("Tank");
@@ -89,6 +102,8 @@ bool Game::LoadLevel(int nLevelNumber)
       entity.AddComponent<BoxColliderComponent>("Enemy", glm::vec2{ 0, 0 }, glm::vec2{ 1,1 }, "collision-texture");
       entity.AddComponent<EnemyMovementScript>();
       entity.OnInitialise();
+      entity.SaveEntityPrefabLua("assets\\scene\\autosave\\" + entity.GetName() + ".lua");
+
    }
    {
       Entity& entity = *s_EntityManager.AddEntity("Player");
@@ -111,7 +126,8 @@ bool Game::LoadLevel(int nLevelNumber)
       compController.m_vecVelocity = glm::vec2(speed, speed );
       compController.SetFireControl("space");
       entity.OnInitialise();
-      
+      entity.SaveEntityPrefabLua("assets\\scene\\autosave\\" + entity.GetName() + ".lua");
+
    }
    {
       
@@ -124,7 +140,7 @@ bool Game::LoadLevel(int nLevelNumber)
 
      
       compSprite.m_rectDefault = SDL_Rect{ 0,0,64,64 };
-
+      compSprite.ResetSourceRect();
       const double dRotationSpeed = 150;   //in deg per sec
       //use the default animation.. aka AnimationType::None
       compAnimation.SetRotationSpeed(dRotationSpeed);
@@ -133,6 +149,8 @@ bool Game::LoadLevel(int nLevelNumber)
       pCompUIText->SetColor(SDL_Color{ 0, 230, 100, 255 });
 
       entity.OnInitialise();
+      entity.SaveEntityPrefabLua("assets\\scene\\autosave\\" + entity.GetName() + ".lua");
+
    }
 
    m_pentityCameraFollow = s_EntityManager.GetEntityFromName("Player");
@@ -150,6 +168,8 @@ bool Game::LoadLevel(int nLevelNumber)
 #endif
 }
 
+//delete later
+#include <iostream>
 void Game::Initialise(const unsigned int unWidth, const unsigned int unHeight)
 {
    //returns 0 on successful init
@@ -202,9 +222,11 @@ void Game::Initialise(const unsigned int unWidth, const unsigned int unHeight)
    g_vEntityManagers.reserve(5);
    g_vEntityManagers.push_back(&s_EntityManager);
 
+   //delete later
+   int nLevelNum = 1;
 
-   LoadLevel(1);
-   Engine::Lua::SaveScene(*this, "", "SceneTest");
+   LoadLevel(nLevelNum);
+   Engine::Lua::SaveScene(*this, "assets\\scene\\autosave", "Level1");
    m_bIsRunning = true;
 }
 

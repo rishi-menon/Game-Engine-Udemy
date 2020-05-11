@@ -39,8 +39,7 @@ void TransformComponent::OnRender()
 
 bool TransformComponent::SetValueTable(const sol::table& table)
 {
-
-   bool bSuccess = TransformPartialComponent::SetValueTable(table);
+   if (!TransformPartialComponent::SetValueTable(table)) { ASSERT(false); return false; }
    
    //Rotation
    {
@@ -56,4 +55,16 @@ bool TransformComponent::SetValueTable(const sol::table& table)
    }
    
    return true;
+}
+
+std::string TransformComponent::SaveComponentToLua(const std::string& strSubTableName) const
+{
+   std::string strLua;
+   strLua.reserve(100);
+   strLua += StringR::Format("%s.Components.Transform = {\n", strSubTableName.c_str());
+   strLua += TransformPartialComponent::SaveComponentToLua(true);
+   strLua += StringR::Format("\tVelocity = { X = %.1f, Y = %.1f }\n", m_vVeloctiy.x, m_vVeloctiy.y);
+   strLua += '}';
+   strLua += '\n';
+   return strLua;
 }

@@ -71,6 +71,7 @@ int PlayerControllerComponent::GetScanCodeFromString(const std::string& string)
 #else
    LOGW("\nWARNING: Executing untested SDL method...\n");
    int nCode = SDL_GetScancodeFromName(string.c_str());
+
    ASSERT(nCode != SDL_SCANCODE_UNKNOWN);
    return nCode;
 #endif
@@ -226,25 +227,78 @@ void PlayerControllerComponent::OnUpdate(double deltaTime)
 
 bool PlayerControllerComponent::SetValueTable(const sol::table& table)
 {
+   if (!Component::SetValueTable(table)) { ASSERT(false); return false; }
+
    sol::optional<sol::table> movementKeys = table["MovementKeys"];
-   sol::optional<std::string> fireKey = table["FireKey"];
    sol::optional<sol::table> velocity = table["Velocity"];
-   if (!movementKeys || !fireKey || !velocity) { ASSERT(false); return false; }
+   if (!movementKeys || !velocity) { ASSERT(false); return false; }
 
    sol::optional<float> velocityX = velocity.value()["X"];
    sol::optional<float> velocityY = velocity.value()["Y"];
    if (!velocityX || !velocityY) { ASSERT(false); return false; }
 
-   sol::optional<std::string> up = movementKeys.value()["Up"];
-   sol::optional<std::string> down = movementKeys.value()["Down"];
-   sol::optional<std::string> left = movementKeys.value()["Left"];
-   sol::optional<std::string> right = movementKeys.value()["Right"];
-   if (!up || !down || !left || !right) { ASSERT(false); return false; }
-
-   SetMovementControls(up.value(), left.value(), down.value(), right.value());
+   //the keys can either be written as a string or a number representing the keycode (same keycode that is internally stored in the class)
+   sol::type typeFireKey = table["FireKey"].get_type();
+   if (typeFireKey == sol::type::string)
+   {
+      std::string strFireKey = table["FireKey"];
+      SetFireControl(strFireKey);
+   }
+   else if (typeFireKey == sol::type::number)
+   {
+      //See the note below regarding the cast
+      m_nKeyFire = static_cast<int>((float)table["FireKey"]);
+   }
+   else { ASSERT(false); return false; }
+   
    m_vecVelocity.x = velocityX.value();
    m_vecVelocity.y = velocityY.value();
-   SetFireControl(fireKey.value());
+
+   //the keys can either be written as a string or a number representing the keycode (same keycode that is internally stored in the class)
+   {
+      sol::type typeUp = movementKeys.value()["Up"].get_type();
+      sol::type typeDown = movementKeys.value()["Down"].get_type();
+      sol::type typeLeft = movementKeys.value()["Left"].get_type();
+      sol::type typeRight = movementKeys.value()["Right"].get_type();
+
+      bool bAllSame = (typeUp == typeDown && typeUp == typeLeft && typeUp == typeRight);
+      if (!bAllSame) { ASSERT(false); return false; }
+
+      if (typeUp == sol::type::string)
+      {
+         std::string up = movementKeys.value()["Up"];
+         std::string down = movementKeys.value()["Down"];
+         std::string left = movementKeys.value()["Left"];
+         std::string right = movementKeys.value()["Right"];
+         SetMovementControls(up, left, down, right);
+      }
+      else if (typeUp == sol::type::number)
+      {
+         //Lua rounds up while implicitly returning an int.. so 7.9 would become an 8 instead of a 7... The keycode should NEVER be a floating point number in the first place but its a safety check.
+         m_nKeyUp =  static_cast<int>((float)movementKeys.value()["Up"]);
+         m_nKeyDown = static_cast<int>((float)movementKeys.value()["Down"]);
+         m_nKeyLeft = static_cast<int>((float)movementKeys.value()["Left"]);
+         m_nKeyRight = static_cast<int>((float)movementKeys.value()["Right"]);
+      }
+      else { ASSERT(false); return false; }
+   }
+  
 
    return true;
+}
+
+std::string PlayerControllerComponent::SaveComponentToLua(const std::string& strSubTableName) const
+{
+   std::string strLua;
+   strLua.reserve(100);
+      
+   strLua += StringR::Format("%s.Components.PlayerController = {\n", strSubTableName.c_str());
+   strLua += Component::SaveComponentToLua();
+   strLua += StringR::Format("\tMovementKeys = { Up = %d, Left = %d, Down = %d, Right = %d },\n", m_nKeyUp, m_nKeyLeft, m_nKeyDown, m_nKeyRight);
+   strLua += StringR::Format("\tFireKey = %d,\n", m_nKeyFire);
+   strLua += StringR::Format("\tVelocity = {X = %.1f, Y = %.1f}\n", m_vecVelocity.x, m_vecVelocity.y);
+   strLua += '}';
+   strLua += '\n';
+
+   return strLua;
 }

@@ -62,5 +62,17 @@ void EnemyMovementScript::OnCollisionExit(BoxColliderComponent& otherCollider)
 
 bool EnemyMovementScript::SetValueTable(const sol::table& table)
 {
+   if (!Component::SetValueTable(table)) { ASSERT(false); return false; }
    return true;
+}
+std::string EnemyMovementScript::SaveComponentToLua(const std::string& strSubTableName) const
+{
+   std::string strLua;
+   strLua.reserve(100);
+
+   strLua += StringR::Format("%s.Components.EnemyMovementScript = {\n", strSubTableName.c_str());
+   strLua += Component::SaveComponentToLua();
+   strLua += '}';
+   strLua += '\n';
+   return strLua;
 }

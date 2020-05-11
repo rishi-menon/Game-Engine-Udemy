@@ -4,6 +4,8 @@
 #include "Constants.h"
 #include "Game/Game.h"
 
+#include "Common/StringHelper.h"
+
 //#ifdef __cplusplus
 //extern "C"
 //#endif
@@ -32,6 +34,7 @@ int main(int argc, char* argv[])
 
    //Pause the program to see console output and to prevent console from closing. Only in debug builds obviously
    //LOG_PAUSE();
+   StringR::Terminate();
    LOG_TERMINATE();
    return 0;
 }

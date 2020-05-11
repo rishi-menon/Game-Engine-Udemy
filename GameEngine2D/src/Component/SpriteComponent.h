@@ -32,7 +32,9 @@ public:
    inline int GetWidth()  const { ASSERT(m_pTexture); return m_pTexture->GetWidth();  }
    inline int GetHeight() const { ASSERT(m_pTexture); return m_pTexture->GetHeight(); }
 
-   bool SetValueTable(const sol::table& table) override;
+   //lua stuff
+   virtual bool SetValueTable(const sol::table& table) override;
+   virtual std::string SaveComponentToLua(const std::string& strSubTableName) const override;
 
 public:
    SDL_RendererFlip m_SpriteFlip;

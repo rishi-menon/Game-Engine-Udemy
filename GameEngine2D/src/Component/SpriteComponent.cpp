@@ -98,7 +98,7 @@ void SpriteComponent::OnRender()
 
 bool SpriteComponent::SetValueTable(const sol::table& table)
 {
-   
+   if (!Component::SetValueTable(table)) { ASSERT(false); return false; }
    sol::optional<std::string> textureId = table["Id"];
    ASSERT(textureId != sol::nullopt);
    if (textureId == sol::nullopt)   return false;
@@ -107,16 +107,18 @@ bool SpriteComponent::SetValueTable(const sol::table& table)
 
    ASSERT(m_pTexture && m_pTexture->GetTexture());
 
+   m_rectDefault.x = 0;
+   m_rectDefault.y = 0;
    m_rectDefault.w = m_pTexture->GetWidth();
    m_rectDefault.h = m_pTexture->GetHeight();
 
    sol::optional<sol::table> defaultRect = table["TextureDefaultRect"];
    if (defaultRect != sol::nullopt)
    {
-      sol::optional<int> x = defaultRect.value()["x"];
-      sol::optional<int> y = defaultRect.value()["y"];
-      sol::optional<int> w = defaultRect.value()["w"];
-      sol::optional<int> h = defaultRect.value()["h"];
+      sol::optional<int> x = defaultRect.value()["X"];
+      sol::optional<int> y = defaultRect.value()["Y"];
+      sol::optional<int> w = defaultRect.value()["W"];
+      sol::optional<int> h = defaultRect.value()["H"];
       ASSERT(x != sol::nullopt && y != sol::nullopt && w != sol::nullopt && h != sol::nullopt);
       if (x && y && w && h)
       {
@@ -126,4 +128,18 @@ bool SpriteComponent::SetValueTable(const sol::table& table)
    ResetSourceRect();
 
    return true;
+}
+std::string SpriteComponent::SaveComponentToLua(const std::string& strSubTableName) const
+{
+   ASSERT(m_pTexture);
+   std::string strLua;
+   strLua.reserve(100);
+   strLua += StringR::Format("%s.Components.Sprite = {\n", strSubTableName.c_str());
+   strLua += Component::SaveComponentToLua();
+   strLua += StringR::Format("\tId = \"%s\",\n", StringR::ParsePath(m_pTexture->GetTextureId()).c_str());
+   strLua += StringR::Format("\tTextureDefaultRect = { X = %d, Y = %d, W = %d, H = %d } \n", m_rectDefault.x, m_rectDefault.y, m_rectDefault.w, m_rectDefault.h);
+   strLua += '}';
+   strLua += '\n';
+   return strLua;
+
 }

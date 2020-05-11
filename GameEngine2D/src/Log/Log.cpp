@@ -37,8 +37,11 @@ void DebugLineBreak()
    std::cerr << std::endl;
 }
 
-char* buffer = new char[1000];
-char* buffer2 = new char[1500];
+int nBufferSize = 1000;
+int nBufferSize2 = 1200;
+
+char* buffer = new char[nBufferSize+1];
+char* buffer2 = new char[nBufferSize2+1];
 
 void DebugTerminate()
 {
@@ -53,15 +56,15 @@ void DebugOutputWindow(bool bConsole, int line, const char* const file, const ch
    //To do: how does this work exactly
    va_list args;
    va_start(args, formatString);
-   vsprintf_s(buffer, 1000, formatString, args);
+   vsprintf_s(buffer, nBufferSize, formatString, args);
    va_end(args);
    if (bConsole)
    {
-      printf("%s(%d): %s", file, line, buffer);
+      printf("%s(%d): %s ", file, line, buffer);
    }
    else
    {
-      sprintf_s(buffer2, 1500, "%s(%d): %s", file, line, buffer);
+      sprintf_s(buffer2, nBufferSize2, "%s(%d): %s ", file, line, buffer);
       OutputDebugStringA(buffer2);
    }
    printf("\n");

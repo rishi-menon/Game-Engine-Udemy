@@ -13,6 +13,8 @@ namespace Engine
       int GetSize() const { return m_nSize; }
       const std::string& GetPath() const { return m_strPath; }
 
+      std::string GetFontId() const;
+
    private:
       TTF_Font* m_pFont;
       int m_nSize;

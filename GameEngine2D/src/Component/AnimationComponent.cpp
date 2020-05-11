@@ -25,6 +25,7 @@ AnimationComponent::AnimationComponent() :
    m_pSpriteComponent(nullptr),
    m_pCurrentAnimationLayout(nullptr),
    m_strAnimationID(""),
+   m_strDefaultAnimationID(""),
    m_nGridSizeX(0),
    m_nGridSizeY(0),
    m_dRotationSpeed(0.0),
@@ -35,10 +36,32 @@ AnimationComponent::AnimationComponent() :
    AddAnimation("", AnimationLayout({ 0 }, 0));
    SetCurrentAnimation("");
 }
+
+AnimationLayout::AnimationLayout(std::vector<int>&& vector, float speed) :
+   m_animationSpeed(speed)
+{
+   m_indices = std::move(vector);
+}
+
+void AnimationLayout::GetIndicesString(std::string& outStr) const
+{
+   outStr.clear();
+   for (int index : m_indices)
+   {
+      outStr += StringR::ToString(index);
+      outStr += ',';
+      outStr += ' ';
+   }
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+//                           Animation Component                                       //
+/////////////////////////////////////////////////////////////////////////////////////////
 AnimationComponent::AnimationComponent(int x, int y) :
    m_pSpriteComponent (nullptr),
    m_pCurrentAnimationLayout(nullptr),
    m_strAnimationID(""),
+   m_strDefaultAnimationID(""),
    m_nGridSizeX (x),
    m_nGridSizeY (y),
    m_dRotationSpeed(0.0),
@@ -53,6 +76,7 @@ AnimationComponent::AnimationComponent(AnimationComponent& comp) :
    m_pSpriteComponent (comp.m_pSpriteComponent),
    m_pCurrentAnimationLayout (comp.m_pCurrentAnimationLayout),
    m_strAnimationID(comp.m_strAnimationID),
+   m_strDefaultAnimationID(comp.m_strDefaultAnimationID),
    m_nGridSizeX (comp.m_nGridSizeX),
    m_nGridSizeY (comp.m_nGridSizeY),
    m_dRotationSpeed (comp.m_dRotationSpeed),
@@ -63,9 +87,9 @@ AnimationComponent::AnimationComponent(AnimationComponent& comp) :
    for (auto& pair : comp.m_umapAnimationLayout)
    {
       m_umapAnimationLayout.emplace(pair);
-   }
-   
+   }  
 }
+
 AnimationComponent::~AnimationComponent()
 {
 }
@@ -153,6 +177,10 @@ void AnimationComponent::SetCurrentAnimation(const std::string& strAnimationId)
    if (it != m_umapAnimationLayout.end())
    {
       m_strAnimationID = strAnimationId;
+      if (!m_pCurrentAnimationLayout || m_strDefaultAnimationID.empty())
+      {
+         m_strDefaultAnimationID = strAnimationId; //default animation is the first animation that is set
+      }
 
       ASSERT(it->first == strAnimationId);
       m_pCurrentAnimationLayout = &it->second;
@@ -166,6 +194,8 @@ void AnimationComponent::SetCurrentAnimation(const std::string& strAnimationId)
 
 bool AnimationComponent::SetValueTable(const sol::table& table)
 {
+   if (!Component::SetValueTable(table)) { ASSERT(false); return false; }
+
    auto loadLayoutHelper = [](const sol::table& layoutTable, std::vector<int>& outvIndices) {
       //index of arrays in lua starts with 1 by default
       outvIndices.reserve(20);
@@ -225,4 +255,34 @@ bool AnimationComponent::SetValueTable(const sol::table& table)
       SetCurrentAnimation(startingAnimation.value());
    }
    return true;
+}
+
+std::string AnimationComponent::SaveComponentToLua(const std::string& strSubTableName) const
+{
+   std::string strLua;
+   strLua.reserve(1000);
+   strLua += StringR::Format("%s.Components.Animation = {\n", strSubTableName.c_str());
+   strLua += Component::SaveComponentToLua();
+   strLua += StringR::Format("\tGridSize = { X = %d, Y = %d },\n", m_nGridSizeX, m_nGridSizeY);
+   strLua += StringR::Format("\tRotationSpeed = %.1f,\n", m_dRotationSpeed);
+   strLua += StringR::Format("\tStartingAnimation = \"%s\",\n", StringR::ParsePath (m_strDefaultAnimationID).c_str());
+
+   strLua += "\tAnimationList = {\n";
+
+   std::string strIndices;
+   for (auto& pair : m_umapAnimationLayout)
+   {
+      if (!pair.first.empty())
+      {
+         pair.second.GetIndicesString(strIndices);
+         strLua += StringR::Format("\t\t{ Id = \"%s\", Layout = {%s}, Speed = %.1f, }, \n", pair.first.c_str(), strIndices.c_str(), pair.second.m_animationSpeed);
+         //{ Id = "down", Layout = {0, 1}, Speed = 17.0, },
+      }
+   }
+
+   strLua += "\t}\n"; //closing bracket for AnimationList = { ie start of layout table
+   strLua += '}'; //closing bracket for Components.Animation = { ie start of table
+   strLua += '\n';
+
+   return strLua;
 }

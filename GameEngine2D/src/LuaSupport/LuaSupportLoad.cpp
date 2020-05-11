@@ -18,7 +18,7 @@ namespace Engine::Lua
       }
       catch (const std::exception& err)
       {
-         printf(err.what());
+         LOGW(err.what());
          LOGW("\n");
          ASSERT(false);
          return false;
@@ -59,7 +59,7 @@ namespace Engine::Lua
       {
          sol::optional<sol::table> cameraTable = luaLevel["camera"];
          ASSERT(cameraTable);
-         if (cameraTable && !LoadCamera(cameraTable.value(), game.m_pentityCameraFollow, Game::s_EntityManager))     return false;
+         if (cameraTable && !LoadCamera(cameraTable.value(), Game::s_camera, &game))     return false;
       }
       return true;
    }
@@ -148,25 +148,20 @@ namespace Engine::Lua
    ///////////////////////////////////////////////////////////////////////////////////////////////
    //                              Load Camera                                                  //
    ///////////////////////////////////////////////////////////////////////////////////////////////
-   bool LoadCamera(const sol::table& cameraTable, Entity*& outpEntityFollow, const EntityManager& manager)
+   bool LoadCamera(const sol::table& cameraTable, Camera& camera, Game* game)
    {
       sol::optional<float> fPosX = cameraTable["PosX"];
       sol::optional<float> fPosY = cameraTable["PosY"];
-      if (!fPosX || !fPosY)
+      if (!fPosX || !fPosY) { ASSERT(false); return false; }
+
+      sol::optional<float> pixelsPerUnit = cameraTable["PixelsPerUnit"];
+      sol::optional<std::string> strFollowEntity = cameraTable["FollowEntity"];
+
+      camera.SetViewRect(fPosX.value(), fPosY.value(), (pixelsPerUnit) ? pixelsPerUnit.value() : 40.0f);
+      if (game)
       {
-         ASSERT(false);
-         return false;
+         game->SetCameraFollow((strFollowEntity) ? strFollowEntity.value() : "");
       }
-
-      sol::optional<float> pixelsPerUnitOptional = cameraTable["PixelsPerUnit"];
-      sol::optional<std::string> strFollowEntityOptional = cameraTable["FollowEntity"];
-
-      float fPixelsPerUnit = (pixelsPerUnitOptional == sol::nullopt) ? 40.0f : pixelsPerUnitOptional.value();
-      std::string strCameraFollowEntityName = (strFollowEntityOptional == sol::nullopt) ? "Player" : strFollowEntityOptional.value();
-
-      Game::s_camera.SetViewRect(fPosX.value(), fPosY.value(), fPixelsPerUnit);
-      outpEntityFollow = manager.GetEntityFromName(strCameraFollowEntityName);
-      ASSERT(outpEntityFollow);
       return true;
    }
 
@@ -175,6 +170,7 @@ namespace Engine::Lua
    ///////////////////////////////////////////////////////////////////////////////////////////////
    bool LoadAllEntities(const sol::table& entitiesTable, EntityManager& manager)
    {
+
       EntityManager temporaryManager;
       bool bSuccess = true;
       //In lua arrays start from 1 by default

@@ -33,10 +33,8 @@ camera = {
 
    -- The 'require' keyword uses . as the path seperator instead of \\.... So file "assets\\scene\\Entities\\player.lua" becomes assets.scene.Entities.
    --Also, dont specify the file extension while using the require keyword
-local EntitiesPath = "assets.scene.autosave."
+local EntitiesPath = "assets.scene.Entities."
 
 entities = {}
 entities[1] = require (EntitiesPath .. "Bullet")
-entities[2] = require (EntitiesPath .. "Player")
-entities[3] = require (EntitiesPath .. "Radar")
-entities[4] = require (EntitiesPath .. "Tank")
+entities[2] = require (EntitiesPath .. "PlayerAuto")

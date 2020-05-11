@@ -23,7 +23,10 @@ public:
 
    const std::string& GetTag() const { return m_strTag; }
 
+   //Lua
    virtual bool SetValueTable(const sol::table& table) override;
+
+   virtual std::string SaveComponentToLua(const std::string& strSubTableName) const override;
 
 #ifdef EX_2020_DRAW_FADED_BOX
    void OnCollision(BoxColliderComponent& other) override;

@@ -96,7 +96,12 @@ public:
    virtual bool CopyDuringInstantiate() const { return true; }
 
 
-   virtual bool SetValueTable(const sol::table& table) = 0;
+   virtual bool SetValueTable(const sol::table& table);
+   
+   virtual std::string SaveComponentToLua(const std::string& strSubTableName) const = 0;
+
+protected:
+   std::string SaveComponentToLua() const;
 
 protected:
    Entity* m_pEntityOwner;

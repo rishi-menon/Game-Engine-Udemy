@@ -20,6 +20,8 @@ public:
    void OnCollisionExit(BoxColliderComponent& otherCollider) override;
 
    virtual bool SetValueTable(const sol::table& table) override;
+   virtual std::string SaveComponentToLua(const std::string& strSubTableName) const override;
+
 private:
    Entity* m_pEntityPrefab;
    TransformComponent* m_pTransform;

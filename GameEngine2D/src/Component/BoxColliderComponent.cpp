@@ -99,6 +99,8 @@ void BoxColliderComponent::DrawCollisionBox()
 
 bool BoxColliderComponent::SetValueTable(const sol::table& table)
 {
+   if (!Component::SetValueTable(table)) { ASSERT(false); return false; }
+
    sol::optional<sol::table> offset = table["Offset"];
    sol::optional<sol::table> scale = table["Scale"];
    sol::optional<std::string> tag = table["Tag"];
@@ -134,6 +136,25 @@ bool BoxColliderComponent::SetValueTable(const sol::table& table)
       }
    }
    return true;
+}
+
+std::string BoxColliderComponent::SaveComponentToLua(const std::string& strSubTableName) const
+{
+   ASSERT(m_pTexture);
+
+   std::string strLua;
+   strLua.reserve(100);
+
+   strLua += StringR::Format("%s.Components.BoxCollider = {\n", strSubTableName.c_str());
+   strLua += Component::SaveComponentToLua();
+
+   strLua += StringR::Format("\tOffset = { X = %.1f, Y = %.1f },\n", m_vOffset.x, m_vOffset.y);
+   strLua += StringR::Format("\tScale = { X = %.1f, Y = %.1f },\n", m_vScale.x, m_vScale.y);
+   strLua += StringR::Format("\tTag = \"%s\",\n", StringR::ParsePath (m_strTag).c_str());
+   strLua += StringR::Format("\tTextureId = \"%s\"\n", StringR::ParsePath (m_pTexture->GetTextureId()).c_str());
+   strLua += '}';
+   strLua += '\n';
+   return strLua;
 }
 
 #ifdef EX_2020_DRAW_FADED_BOX

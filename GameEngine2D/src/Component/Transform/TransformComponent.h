@@ -24,6 +24,8 @@ public:
 
    virtual bool SetValueTable(const sol::table& table) override;
 
+   virtual std::string SaveComponentToLua(const std::string& strSubTableName) const override;
+
 public:
    glm::vec2 m_vVeloctiy;
 };

@@ -13,10 +13,11 @@ namespace Engine {
       inline int          GetHeight()  const { return m_nHeight;  }
       inline const std::string& GetPath() const { return m_strPath; }
 
+      std::string GetTextureId() const;
    private:
       SDL_Texture* m_pTexture;
       int m_nWidth;
       int m_nHeight;
-      std::string m_strPath;
+      std::string m_strPath;      
    };
 }

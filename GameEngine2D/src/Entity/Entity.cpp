@@ -2,6 +2,9 @@
 #include "Entity.h"
 #include "Log/Log.h"
 #include "Component/Transform/TransformComponent.h"
+#include "Common/StringHelper.h"
+#include <fstream>
+
 
 //To do: have a better way of setting the order of OnRender
 static const int nRendererUpdateOrderCount = 3;
@@ -204,6 +207,57 @@ void Entity::OnCollisionExit(BoxColliderComponent& otherCollider)
          {
             pComponent->OnCollisionExit(otherCollider);
          }
+      }
+   }
+}
+
+
+//Use this function while saving the entity inside a lua scene file
+std::string Entity::SaveEntityLuaScene(const std::string& subTableName) const
+{
+   //parameter value Eg: entities[1]
+   //create the table
+   std::string strLua;
+   strLua.reserve(4000);
+   strLua = subTableName + " = {}\n";
+   SaveEntityToLua(subTableName, strLua);
+   strLua.shrink_to_fit();
+   return strLua;
+}
+
+bool Entity::SaveEntityPrefabLua(const std::string& filePath) const
+{
+   std::fstream file;
+   file.open(filePath, std::fstream::out | std::fstream::trunc);
+   if (!file.is_open())    return false;
+
+   //Table name is mod (arbitrary)
+   file << "local mod = {}";
+   {
+      std::string strLua;
+      strLua.reserve(4000);
+      SaveEntityToLua("mod", strLua);
+      file << strLua;
+   }
+   file << "return mod";
+
+   file.close();
+   return true;
+}
+
+void Entity::SaveEntityToLua(const std::string& subTableName, std::string& outStrLua) const
+{
+   outStrLua += StringR::Format ("%s.Name = \"%s\"\n", subTableName.c_str(), StringR::ParsePath(m_strName).c_str());
+   outStrLua += StringR::Format ("%s.Enabled = %s\n", subTableName.c_str(), m_bIsActive ? "true" : "false");
+
+
+   //Add the components
+   outStrLua += StringR::Format("%s.Components = {}\n", subTableName.c_str());
+   for (auto& pair : m_umapComponentType)
+   {
+      for (Component* pComp : pair.second)
+      {
+         outStrLua += pComp->SaveComponentToLua(subTableName);
       }
    }
 }

@@ -67,16 +67,7 @@ Engine::Rect UITextComponent::GetRect() const
 
 bool UITextComponent::SetValueTable(const sol::table& table)
 {
-   /*
-   Offset = { X = 0, Y = 60 },
-   Scale =  { X = 40, Y = 20 },
-   FontId = "charriot",
-
-   --These are optional
-    = "Player Rishi"
-   StartingColor = {r = 255, g = 0, b = 0, a = 255}
-   */
-
+   if (!Component::SetValueTable(table)) { ASSERT(false); return false; }
    //Offset
    {
       sol::optional<sol::table> offset = table["Offset"];
@@ -132,4 +123,27 @@ bool UITextComponent::SetValueTable(const sol::table& table)
    }
    
    return true;
+}
+
+std::string UITextComponent::SaveComponentToLua(const std::string& strSubTableName) const
+{
+   ASSERT(m_FontData.GetFont());
+
+   std::string strLua;
+   strLua.reserve(100);
+   strLua += StringR::Format("%s.Components.TextUI = {\n", strSubTableName.c_str());
+   strLua += Component::SaveComponentToLua();
+   strLua += StringR::Format("\tOffset = { X = %.1f, Y = %.1f },\n", m_vOffset.x, m_vOffset.y);
+   strLua += StringR::Format("\tScale =  { X = %.1f, Y = %.1f },\n", m_vScale.x, m_vScale.y);
+   strLua += StringR::Format("\tFontId = \"%s\",\n", StringR::ParsePath(m_FontData.GetFont()->GetFontId()).c_str());
+
+   //These fields are optional technically
+   strLua += StringR::Format("\tStartingText = \"%s\",\n", StringR::ParsePath(m_FontData.GetText()).c_str());
+
+   const SDL_Color& col = m_FontData.GetColor();
+   strLua += StringR::Format("\tStartingColor = {r = %d, g = %d, b = %d, a = %d}\n", col.r, col.g, col.b, col.a);
+   strLua += '}';
+   strLua += '\n';
+   
+   return strLua;
 }

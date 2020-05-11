@@ -26,10 +26,11 @@ public:
    void SetScale(const glm::vec2& pos);
 
    virtual bool SetValueTable(const sol::table& table) override;
-   
+
 protected:
    void SetPositionWithoutCollision(float x, float y);
    void SetPositionWithoutCollision(const glm::vec2& pos);
+   std::string SaveComponentToLua(bool bAddMoreLines) const;
 
 private:
    inline void AddToCollisionListHelper();   //Helper function to add the entity to the collision check list when it moves.

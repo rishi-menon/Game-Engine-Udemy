@@ -11,14 +11,11 @@ struct AnimationLayout
 
    AnimationLayout(float speed = 0.0f);
    AnimationLayout(AnimationLayout&& layout);
-
-
-   AnimationLayout(std::vector<int>&& vector, float speed) :
-      m_animationSpeed(speed)
-   {
-      m_indices = std::move(vector);
-   }
+   AnimationLayout(std::vector<int>&& vector, float speed);
    AnimationLayout(const AnimationLayout& other);
+
+   //Get the indices as a string seprated by commas (,)
+   void GetIndicesString(std::string& outStr) const;
 };
 
 class AnimationComponent : public Component
@@ -44,6 +41,9 @@ public:
 
    void SetRotationSpeed(double dSpeed) { m_dRotationSpeed = dSpeed; }  //in degrees per second
 
+   //Lua stuff
+   virtual bool SetValueTable(const sol::table& table) override;
+   virtual std::string SaveComponentToLua(const std::string& strSubTableName) const override;
 
 private:
    //index is the '1D' index of the spritesheet. top left image is 0 and it increases as you keep going left
@@ -53,12 +53,14 @@ private:
    void OnAnimationRotation(double deltaTime);
    void OnAnimationSpriteSheet(double deltaTime);
 
-   virtual bool SetValueTable(const sol::table& table) override;
 
 private:
    SpriteComponent* m_pSpriteComponent;
    AnimationLayout* m_pCurrentAnimationLayout;
-   std::string m_strAnimationID;
+   
+   std::string m_strAnimationID; //unused variable... Can potentiallly be removed
+
+   std::string m_strDefaultAnimationID;
 
    std::unordered_map<std::string, AnimationLayout> m_umapAnimationLayout;
 
