@@ -3,6 +3,8 @@
 #include "Component.h"
 #include <string>
 
+class Entity;
+
 class PlayerControllerComponent : public Component
 {
 public:
@@ -33,6 +35,10 @@ private:
 private:
    TransformComponent* m_pTransformComponent;
    AnimationComponent* m_pAnimationComponent;
+   
+   Entity* m_pBullet;
+
+   glm::vec2 m_vOldVelocity;  //stores the direction that the player was moving in before he/she stopped
 
    int m_nKeyUp;
    int m_nKeyRight;

@@ -173,17 +173,30 @@ namespace Engine::Lua
 
       EntityManager temporaryManager;
       bool bSuccess = true;
+      std::list<Entity*> listNewEntity;
       //In lua arrays start from 1 by default
       for (std::size_t index = 1; bSuccess; index++)
       {
          sol::optional<sol::table> entityTable = entitiesTable[index];
          if (!entityTable) break;
-         bSuccess = (nullptr != CreateEntity(entityTable.value(), temporaryManager));
+         Entity* pEntity = CreateEntity(entityTable.value(), temporaryManager);
+         listNewEntity.push_back(pEntity);
+         bSuccess = pEntity ? true : false;  //Is this ternary operator even necessary ?
       }
 
       if (bSuccess)
       {
          manager += std::move(temporaryManager);
+         //initialise all the entities
+         for (Entity* pEntity : listNewEntity)
+         {
+            ASSERT(pEntity);
+            if (pEntity)
+            {
+               pEntity->OnInitialise();
+            }
+         }
+
          return true;
       }
       return false;
@@ -263,7 +276,6 @@ namespace Engine::Lua
       {
          //All the components were added successfully
          manager.AddEntity(pEntity);
-         pEntity->OnInitialise();
          return pEntity;
       }
       else

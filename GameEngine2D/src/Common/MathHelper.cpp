@@ -32,4 +32,21 @@ namespace MathR {
    {
       return (value - min) / (max - min);
    }
+
+   double Sign(double value)
+   {
+      const double dThreshold = 1e-5;  //safer than checking if value == 0
+      if (value < -dThreshold)
+      {
+         return -1.0;
+      }
+      else if (value > dThreshold)
+      {
+         return 1.0;
+      }
+      else
+      {
+         return 0.0;
+      }
+   }
 }

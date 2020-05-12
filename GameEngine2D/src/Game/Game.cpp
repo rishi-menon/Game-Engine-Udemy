@@ -161,10 +161,8 @@ bool Game::LoadLevel(int nLevelNumber)
    luaLevel.open_libraries(sol::lib::base, sol::lib::os, sol::lib::math);*/
 
    const std::string sceneRootFolder = "assets\\scene\\";   //To do: take this path from user in the future
-   std::stringstream ss;
-   ss << sceneRootFolder << "Level" << nLevelNumber << ".lua";
-
-   return Engine::Lua::LoadScene(*this, ss.str());
+   std::string strPath = StringR::Format("%sLevel%d.lua", sceneRootFolder.c_str(), nLevelNumber);
+   return Engine::Lua::LoadScene(*this, strPath);
 #endif
 }
 

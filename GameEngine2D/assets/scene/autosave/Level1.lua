@@ -121,3 +121,28 @@ entities[3].Components.TextUI = {
 	StartingText = "Radar",
 	StartingColor = {r = 0, g = 230, b = 100, a = 255}
 }
+entities[4] = {}
+entities[4].Name = "Tank"
+entities[4].Enabled = true
+entities[4].Components = {}
+entities[4].Components.Transform = {
+	Active = true,
+	Position = { X = 0.0, Y = 0.0 },
+	Scale = { X = 1.0, Y = 1.0 },
+	Velocity = { X = -0.5, Y = 0.0 }
+}
+entities[4].Components.Sprite = {
+	Active = true,
+	Id = "tank-big-right",
+	TextureDefaultRect = { X = 0, Y = 0, W = 32, H = 32 } 
+}
+entities[4].Components.BoxCollider = {
+	Active = true,
+	Offset = { X = 0.0, Y = 0.0 },
+	Scale = { X = 1.0, Y = 1.0 },
+	Tag = "Enemy",
+	TextureId = "collision-texture"
+}
+entities[4].Components.EnemyMovementScript = {
+	Active = true,
+}

@@ -8,9 +8,12 @@
 #include "Transform/TransformComponent.h"
 #include "AnimationComponent.h"
 
+#include "Game/Game.h"
+
 PlayerControllerComponent::PlayerControllerComponent() :
    m_vecVelocity(0, 0),
    m_pTransformComponent (nullptr),
+   m_pBullet(nullptr),
    m_nKeyUp (0),
    m_nKeyRight(0),
    m_nKeyDown(0),
@@ -103,11 +106,15 @@ int PlayerControllerComponent::GetKeyCodeFromString(const std::string& string)
    return code;
 #endif
 }
+
 //overrides
 void PlayerControllerComponent::OnInitialise() {
    m_pTransformComponent = m_pEntityOwner->GetComponent<TransformComponent>();
    ASSERT(m_pTransformComponent);
    m_pAnimationComponent = m_pEntityOwner->GetComponent<AnimationComponent>();   //this could be null 
+
+   m_pBullet = Game::s_EntityManager.GetEntityFromName("Bullet");
+   ASSERT(m_pBullet);
 }
 void PlayerControllerComponent::OnUpdate(double deltaTime)
 {
@@ -187,6 +194,8 @@ void PlayerControllerComponent::OnUpdate(double deltaTime)
    if (Engine::Input::GetKeyPressed(m_nKeyUp))
    {
       m_pTransformComponent->m_vVeloctiy = glm::vec2(0, m_vecVelocity.y);
+      m_vOldVelocity.x = 0;
+      m_vOldVelocity.y = 1;
       if (m_pAnimationComponent)
       {
          //To do: the animation that is played should be controlled by the lua script perhaps ?
@@ -195,6 +204,8 @@ void PlayerControllerComponent::OnUpdate(double deltaTime)
    }
    else if (Engine::Input::GetKeyPressed(m_nKeyRight))
    {
+      m_vOldVelocity.x = 1;
+      m_vOldVelocity.y = 0;
       m_pTransformComponent->m_vVeloctiy = glm::vec2(m_vecVelocity.x, 0);
       if (m_pAnimationComponent)
       {
@@ -203,6 +214,8 @@ void PlayerControllerComponent::OnUpdate(double deltaTime)
    }
    else if (Engine::Input::GetKeyPressed(m_nKeyDown))
    {
+      m_vOldVelocity.x = 0;
+      m_vOldVelocity.y = -1;
       m_pTransformComponent->m_vVeloctiy = glm::vec2(0, -m_vecVelocity.y);
       if (m_pAnimationComponent)
       {
@@ -211,15 +224,38 @@ void PlayerControllerComponent::OnUpdate(double deltaTime)
    }
    else if (Engine::Input::GetKeyPressed(m_nKeyLeft))
    {
+      m_vOldVelocity.x = -1;
+      m_vOldVelocity.y = 0;
       m_pTransformComponent->m_vVeloctiy = glm::vec2(-m_vecVelocity.x, 0);
       if (m_pAnimationComponent)
       {
          m_pAnimationComponent->SetCurrentAnimation("left");
       }
    }
-   else if (Engine::Input::GetKeyPressed(m_nKeyFire))
+   
+   if (Engine::Input::GetKeyPressed(m_nKeyFire))
    {
       //To do: Fire projectiles here ?
+      if (m_pBullet)
+      {
+         Entity* pEntity = Game::s_EntityManager.Instantiate(m_pBullet, 4.0);
+         ASSERT(pEntity);
+         if (pEntity)
+         {
+            pEntity->SetIsActive(true);
+            TransformComponent* pTransform = pEntity->GetComponent<TransformComponent>();
+            ASSERT(pTransform && m_pTransformComponent);
+
+            //calculate position and velocity
+            {
+               pTransform->SetPosition(m_pTransformComponent->GetPosition());
+
+               const float dSpeed = 10.0f;
+               pTransform->m_vVeloctiy.x = dSpeed * m_vOldVelocity.x;
+               pTransform->m_vVeloctiy.y = dSpeed * m_vOldVelocity.y;
+            }
+         }
+      }
    }
 
 #endif

@@ -11,4 +11,6 @@ namespace MathR
    extern double Clamp01(double value);
 
    extern double GetPercent(double value, double min, double max);
+
+   extern double Sign(double value);
 }

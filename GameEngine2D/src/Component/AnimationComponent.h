@@ -41,6 +41,8 @@ public:
 
    void SetRotationSpeed(double dSpeed) { m_dRotationSpeed = dSpeed; }  //in degrees per second
 
+   const std::string& GetCurrentAnimationName() const { return m_strAnimationID; }
+
    //Lua stuff
    virtual bool SetValueTable(const sol::table& table) override;
    virtual std::string SaveComponentToLua(const std::string& strSubTableName) const override;

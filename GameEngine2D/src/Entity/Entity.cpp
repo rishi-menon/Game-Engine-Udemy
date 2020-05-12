@@ -232,7 +232,7 @@ bool Entity::SaveEntityPrefabLua(const std::string& filePath) const
    if (!file.is_open())    return false;
 
    //Table name is mod (arbitrary)
-   file << "local mod = {}";
+   file << "local mod = {}\n";
    {
       std::string strLua;
       strLua.reserve(4000);
