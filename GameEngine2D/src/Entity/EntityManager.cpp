@@ -3,6 +3,8 @@
 #include "EntityManager.h"
 #include "Collision/CollisionManager.h"
 
+#include "LuaSupport/LuaSupport.h"
+
 EntityManager::EntityManager()
 {
 }
@@ -135,6 +137,55 @@ Entity* EntityManager::Instantiate(Entity* pEntity, double dLifetime)   //lifeti
    
    pNewEntity->OnInitialise();
    return pNewEntity;
+}
+
+Entity* EntityManager::InstantiateLua(const std::string& strPath, double dLifetime)
+{
+   sol::state luaEntity;
+   //sol::lib::package is for the 'require' keyword in lua
+   luaEntity.open_libraries(sol::lib::base, sol::lib::os, sol::lib::math, sol::lib::package);
+
+   try {
+      ASSERT(strPath.size() < 900);
+      std::string strLuaCommand = StringR::Format("mod = require (\"%s\")", StringR::ConvertPathToLuaRequire(strPath).c_str());
+      luaEntity.script(strLuaCommand);
+   }
+   catch (const std::exception& err)
+   {
+      printf(err.what());
+      LOGW("\n");
+      ASSERT(false);
+      return nullptr;
+   }
+   catch (...)
+   {
+      ASSERT(false);
+      return nullptr;
+   }
+
+   sol::optional<sol::table> entityTable = luaEntity["mod"];
+   if (!entityTable) return nullptr;
+
+   Entity* pEntity = Engine::Lua::CreateEntity(entityTable.value(), *this);
+   ASSERT(pEntity);
+   if (!pEntity)  return false;
+
+   //safer to check if the number is bigger than this value instead of checking if lifeTime != 0
+   if (dLifetime > 1.0e-5)
+   {
+      SelfDestructComponent* pComp = pEntity->GetComponent<SelfDestructComponent>();
+      if (pComp)
+      {
+         pComp->SetTotalTime(dLifetime);
+         pComp->SetElapsedTime();
+      }
+      else
+      {
+         pEntity->AddComponent<SelfDestructComponent>(dLifetime);
+      }
+   }
+
+   return pEntity;
 }
 
 Entity* EntityManager::GetEntityFromName(const std::string& strName) const

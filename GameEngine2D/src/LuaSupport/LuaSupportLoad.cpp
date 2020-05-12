@@ -178,12 +178,11 @@ namespace Engine::Lua
       {
          sol::optional<sol::table> entityTable = entitiesTable[index];
          if (!entityTable) break;
-         bSuccess = CreateEntity(entityTable.value(), temporaryManager);
+         bSuccess = (nullptr != CreateEntity(entityTable.value(), temporaryManager));
       }
 
       if (bSuccess)
       {
-         
          manager += std::move(temporaryManager);
          return true;
       }
@@ -213,7 +212,7 @@ namespace Engine::Lua
       return bSuccess;
    }
 
-   bool CreateEntity(const sol::table& entityTable, EntityManager& manager)
+   Entity* CreateEntity(const sol::table& entityTable, EntityManager& manager)
    {
       sol::optional<std::string> strEntityName = entityTable["Name"];
       sol::optional<bool> bIsEnabled = entityTable["Enabled"];
@@ -222,7 +221,7 @@ namespace Engine::Lua
 
       Entity* pEntity = new Entity ();
       ASSERT(pEntity);
-      if (!pEntity)  return false;
+      if (!pEntity)  return nullptr;
 
       if (strEntityName)  pEntity->SetName(strEntityName.value());
       if (bIsEnabled)     pEntity->SetIsActive(bIsEnabled.value());
@@ -260,20 +259,19 @@ namespace Engine::Lua
       }
 #endif // DEBUG
 
-
       if (bSuccess)
       {
          //All the components were added successfully
          manager.AddEntity(pEntity);
          pEntity->OnInitialise();
-         return true;
+         return pEntity;
       }
       else
       {
          LOGW("Error: Could not create entity \"%s\"", pEntity->GetName().c_str());
          ASSERT(false);
          delete pEntity;
-         return false;
+         return nullptr;
       }
    }
 }

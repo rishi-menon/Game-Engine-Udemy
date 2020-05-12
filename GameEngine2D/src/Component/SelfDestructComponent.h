@@ -18,6 +18,8 @@ public:
    virtual bool SetValueTable(const sol::table& table) override;
    virtual std::string SaveComponentToLua(const std::string& strSubTableName) const override;
 
+   void SetTotalTime(double dTime) { m_dTimeTotal = dTime; }
+   void SetElapsedTime(double dTime = 0.0) { m_dTimeElapsed = dTime; }
 private:
    double m_dTimeTotal;    //in seconds
    double m_dTimeElapsed;  //in seconds

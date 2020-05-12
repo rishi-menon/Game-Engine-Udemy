@@ -15,6 +15,7 @@ public:
    Entity* AddEntity(const std::string& strName = "");
    void AddEntity(Entity* pEntity);
    Entity* Instantiate(Entity* pEntity, double dLifetime);
+   Entity* InstantiateLua(const std::string& strPath, double dLifetime);
 
    inline std::size_t GetCount() const { return m_listEntities.size(); }
 

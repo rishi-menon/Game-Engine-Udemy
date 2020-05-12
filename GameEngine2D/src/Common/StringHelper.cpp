@@ -65,7 +65,7 @@ namespace StringR {
          std::unordered_map<char, std::string>::const_iterator it = delimitersMap.find(c);
          if (it != delimitersMap.end())
          {
-            srcCopy += std::move(it->second);
+            srcCopy += it->second;
          }
          else
          {
@@ -73,6 +73,34 @@ namespace StringR {
          }
       }
       return srcCopy;
+   }
+
+   static const std::unordered_map<char, std::string> luaRequirePathMap{
+      {'\\', "."},
+   };
+   std::string ConvertPathToLuaRequire(const std::string& strPath)
+   {
+      std::string strCopy;
+      strCopy.reserve(strPath.size());
+
+      //loop until last '.' ie dont copy the extension... If no extension was provided then loop till the end
+      std::size_t index = strPath.rfind('.');
+      if (index == std::string::npos) { index = strPath.size(); }
+      for (std::size_t i = 0; i < index; i++)
+      {
+         char c = strPath.at(i);
+         std::unordered_map<char, std::string>::const_iterator it = luaRequirePathMap.find(c);
+         if (it != luaRequirePathMap.end())
+         {
+            strCopy += it->second;
+         }
+         else
+         {
+            strCopy += c;
+         }
+      }
+
+      return StringR::ParsePath(strCopy);
    }
 
    //////////////////////////////////////////////////////////////

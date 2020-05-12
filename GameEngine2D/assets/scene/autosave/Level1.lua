@@ -72,10 +72,10 @@ entities[2].Components.Animation = {
 	RotationSpeed = 0.0,
 	StartingAnimation = "down",
 	AnimationList = {
-		{ Id = "right", Layout = {2, 3, }, Speed = 17.0, }, 
 		{ Id = "down", Layout = {0, 1, }, Speed = 17.0, }, 
-		{ Id = "up", Layout = {6, 7, }, Speed = 17.0, }, 
+		{ Id = "right", Layout = {2, 3, }, Speed = 17.0, }, 
 		{ Id = "left", Layout = {4, 5, }, Speed = 17.0, }, 
+		{ Id = "up", Layout = {6, 7, }, Speed = 17.0, }, 
 	}
 }
 entities[2].Components.BoxCollider = {
@@ -120,29 +120,4 @@ entities[3].Components.TextUI = {
 	FontId = "charriot",
 	StartingText = "Radar",
 	StartingColor = {r = 0, g = 230, b = 100, a = 255}
-}
-entities[4] = {}
-entities[4].Name = "Tank"
-entities[4].Enabled = true
-entities[4].Components = {}
-entities[4].Components.Transform = {
-	Active = true,
-	Position = { X = 0.0, Y = 0.0 },
-	Scale = { X = 1.0, Y = 1.0 },
-	Velocity = { X = -0.5, Y = 0.0 }
-}
-entities[4].Components.Sprite = {
-	Active = true,
-	Id = "tank-big-right",
-	TextureDefaultRect = { X = 0, Y = 0, W = 32, H = 32 } 
-}
-entities[4].Components.BoxCollider = {
-	Active = true,
-	Offset = { X = 0.0, Y = 0.0 },
-	Scale = { X = 1.0, Y = 1.0 },
-	Tag = "Enemy",
-	TextureId = "collision-texture"
-}
-entities[4].Components.EnemyMovementScript = {
-	Active = true,
 }

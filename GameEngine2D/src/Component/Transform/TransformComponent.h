@@ -2,14 +2,8 @@
 #include "Component/Component.h"
 #include "TransformPartialComponent.h"
 
-class EntityManager;
-namespace Engine::Lua {
-   bool CreateEntity(const sol::table& entityTable, EntityManager& manager);
-}
-
 class TransformComponent : public TransformPartialComponent
 {
-   friend bool Engine::Lua::CreateEntity (const sol::table& entityTable, EntityManager& manager);
 public:
    COMPONENT_NAME("Transform")
    COMPONENT_TYPE(Transform);

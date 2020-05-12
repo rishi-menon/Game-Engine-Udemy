@@ -39,4 +39,4 @@ entities = {}
 entities[1] = require (EntitiesPath .. "Bullet")
 entities[2] = require (EntitiesPath .. "Player")
 entities[3] = require (EntitiesPath .. "Radar")
-entities[4] = require (EntitiesPath .. "Tank")
+--entities[4] = require (EntitiesPath .. "Tank")
