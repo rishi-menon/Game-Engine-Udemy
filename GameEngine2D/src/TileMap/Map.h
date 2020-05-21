@@ -42,6 +42,7 @@ public:
 
    const std::list<MapData>& GetMapData() const { return m_mapData; }
 
+   void CheckCollision(float worldX, float worldY);
 
 private:
    bool AddTile (EntityManager& manager, const MapData& mapData, float posx, float posy, int sourceX, int sourceY);

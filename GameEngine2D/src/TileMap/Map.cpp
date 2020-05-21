@@ -248,6 +248,7 @@ void Map::CheckCollision(float worldX, float worldY)
 {
    const Engine::Rect& rect = m_rectTiles;
 
+
 }
 
 void Map::OnUpdate(double deltaTime)
