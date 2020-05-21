@@ -40,21 +40,21 @@ void EnemyMovementScript::OnUpdate(double deltaTime)
          TransformComponent* pComponent = pNewEntity->GetComponent<TransformComponent>();
          ASSERT(pComponent);
          pComponent->SetPosition(m_pTransform->GetPosition());
-         LOGW("Created Bullet");
+         //LOGW("Created Bullet");
       }
    }
 }
 
-void EnemyMovementScript::OnCollisionEnter(BoxColliderComponent& otherCollider)
+void EnemyMovementScript::OnCollisionEnter(BoxColliderComponent* otherCollider)
 {
    /*if (GetEntityOwner()->GetName() != "Tank")
       LOGW("\nCollision START\n\n");*/
 }
-void EnemyMovementScript::OnCollision(BoxColliderComponent& otherCollider)
+void EnemyMovementScript::OnCollision(BoxColliderComponent* otherCollider)
 {
    //LOGW("Collision...\n");
 }
-void EnemyMovementScript::OnCollisionExit(BoxColliderComponent& otherCollider)
+void EnemyMovementScript::OnCollisionExit(BoxColliderComponent* otherCollider)
 {
    //if (GetEntityOwner()->GetName() != "Tank")
    //   LOGW("\nCollision END\n");

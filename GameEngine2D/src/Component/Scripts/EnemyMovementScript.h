@@ -15,9 +15,9 @@ public:
    void OnInitialise() override;
    void OnUpdate(double deltaTime) override;
 
-   void OnCollisionEnter(BoxColliderComponent& otherCollider) override;
-   void OnCollision(BoxColliderComponent& otherCollider)  override;
-   void OnCollisionExit(BoxColliderComponent& otherCollider) override;
+   void OnCollisionEnter(BoxColliderComponent* otherCollider) override;
+   void OnCollision(BoxColliderComponent* otherCollider)  override;
+   void OnCollisionExit(BoxColliderComponent* otherCollider) override;
 
    virtual bool SetValueTable(const sol::table& table) override;
    virtual std::string SaveComponentToLua(const std::string& strSubTableName) const override;

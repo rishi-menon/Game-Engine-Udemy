@@ -68,3 +68,8 @@ std::string TransformComponent::SaveComponentToLua(const std::string& strSubTabl
    strLua += '\n';
    return strLua;
 }
+
+void TransformComponent::OnCollisionEnter(BoxColliderComponent* pCollider)
+{
+   LOGW("Transform Col... ");
+}

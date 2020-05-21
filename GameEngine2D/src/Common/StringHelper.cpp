@@ -131,4 +131,10 @@ namespace StringR {
       ss << num;
       return ss.str();
    }
+
+   int StringToNum(const std::string& str)
+   {
+      int n = std::stoi(str);
+      return n;
+   }
 }

@@ -126,22 +126,34 @@ namespace Engine::Lua
    ///////////////////////////////////////////////////////////////////////////////////////////////
    //                              Load Map                                                     //
    ///////////////////////////////////////////////////////////////////////////////////////////////
-   bool LoadMap(const sol::table& mapTable, Map& outMap)
+   bool LoadMap(const sol::table& mapAllLayersTable, Map& outMap)
    {
-      sol::optional<std::string> strAssetId = mapTable["Id"];
-      sol::optional<std::string> strSrc = mapTable["Src"];
-      sol::optional<int> nTileSize = mapTable["TileSize"];
-      sol::optional<float> fPosX = mapTable["PosX"];
-      sol::optional<float> fPosY = mapTable["PosY"];
-
-      if (strAssetId == sol::nullopt || strSrc == sol::nullopt || nTileSize == sol::nullopt || fPosX == sol::nullopt || fPosY == sol::nullopt)
+      int i = 1;
+      for (; true; i++)
       {
-         ASSERT(false);
-         //lua script is invalid
-         return false;
+         sol::optional<sol::table> mapTable = mapAllLayersTable[i];
+         if (!mapTable) break;
+
+         sol::optional<std::string> strAssetId = mapTable.value()["Id"];
+         sol::optional<std::string> strSrc = mapTable.value()["Src"];
+         sol::optional<int> nTileSize = mapTable.value()["TileSize"];
+         sol::optional<float> fPosX = mapTable.value()["PosX"];
+         sol::optional<float> fPosY = mapTable.value()["PosY"];
+
+         sol::optional<bool> bObstacles = mapTable.value()["Obstacles"];
+
+         if (!strAssetId || !strSrc || !nTileSize || !fPosX || !fPosY)
+         {
+            //To do: load maps to a temporary map variable and then swap them only if it succeeds.
+            ASSERT(false);
+            //lua script is invalid
+            return false;
+         }
+         ASSERT(bObstacles);
+         MapData data{ strSrc.value(), strAssetId.value(), nTileSize.value(), fPosX.value(), fPosY.value(), bObstacles ? bObstacles.value() : false };
+         outMap.LoadMap(data);
       }
-      MapData data{ strSrc.value(), strAssetId.value(), nTileSize.value(), fPosX.value(), fPosY.value() };
-      outMap.LoadMap(data);
+
       return true;
    }
    

@@ -6,7 +6,7 @@ assets = {
 		{ Id = "radar", Src = "assets\\images\\radar.png" },
 		{ Id = "collision-texture", Src = "assets\\images\\collision-texture.png" },
 		{ Id = "bullet-enemy", Src = "assets\\images\\bullet-enemy.png" },
-		{ Id = "jungle", Src = "assets\\tilemaps\\jungle.png" },
+		{ Id = "mapSheet", Src = "assets\\tilemaps\\mapSheet.png" },
 	},
 	fonts = {
 		{ Id = "charriot", Src = "assets\\fonts\\charriot.ttf", Size = 100 },
@@ -14,11 +14,22 @@ assets = {
 }
 
 map = {
-	Id = "jungle",
-	Src = "assets/tilemaps/jungle.map",
-	TileSize = 32,
-	PosX = -15,
-	PosY = 15
+	{
+		Id = "mapSheet",
+		Src = "assets/tilemaps/Level1/map1_Island.csv",
+		TileSize = 128,
+		PosX = 0.0,
+		PosY = 0.0,
+		Obstacles = false,
+	},
+	{
+		Id = "mapSheet",
+		Src = "assets/tilemaps/Level1/map1_Obstacles.csv",
+		TileSize = 128,
+		PosX = 0.0,
+		PosY = 0.0,
+		Obstacles = true,
+	},
 }
 
 camera = {
@@ -89,7 +100,7 @@ entities[2].Components.PlayerController = {
 	Active = true,
 	MovementKeys = { Up = 26, Left = 4, Down = 22, Right = 7 },
 	FireKey = 44,
-	Velocity = {X = 4.0, Y = 4.0}
+	Velocity = {X = 10.0, Y = 10.0}
 }
 entities[3] = {}
 entities[3].Name = "Radar"

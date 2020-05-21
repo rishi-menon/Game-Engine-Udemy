@@ -15,7 +15,7 @@ namespace Engine::Lua
    //Load scene stuff
    extern bool LoadScene(Game& game, const std::string& srcFile);
    extern bool LoadAssets  (const sol::table& assetTable);
-   extern bool LoadMap     (const sol::table& mapTable, Map& outMap);
+   extern bool LoadMap     (const sol::table& mapAllLayersTable, Map& outMap);
    extern bool LoadCamera  (const sol::table& cameraTable, Camera& camera, Game* game);
    extern bool LoadAllEntities(const sol::table& entitiesTable, EntityManager& manager);
    extern Entity* CreateEntity(const sol::table& entityTable, EntityManager& manager);

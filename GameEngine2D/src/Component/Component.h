@@ -88,9 +88,9 @@ public:
    void SetEnabled(bool bEnabled) { m_bIsEnabled = bEnabled; }
 
    //Collisions
-   virtual void OnCollisionEnter(BoxColliderComponent& otherCollider) {}
-   virtual void OnCollision(BoxColliderComponent& otherCollider)      {}
-   virtual void OnCollisionExit(BoxColliderComponent& otherCollider)  {}
+   virtual void OnCollisionEnter(BoxColliderComponent* otherCollider) {}
+   virtual void OnCollision(BoxColliderComponent* otherCollider)      {}
+   virtual void OnCollisionExit(BoxColliderComponent* otherCollider)  {}
 
    //While instantiating a gameobject, the components from the prefab are copied into a new one... If you dont want a component to be copied, then override this function in that specific component to return false
    virtual bool CopyDuringInstantiate() const { return true; }

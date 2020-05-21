@@ -103,8 +103,8 @@ namespace Engine::CollisionManager
             {
                //this component is about to be destroyed... Call OnCollisionExit on both to inform them... Also, this is a dangling pointer so remove it from the map
                ASSERT(pColliderA->GetEntityOwner() && pColliderB->GetEntityOwner());
-               pColliderA->GetEntityOwner()->OnCollisionExit(*pColliderB);
-               pColliderB->GetEntityOwner()->OnCollisionExit(*pColliderA);
+               pColliderA->GetEntityOwner()->OnCollisionExit(pColliderB);
+               pColliderB->GetEntityOwner()->OnCollisionExit(pColliderA);
                continue;
             }
 

@@ -5,7 +5,7 @@ assets = {
       {   Id = "radar",                Src = "assets\\images\\radar.png"                 },
       {   Id = "collision-texture",    Src = "assets\\images\\collision-texture.png"     },
       {   Id = "bullet-enemy",         Src = "assets\\images\\bullet-enemy.png"          },
-      {   Id = "jungle",               Src = "assets\\tilemaps\\jungle.png"              },
+      {   Id = "mapSheet",             Src = "assets\\tilemaps\\mapSheet.png"            },
    },
    fonts = {
       { Id = "charriot",      Src = "assets\\fonts\\charriot.ttf",      Size = 100 },
@@ -14,12 +14,22 @@ assets = {
 
 map = {
    --"assets/tilemaps/jungle.map", "jungle", 32, -15, 15
-
-   Id = "jungle",                            --Texture id
-   Src = "assets/tilemaps/jungle.map",       --Location of the .map file which contains which tiles to use in which position (text file)
-   TileSize = 32,                            --the sprite size in the spritesheet texture (in pixels)
-   PosX = -15.0,                             --X coordinate (world) of the top left tile in the map
-   PosY =  15.0                              --Y coordinate (world) of the top left tile in the map
+   {
+      Id = "mapSheet",                            --Texture id
+      Src = "assets/tilemaps/Level1/map1_Island.csv",       --Location of the .map file which contains which tiles to use in which position (text file)
+      TileSize = 128,                            --the sprite size in the spritesheet texture (in pixels)   
+      PosX = 0.0,                             --X coordinate (world) of the center tile in the map
+      PosY = 0.0,                              --Y coordinate (world) of the center tile in the map
+      Obstacles = false,
+   },
+   {
+      Id = "mapSheet",                            
+      Src = "assets/tilemaps/Level1/map1_Obstacles.csv",    
+      TileSize = 128,   
+      PosX = 0.0,                             
+      PosY = 0.0,
+      Obstacles = true,
+   }
 }
 
 -- optional table (if table doesnt exist then x=0, y=0 and PixelsPerUnit=40 are the values used to initialise the camera)

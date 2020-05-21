@@ -158,12 +158,14 @@ std::string BoxColliderComponent::SaveComponentToLua(const std::string& strSubTa
 }
 
 #ifdef EX_2020_DRAW_FADED_BOX
-void BoxColliderComponent::OnCollision(BoxColliderComponent& other)
+void BoxColliderComponent::OnCollision(BoxColliderComponent* other)
 {
+   ASSERT(other);
    m_bDrawFadedBackground = true;
 }
-void BoxColliderComponent::OnCollisionExit(BoxColliderComponent& other)
+void BoxColliderComponent::OnCollisionExit(BoxColliderComponent* other)
 {
+   ASSERT(other);
    m_bDrawFadedBackground = false;
 }
 #endif

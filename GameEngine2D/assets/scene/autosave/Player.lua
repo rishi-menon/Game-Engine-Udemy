@@ -28,7 +28,7 @@ mod.Components.PlayerController = {
 	Active = true,
 	MovementKeys = { Up = 26, Left = 4, Down = 22, Right = 7 },
 	FireKey = 44,
-	Velocity = {X = 4.0, Y = 4.0}
+	Velocity = {X = 10.0, Y = 10.0}
 }
 mod.Components.BoxCollider = {
 	Active = true,

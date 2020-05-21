@@ -111,19 +111,19 @@ void CollisionInfoManager::SendOnCollisionEvents()
             if (curFrame && lastFrame)
             {
                //Collision continue
-               colliderA->GetEntityOwner()->OnCollision(*colliderB);
-               colliderB->GetEntityOwner()->OnCollision(*colliderA);
+               colliderA->GetEntityOwner()->OnCollision(colliderB);
+               colliderB->GetEntityOwner()->OnCollision(colliderA);
             }
             else if (curFrame && !lastFrame)
             {
                //Collision Start
-               colliderA->GetEntityOwner()->OnCollisionEnter(*colliderB);
-               colliderB->GetEntityOwner()->OnCollisionEnter(*colliderA);
+               colliderA->GetEntityOwner()->OnCollisionEnter(colliderB);
+               colliderB->GetEntityOwner()->OnCollisionEnter(colliderA);
             }
             else if (!curFrame && lastFrame)
             {
-               colliderA->GetEntityOwner()->OnCollisionExit(*colliderB);
-               colliderB->GetEntityOwner()->OnCollisionExit(*colliderA);
+               colliderA->GetEntityOwner()->OnCollisionExit(colliderB);
+               colliderB->GetEntityOwner()->OnCollisionExit(colliderA);
             }
          }
       }

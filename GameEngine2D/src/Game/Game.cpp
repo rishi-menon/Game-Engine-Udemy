@@ -52,6 +52,7 @@ void Game::MoveCamera(double deltaTime)
    float fCameraDeltaX = static_cast<float>(MathR::Lerp(0.0f, comp->GetPosition().x - s_camera.GetPositionX(), fCameraPercent));
    float fCameraDeltaY = static_cast<float>(MathR::Lerp(0.0f, comp->GetPosition().y - s_camera.GetPositionY(), fCameraPercent));
 
+#if 1
    {
       float fMinDeltaX = m_map.GetRectMap().GetLeft() - s_camera.GetRectView().GetLeft(); //this is the maximum you can translate toward the left
       float fMaxDeltaX = m_map.GetRectMap().GetRight() - s_camera.GetRectView().GetRight();//this is the maximum you can translate toward the right
@@ -62,6 +63,7 @@ void Game::MoveCamera(double deltaTime)
       float fMaxDeltaY = m_map.GetRectMap().GetTop() - s_camera.GetRectView().GetTop();//this is the maximum you can translate toward the top edge of the map
       fCameraDeltaY = static_cast<float>(MathR::Clamp(fCameraDeltaY, fMinDeltaY, fMaxDeltaY));
    }
+#endif
    s_camera.TranslateViewRect(fCameraDeltaX, fCameraDeltaY);
 }
 
@@ -166,8 +168,6 @@ bool Game::LoadLevel(int nLevelNumber)
 #endif
 }
 
-//delete later
-#include <iostream>
 void Game::Initialise(const unsigned int unWidth, const unsigned int unHeight)
 {
    //returns 0 on successful init
@@ -224,11 +224,10 @@ void Game::Initialise(const unsigned int unWidth, const unsigned int unHeight)
    int nLevelNum = 1;
 
    LoadLevel(nLevelNum);
-   Engine::Lua::SaveScene(*this, "assets\\scene\\autosave", "Level1");
+   //Engine::Lua::SaveScene(*this, "assets\\scene\\autosave", "Level1");
    m_bIsRunning = true;
 }
 
-#include "Collision/CollisionHelper.h"
 void Game::OnProcessInput()
 {
    SDL_PollEvent(&s_event);

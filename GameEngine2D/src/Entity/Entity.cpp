@@ -168,7 +168,7 @@ void Entity::OnDestroy()
    m_bIsActive = false;
 }
 
-void Entity::OnCollisionEnter(BoxColliderComponent& otherCollider)
+void Entity::OnCollisionEnter(BoxColliderComponent* otherCollider)
 {
    for (std::pair<const ComponentType, Components>& pair : m_umapComponentType)
    {
@@ -182,7 +182,7 @@ void Entity::OnCollisionEnter(BoxColliderComponent& otherCollider)
       }
    }
 }
-void Entity::OnCollision(BoxColliderComponent& otherCollider)
+void Entity::OnCollision(BoxColliderComponent* otherCollider)
 {
    for (std::pair<const ComponentType, Components>& pair : m_umapComponentType)
    {
@@ -196,7 +196,7 @@ void Entity::OnCollision(BoxColliderComponent& otherCollider)
       }
    }
 }
-void Entity::OnCollisionExit(BoxColliderComponent& otherCollider)
+void Entity::OnCollisionExit(BoxColliderComponent* otherCollider)
 {
    for (std::pair<const ComponentType, Components>& pair : m_umapComponentType)
    {

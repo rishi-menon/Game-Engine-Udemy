@@ -20,6 +20,8 @@ public:
 
    virtual std::string SaveComponentToLua(const std::string& strSubTableName) const override;
 
+   virtual void OnCollisionEnter(BoxColliderComponent* pCollider) override;
+
 public:
    glm::vec2 m_vVeloctiy;
 };

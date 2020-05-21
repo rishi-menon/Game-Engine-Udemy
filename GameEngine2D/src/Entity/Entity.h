@@ -54,9 +54,9 @@ public:
    inline bool GetIsActive() const { return m_bIsActive; }
    void SetIsActive(bool bIsActive) { m_bIsActive = bIsActive; }
 
-   void OnCollisionEnter(BoxColliderComponent& otherCollider);
-   void OnCollision(BoxColliderComponent& otherCollider);
-   void OnCollisionExit(BoxColliderComponent& otherCollider);
+   void OnCollisionEnter(BoxColliderComponent* otherCollider);
+   void OnCollision(BoxColliderComponent* otherCollider);
+   void OnCollisionExit(BoxColliderComponent* otherCollider);
 
    inline const std::unordered_map<ComponentType, Components>& GetComponentsMap() const { return m_umapComponentType; }
    

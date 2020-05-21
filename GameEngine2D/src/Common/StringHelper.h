@@ -17,4 +17,5 @@ namespace StringR
    const char* Format(const char* const strFormat, ...);
 
    std::string ToString(int num);
+   int StringToNum(const std::string& str);
 }

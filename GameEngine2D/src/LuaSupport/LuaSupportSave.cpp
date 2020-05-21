@@ -142,17 +142,43 @@ namespace Engine::Lua
 
    std::string SaveMapLua(const Map& map)
    {
-      const MapData& data = map.GetMapData();
+#if 0
+      const std::list<MapData>& mapDataList = map.GetMapData();
       std::stringstream ss;
       ss << "\nmap = {\n";
-      ss << "\tId = \"" << StringR::ParsePath(data.m_mapAssetID) << "\",\n";
-      ss << "\tSrc = \"" << StringR::ParsePath(data.m_mapPath) << "\",\n";
-      ss << "\tTileSize = " << data.m_tileSize<< ",\n";
-      ss << "\tPosX = " << data.m_startPosX << ",\n";
-      ss << "\tPosY = " << data.m_startPosY << "\n";
-
+      for (const MapData& data : mapDataList)
+      {
+         ss << "\t{\n";
+         ss << "\t\tId = \"" << StringR::ParsePath(data.m_mapAssetID) << "\",\n";
+         ss << "\t\tSrc = \"" << StringR::ParsePath(data.m_mapPath) << "\",\n";
+         ss << "\t\tTileSize = " << data.m_tileSize << ",\n";
+         ss << "\t\tPosX = " << data.m_startPosX << ",\n";
+         ss << "\t\tPosY = " << data.m_startPosY << "\n";
+         ss << "\t},\n";
+      }
       ss << "}\n";//closing bracket for map
       return ss.str();
+#else
+      const std::list<MapData>& mapDataList = map.GetMapData();
+      std::string strLua;
+      strLua.reserve(1000);
+
+      strLua += "\nmap = {\n";
+      for (const MapData& data : mapDataList)
+      {
+         strLua += "\t{\n";
+         strLua += StringR::Format("\t\tId = \"%s\",\n", StringR::ParsePath(data.m_mapAssetID).c_str());
+         strLua += StringR::Format("\t\tSrc = \"%s\",\n", StringR::ParsePath(data.m_mapPath).c_str());
+         strLua += StringR::Format("\t\tTileSize = %d,\n", data.m_tileSize);
+         strLua += StringR::Format("\t\tPosX = %.1f,\n", data.m_startPosX);
+         strLua += StringR::Format("\t\tPosY = %.1f,\n", data.m_startPosY);
+         strLua += StringR::Format("\t\tObstacles = %s,\n", data.m_bObstacles ? "true" : "false");
+         strLua += "\t},\n";
+      }
+      strLua += "}\n";//closing bracket for map
+      return strLua;
+
+#endif
    }
 
    std::string SaveCameraLua(const Camera& camera, const Game* pGame)

@@ -29,8 +29,8 @@ public:
    virtual std::string SaveComponentToLua(const std::string& strSubTableName) const override;
 
 #ifdef EX_2020_DRAW_FADED_BOX
-   void OnCollision(BoxColliderComponent& other) override;
-   void OnCollisionExit(BoxColliderComponent& other) override;
+   void OnCollision(BoxColliderComponent* other) override;
+   void OnCollisionExit(BoxColliderComponent* other) override;
 #endif
 
 private:
