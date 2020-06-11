@@ -1,0 +1,9 @@
+.vs/
+bin-int/
+bin/Debug (windows - x86)/
+bin/Release (windows - x86)/
+
+**.sln
+**.vcxproj
+**.filters
+**.user

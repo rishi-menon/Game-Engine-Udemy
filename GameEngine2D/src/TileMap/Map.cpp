@@ -211,7 +211,7 @@ bool Map::AddTile(EntityManager& manager, const MapData& mapData, float posx, fl
    sprintf_s(name, 20, "TileMap %d", count);
    count++;
 #else
-   char name[] = "TileMap"
+    char name[] = "TileMap";
 #endif // WINDOWS
 
    Entity* pEntity = manager.AddEntity(name);
